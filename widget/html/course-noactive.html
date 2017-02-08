@@ -15,7 +15,7 @@
   <body>
     <ul id="content" class="course-pic-list noactive"></ul>
     <script id="tpl" type="text/x-dot-template">{{for(var p in it) { }}
-          <li tapmode data-coursename="{{=it[p].courseName}}" data-chapterName="{{=it[p].chapterName}}" onclick="openCourse(this,'{{=it[p].courseId}}','{{=it[p].chapterId}}','{{=it[p].subjectID}}','{{=it[p].categoryId}}','{{=it[p].subjectName}}','{{=it[p].categoryName}}')">
+          <li tapmode data-coursename="{{=it[p].courseName}}" data-chapterName="{{=it[p].chapterName}}">
             <div style="background-image:url({{=static_url+it[p].courseBkImage}})" class="cpl-head">
               <!--h4 {{=formatDate(it[p].expirationTime,'Y')+'-'+formatDate(it[p].expirationTime,'M')+'-'+formatDate(it[p].expirationTime,'D')}}  {{=formatDate(it[p].expirationTime,'h')+':'+formatDate(it[p].expirationTime,'m')}}-->
               <h4>{{=formatDate(it[p].expirationTime,'Y')+'-'+formatDate(it[p].expirationTime,'M')+'-'+formatDate(it[p].expirationTime,'D')}} 过期</h4>
