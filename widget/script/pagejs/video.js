@@ -668,8 +668,8 @@ function play_video() {
                         }
                        
 
-                    }, 1000 * 10)
-
+                    }, 1000 * 60 * 2)
+ 
                     is_check=false;
                     if(last_progress>0){
                         var jumptime;
