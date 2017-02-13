@@ -1,4 +1,4 @@
-dashboard                   登录页
+﻿dashboard                   登录页
 forgot_pass                 找回密码
 forgot_pass2                找回密码2
 sign-up                     手机注册
@@ -6,7 +6,7 @@ sign-edit                   注册-基本信息
 sign-photo-f                注册-上传头像
 
 
-
+------
 —————————dashboard打开FrameGroup——————————
 learning-center             学习中心(主页)
 course-topnav               在线课程（中心）
