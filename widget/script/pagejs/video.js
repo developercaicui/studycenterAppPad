@@ -106,17 +106,27 @@ apiready = function() {
     }
     demo = api.require('lbbVideo');
     //监听切换视频事件
-    api.addEventListener({
-        name : 'change_video'
+ api.addEventListener({
+        name: 'change_video'
     }, function(ret) {
         if (ret && ret.value) {
-             //更新章节信息
-            lastVtime = 0;//新任务从0开始
+            /*
+            study_progress = ret.value.study_progress;
+            study_progress.progress = 0;//新任务从0开始
+            task_info = ret.value.task_info;
+            videoid = task_info.videoCcid;
+            videoTimes = task_info.videoTime;
+            //更新章节信息
+            //getChapterInfo();
+            */
+            lastVtime = 0; //新任务从0开始
             var task_id = ret.value.taskId;
             task_info = task_arr[task_id].taskInfo;
             task_info_detail = task_arr[task_id];
             videoid = task_info.videoCcid;
             videoTimes = task_info.videoTime;
+            newProgress = true;
+            isLoading = false;
             if (api.systemType == 'android') {
                 demo.close();
             }
