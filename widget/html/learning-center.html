@@ -71,15 +71,15 @@
                 {{ } }}
                 {{=data[p].subjectName}}
               </h1>
-              <h2>{{=data[p].courseName}}</h2>{{ if(!isEmpty(data[p].chapterName) && !isEmpty(data[p].lastTaskdate)){ }}
+              <h2>{{=data[p].courseName}}</h2>{{ if(!isEmpty(data[p].chapterName)){ }}
               <p>上次学到：{{=data[p].chapterName}}</p>{{ }else{ }}
               <p>上次学到：您还没有学习记录</p>{{ } }}
-              {{ if(!isEmpty(data[p].taskprogress) && !isEmpty(data[p].taskTotal)) { }}
+              {{ if(!isEmpty(data[p].showProgress) && !isEmpty(data[p].taskTotal)) { }}
               <div class="circle">
                 <div class="circle-progress">
-                  <div class="val">{{=parseInt(Math.round((data[p].taskprogress/data[p].taskTotal).toFixed(4)*100))>90 ?  100 :parseInt(Math.round((data[p].taskprogress/data[p].taskTotal).toFixed(4)*100)) }}</div>
+                  <div class="val">{{=parseInt(Math.round((data[p].showProgress/data[p].taskTotal).toFixed(4)*100))>90 ?  100 :parseInt(Math.round((data[p].showProgress/data[p].taskTotal).toFixed(4)*100)) }}</div>
                 </div>
-                <div class="num"><span>{{=data[p].taskprogress}}／</span><b>{{=data[p].taskTotal}}</b></div>
+                <div class="num"><span>{{=data[p].showProgress}}／</span><b>{{=data[p].taskTotal}}</b></div>
               </div>{{ }else{ }}
               <div class="circle">
                 <div class="circle-progress">

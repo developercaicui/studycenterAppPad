@@ -702,7 +702,7 @@ function relogin(ckeck) {
 var is_resume;
 
 apiready = function () {
-
+saveTasksProgress.init();
     api.setScreenOrientation({
         orientation: 'auto_landscape'
     });

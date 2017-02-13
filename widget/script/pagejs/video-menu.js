@@ -270,6 +270,7 @@ apiready = function() {
     task_info_detail = task_arr[task_info.taskId];
     //展示本章任务信息
     getChapterTask();
+    api.hideProgress();
 };
 
 //获取章节列表

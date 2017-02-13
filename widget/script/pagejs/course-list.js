@@ -93,9 +93,9 @@ apiready = function() {
     //});
 
 
-
     memberId=getstor('memberId');
     getData();
+    saveTasksProgress.getCourseTaskProgress([courseId]);
     api.addEventListener({
         name : 'down_speed'
     }, function(ret) {

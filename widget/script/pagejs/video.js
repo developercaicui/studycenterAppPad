@@ -21,7 +21,6 @@ function  closeVideo() {
 }
 
 apiready = function() {
-
     api.setScreenOrientation({
         orientation: 'auto_landscape'
     });
@@ -188,9 +187,8 @@ function play_video() {
                 last_progress = DB.getTaskProgressSync(task_info.taskId).progress;
             }
             if(newProgress){
-              last_progress = DB.getTaskProgressSync(task_info.taskId).progress;
+                last_progress = DB.getTaskProgressSync(task_info.taskId).progress;
             }
-            
             //alert(UserId+'====='+(isEmpty(CCconfig[UserId]) ? 0 : 1));
             //用户学习进度
             var param = {
