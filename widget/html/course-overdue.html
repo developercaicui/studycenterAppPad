@@ -24,9 +24,9 @@
             </div>
             <div class="cpl-main">
               <div class="li">
-                <h3>{{=it[p].courseName}}</h3>{{if(!isEmpty(it[p].taskprogress)){ }}
-                <p>上次学习到：{{=it[p].chapterName}}</p>{{ }else{ }}
-                <p>开始学习此课程</p>{{ } }}
+                <h3 style="margin-top: 0.25rem;">{{=it[p].courseName}}</h3>{{if(!isEmpty(it[p].taskprogress)){ }}
+                <p class="none">上次学习到：{{=it[p].chapterName}}</p>{{ }else{ }}
+                <p class="none">开始学习此课程</p>{{ } }}
               </div>
               <div class="li pro-li">
                 <div class="clearfix cla">
@@ -50,7 +50,7 @@
               <div class="li cpl-fool">
                 <div onclick="openActivate('{{=it[p].courseName}}','{{=it[p].teacherName}}','{{=it[p].teacherHonor}}','{{=it[p].buyTime}}','{{=it[p].effectiveDay}}','{{=it[p].teacherImage}}','{{=it[p].isU}}','{{=it[p].courseId}}','{{=it[p].courseBkImage}}',this)" class="btn btn-o"><span>马上激活</span>
                   <div class="none data">{{=JSON.stringify(it[p])}}</div><i class="icon-lock-open"></i>
-                </div>{{ if(!isEmpty(it[p].is_show)) { }}
+                </div>{{ if(isEmpty(it[p].is_show)) { }}
                 {{ if(it[p].isU==true){ }}
                 <div tapmode onclick="renew()" class="btn btn-o"><span>申请重听</span><i class="icon-redo"></i></div>{{ } else{ }}
                 <div tapmode onclick="api.toast({msg:'只有U+课程可以免费申请重听！',location:'middle'})" class="btn btn-o">申请重听</div>{{ } }}

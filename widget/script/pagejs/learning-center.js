@@ -111,6 +111,43 @@ function get_study() {//顶部学习
                       }
                   }
               }
+        //    var newLastProgress = {
+								// 	RecentCourse : []
+								// };
+
+        //    for(var i=0;i<learningcourse.length;i++){
+								// 	for(var j=0;j<ret.data.length;j++){
+								// 		if(learningcourse[i].courseId == ret.data[j].courseId){
+
+								// 			learningcourse[i].courseProgress = ret.data[j].courseProgress;
+					   //          learningcourse[i].createDate = ret.data[j].createDate;
+
+					   //          learningcourse[i].chapterId = ret.data[j].chapterId;
+					   //          learningcourse[i].chapterName = ret.data[j].chapterName;
+					   //          learningcourse[i].progress = ret.data[j].progress;
+					   //          learningcourse[i].taskId = ret.data[j].taskId;
+					   //          learningcourse[i].taskName = ret.data[j].taskName;
+					   //          newLastProgress.RecentCourse.push(learningcourse[i])
+								// 		}
+								// 	}
+								// }
+					   //    var filterLastProgress = newLastProgress.RecentCourse;
+					   //    var i = 0,
+					   //        len = filterLastProgress.length,
+					   //        j, d;
+					   //    for (i = 0; i < len; i++) {
+					   //        for (j = 0; j < len; j++) {
+					   //            if (parseInt(filterLastProgress[i].createDate) > parseInt(filterLastProgress[j].createDate)) {
+					   //                d = filterLastProgress[j];
+					   //                filterLastProgress[j] = filterLastProgress[i];
+					   //                filterLastProgress[i] = d;
+					   //            }
+					   //        }
+					   //    }
+					   //    if(filterLastProgress.length>3){
+					   //    	var filterLastProgress = filterLastProgress.slice(0,3)
+					   //    }
+
               var ret={
                 data : {
                   total : learningcourseData.data.total,
