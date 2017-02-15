@@ -198,7 +198,11 @@ function play_video() {
             }
             if(newProgress){
                 last_progress = DB.getTaskProgressSync(task_info.taskId).progress;
+                if(last_progress == videoTimes){
+                    last_progress = 0;
+                }
             }
+
             //alert(UserId+'====='+(isEmpty(CCconfig[UserId]) ? 0 : 1));
             //用户学习进度
             var param = {
@@ -246,7 +250,7 @@ function play_video() {
             }
 
             demo.open(param, function(ret, err) {
-                $api.rmStorage('saveTaskProgress');
+                //$api.rmStorage('saveTaskProgress');
                  newProgress = false;
                 if(ret.status=='filedel'){
                     if(!isEmpty($api.getStorage('cache'+videoid))){
@@ -677,7 +681,7 @@ function play_video() {
                        
 
                     }, 1000 * 60 * 2)
- 
+                   
                     is_check=false;
                     if(last_progress>0){
                         var jumptime;
@@ -691,6 +695,7 @@ function play_video() {
                         }, function() {
                         });
                     }
+                     
                 } else if(ret.btnType == '-1' || ret.btnType== -1 || ret.btnType=='play') {
                     //暂停视频
                     var ctime=ret.ctime;
@@ -883,7 +888,6 @@ function saveTaskProgress(now_progress, total, state) {
         name: 'root',
         script: jsfun
     });
-
     //离线状态下将进度保存到本地数据库不保存到服务器
     if (api.connectionType == 'none' || api.connectionType == 'unknown') {
         return false;
