@@ -886,110 +886,112 @@ function jump_task(taskprogress,courseId ,taskid){
 /*
 * 苹果内购处理
 * */
-function buys(id,goods_price){
-   var  goods_id='ipad_'+id;
-    var iap = api.require('iap');
-    api.showProgress({
-        style: 'default',
-        title: '处理中',
-        modal: true
-    });
-    iap.getProducts({
-        productIds:[goods_id]
-    },function(res, err){
-        if (res) {
-            if(res.products){
-                iap.purchase({
-                    productId:goods_id        //有效商品id
-                }, function(ret, err){
-                    setTimeout(function(){
-                        api.hideProgress();
-                    },1500);
-                    if(ret){
-                        var state = ret.state;
-                        var msg='';
-                        switch (state)
-                        {
-                            case 0:
-                            {
-                                //msg= '交易已加入队列';
-                            }
-                                break;
-                            case 1:
-                            {
-                                var param={};
-                                param.userId=getstor('memberId');
-                                param.token=$api.getStorage('token');
-                                param.courseId=id;
-                                param.paidAmount=goods_price;
-                                ajaxRequest('api/v2.1/mobile/order', 'post', param, function (ret, err) {
-                                    api.hideProgress();
-                                    if (err) {
-                                        api.toast({
-                                            msg: err.msg,
-                                            location: 'middle'
-                                        });
-                                        return false;
-                                    }
-                                    if (ret && ret.isSuccess == true) {
-                                        api.sendEvent({
-                                            name: 'fresh_course'
-                                        });
-                                        api.closeFrame({
-                                            name: 'course-buy'
-                                        });
-                                    } else {
-                                        api.alert({
-                                            msg: '订单提交接口异常'
-                                        });
-                                    }
+function buys(id, goods_price) {
+        var goods_id = 'iphone_' + id;
+        var iap = api.require('iap');
+        api.showProgress({
+                style: 'default',
+                title: '处理中',
+                modal: true
+        });
+        iap.getProducts({
+                productIds: [goods_id]
+        }, function(res, err) {
+                if (res) {
+                        if (res.products) {
+                                iap.purchase({
+                                        productId: goods_id //有效商品id
+                                }, function(ret, err) {
+                                        setTimeout(function() {
+                                                api.hideProgress();
+                                        }, 1500);
+                                        if (ret) {
+                                                var state = ret.state;
+                                                var msg = '';
+                                                switch (state) {
+                                                        case 0:
+                                                                {
+                                                                        //msg= '交易已加入队列';
+                                                                }
+                                                                break;
+                                                        case 1:
+                                                                {
+                                                                        var param = {};
+                                                                        param.userId = getstor('memberId');
+                                                                        param.token = $api.getStorage('token');
+                                                                        param.courseId = id;
+                                                                        param.paidAmount = goods_price;
+                                                                        ajaxRequest('api/v2.1/mobile/order', 'post', param, function(ret, err) {
+                                                                                api.hideProgress();
+                                                                                if (err) {
+                                                                                        api.toast({
+                                                                                                msg: err.msg,
+                                                                                                location: 'middle'
+                                                                                        });
+                                                                                        return false;
+                                                                                }
+                                                                                if (ret && ret.isSuccess == true) {
+                                                                                        api.sendEvent({
+                                                                                                name: 'flush_noactive'
+                                                                                        });
+                                                                                        api.setStatusBarStyle({
+                                                                                                style: 'dark'
+                                                                                        });
+                                                                                        api.closeWin({
+                                                                                                name: 'course-buy'
+                                                                                        });
+                                                                                } else {
+                                                                                        api.alert({
+                                                                                                msg: '订单提交接口异常'
+                                                                                        });
+                                                                                }
+                                                                        });
+                                                                }
+                                                                break;
+                                                        case 2:
+                                                                {
+                                                                        //msg='交易失败';
+                                                                }
+                                                                break;
+                                                        case 3:
+                                                                {
+                                                                        msg = '交易恢复';
+                                                                }
+                                                                break;
+                                                        case 4:
+                                                                {
+                                                                        msg = '交易等待被确认';
+                                                                        //交易等待被确认，待确认后交易状态会变更为其它状态
+                                                                }
+                                                                break;
+                                                        default:
+                                                                break;
+                                                }
+                                                if (msg != '') {
+                                                        api.alert({
+                                                                msg: msg
+                                                        });
+                                                }
+                                        } else {
+                                                api.alert({ msg: err.msg });
+                                        }
                                 });
-                            }
-                                break;
-                            case 2:
-                            {
-                               //msg='交易失败';
-                            }
-                                break;
-                            case 3:
-                            {
-                               msg='交易恢复';
-                            }
-                                break;
-                            case 4:
-                            {
-                                msg='交易等待被确认';
-                                //交易等待被确认，待确认后交易状态会变更为其它状态
-                            }
-                                break;
-                            default:
-                                break;
+                                return false;
                         }
-                        if(msg!=''){
-                            api.alert({
-                                msg:msg
-                            });
+                        if (res.invalidProductIds) {
+                                api.hideProgress();
+                                api.alert({
+                                        msg: '无效的商品'
+                                });
+                                return false;
                         }
-                    }else{
-                        api.alert({msg:err.msg});
-                    }
-                });
-                return false;
-            }
-            if (res.invalidProductIds) {
-                api.hideProgress();
-                api.alert({
-                    msg:'无效的商品'
-                });
-                return false;
-            }
-        } else {
-            api.hideProgress();
-            api.alert({
-                msg:err.msg
-            });
-        }
-    });
+                } else {
+                        api.hideProgress();
+                        api.alert({
+                                msg: err.msg
+                        });
+                }
+        });
 }
 function getCCconfig(callback,is_force){
     var CCconfig=isEmpty($api.getStorage('CCconfig')) ? false : $api.getStorage('CCconfig');
