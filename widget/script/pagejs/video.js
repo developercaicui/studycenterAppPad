@@ -197,12 +197,11 @@ function play_video() {
                 last_progress = DB.getTaskProgressSync(task_info.taskId).progress;
             }
             if(newProgress){
-                last_progress = DB.getTaskProgressSync(task_info.taskId).progress;
-                if(last_progress == videoTimes){
-                    last_progress = 0;
-                }
+                last_progress = DB.getTaskProgressSync(task_info.taskId).progress;            
             }
-
+            if(last_progress == videoTimes){
+                last_progress = 0;
+            }
             //alert(UserId+'====='+(isEmpty(CCconfig[UserId]) ? 0 : 1));
             //用户学习进度
             var param = {
