@@ -428,6 +428,7 @@ function ajaxRequest(url, method, params, callBack) {
 		headers: headers,
 		data: data
 	}, function (ret, err) {
+		
 		if (api.connectionType == 'none' || api.connectionType == 'unknown') {
 			is_ok = true;
 		}
