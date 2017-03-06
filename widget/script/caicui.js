@@ -532,7 +532,7 @@ function get_dt(page){
 function progressBar() {
     $('.progress-bar').each(function () {
         var _t = $(this);
-        var _num = Math.round(parseFloat(_t.attr('min'))/parseFloat(_t.attr('max')) * 100);
+        var _num = parseInt(_t.attr('min')/parseInt(_t.attr('max')) * 100);
         _num = isEmpty(_num) ? 0 : _num;
         if(_num > 90){
             _num = 100

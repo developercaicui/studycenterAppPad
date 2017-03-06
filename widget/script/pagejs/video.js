@@ -157,10 +157,25 @@ apiready = function() {
     api.addEventListener({
         name : 'close_video_demo'
     }, function(ret, err) {
-        demo.close();
+        if (api.systemType == 'android') {
+            demo.close();
+        } else {
+            demo.close();
+        }
     });
     //播放视频
     play_video();
+
+    api.addEventListener({
+        name: 'lbbpause'
+    }, function(ret) {
+        demo.stop();
+    });
+    api.addEventListener({
+        name: 'lbbresume'
+    }, function(ret) {
+        demo.start({ type: 1 });
+    });
 };
 var is_check=false;
 function check_net(videoid){

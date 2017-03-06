@@ -274,10 +274,12 @@ var common_url, static_url;
 if (debug) {
 	//测试地址
 	common_url = 'http://demo.caicui.com';
+	// common_url = 'https://demoapi.caicui.com';
 	static_url = 'http://demo.caicui.com';
 } else {
 	//正式地址
 	common_url = 'http://api.caicui.com';
+	// common_url = 'https://apis.caicui.com';
 	static_url = 'http://static.caicui.com';
 }
 var default_img = static_url + '/upload/201501/titletit.png';
@@ -1594,6 +1596,34 @@ function is_loadC(chatac) {
 function my_to_down() {
     var data = $api.getStorage('my_to_down');
 
+    //已完成
+    if(data.type == 4 || data.type == '4'){
+        return false;
+    }
+    //4G网络是否下载
+   
+    if((api.connectionType == '4g' || api.connectionType == '4G') && (data.type == 2 || data.type == '2' || data.type == 3 || data.type == '3') && api.connectionType != 'wifi'){
+        api.confirm({
+            title: '友情提示',
+            msg: '当前处于4G网络，会消耗您的大量流量，您确定要下载吗？',
+            buttons: ['确定', '取消']
+        }, function(ret, err) {
+            if (2 == ret.buttonIndex) {//用户取消
+                return false;
+            }
+            if (1 == ret.buttonIndex) {//确定
+                 mydown(data);
+                return false;
+            }
+        });
+         return false;
+    }
+    
+    if((api.connectionType == '4g' || api.connectionType == '4G') && (data.type == 1 || data.type == '1') && api.connectionType != 'wifi'){
+        mydown(data);
+        return false;
+    }
+    
     if (api.connectionType == 'wifi') {//为wifi可以下载
 
         mydown(data);

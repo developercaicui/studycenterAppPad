@@ -178,7 +178,7 @@
           if (!isEmpty(res1) && !isEmpty(res2)) {
               //- $('#progressVal').html(parseInt(m2 / n2 * 100));
               if(m2 && n2){
-                $('.val').html(Math.round(m2 / n2 * 100));
+                $('.val').html(parseInt(m2 / n2 * 100));
               }else if(progress){
                 $('#progressVal').html(1);
               }

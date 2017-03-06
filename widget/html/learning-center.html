@@ -77,7 +77,7 @@
               {{ if(!isEmpty(data[p].showProgress) && !isEmpty(data[p].taskTotal)) { }}
               <div class="circle">
                 <div class="circle-progress">
-                  <div class="val">{{=parseInt(Math.round((data[p].showProgress/data[p].taskTotal).toFixed(4)*100))>90 ?  100 :parseInt(Math.round((data[p].showProgress/data[p].taskTotal).toFixed(4)*100)) }}</div>
+                  <div class="val">{{=parseInt((data[p].showProgress/data[p].taskTotal).toFixed(4)*100)>90 ?  100 :parseInt((data[p].showProgress/data[p].taskTotal).toFixed(4)*100) }}</div>
                 </div>
                 <div class="num"><span>{{=data[p].showProgress}}／</span><b>{{=data[p].taskTotal}}</b></div>
               </div>{{ }else{ }}
