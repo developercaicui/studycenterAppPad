@@ -215,6 +215,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   width: 7rem;
+  padding-top: 0.05rem;
 }
 .chapter-task li .v-name span:nth-child(1) {
   position: absolute;
