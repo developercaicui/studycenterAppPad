@@ -92,6 +92,7 @@ function login() {
     });
     set_token(function (res, error) {
         if (error) {
+            api.hideProgress();
             api.toast({
                 msg: error.msg,
                 location: 'middle'
@@ -142,6 +143,7 @@ function login() {
                 }
             });
         } else {
+            api.hideProgress();
             var err = '';
             if (!isEmpty(err_conf_007[res.msg])) {
                 err = err_conf_007[res.msg];
@@ -559,8 +561,8 @@ function to_ucenter() {
     getCCconfig(function () {
     }, true);
     center_num();
-
-     saveTasksProgress.init();
+    set_index(0);
+    saveTasksProgress.init();
 }
 
 function to_login() {//去登陆

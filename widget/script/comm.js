@@ -902,7 +902,7 @@ function video_cache(method, title, ccid, UserId, apiKey, callback) {
 
 function write_file(filename, data, callback) {
 	api.writeFile({
-		path : 'fs://' + filename,
+		path : 'box://' + filename,
 		data : data
 	}, function(ret, err) {
 		callback(ret, err);
@@ -911,7 +911,7 @@ function write_file(filename, data, callback) {
 
 function read_file(filename, callback) {
 	api.readFile({
-		path : 'fs://' + filename
+		path : 'box://' + filename
 	}, function(ret, err) {
 		callback(ret, err);
 	});
