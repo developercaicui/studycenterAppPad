@@ -1,5 +1,5 @@
 var is_debug = false;
-function CourseDetail(co, ch, su, ca, cn,chapterName,subjectName,categoryName) {
+function CourseDetail(co, ch, su, ca, cn,chapterName,subjectName,categoryName,obj) {
 	var course_detail = {};
 	course_detail.chapterId = ch;
 	course_detail.courseId = co;
@@ -10,6 +10,9 @@ function CourseDetail(co, ch, su, ca, cn,chapterName,subjectName,categoryName) {
     course_detail.subjectName = subjectName;
     course_detail.categoryName = categoryName;
     $api.setStorage('Course_info', course_detail);
+    course_detail.examTime = $(obj).find(".exam_time").text();
+    course_detail.courseDue = $(obj).find(".course_due").text();
+    
 	//var detail = {};
 	//detail.course_id = co;
 	////课程id
@@ -24,6 +27,26 @@ function CourseDetail(co, ch, su, ca, cn,chapterName,subjectName,categoryName) {
         pageParam:course_detail,
 		reload : true
 	});
+}
+function openApp(url) {
+		if(isEmpty(url)){
+			return false;
+		}
+		if (api.systemType == 'android') {
+            api.openApp({
+	            androidPkg : 'android.intent.action.VIEW',
+	            mimeType : 'text/html',
+	            uri : url
+	        }, function(ret, err) {
+	            
+	        });
+        } else if(api.systemType == 'ios') {
+            api.openApp({
+	            iosUrl :url 
+	        }, function(ret, err) {
+	            
+	        });
+        }       
 }
 
 function get_study() {//顶部学习
@@ -48,11 +71,67 @@ function get_study() {//顶部学习
 				"chapterId" : "ff8080814e48c660014e4c5c22500041",
 				"chapterName" : "Human resource practices",
 				"taskprogress" : 19
+			},
+			{
+				"isU" : true,
+				"categoryId" : "ff8080814e44227f014e4797ca600073",
+				"categoryName" : "CIMA 阶段U+",
+				"subjectID" : "61160404-1edf-42c9-8b9d-63ee08b40d37",
+				"subjectName" : "F1 business...",
+				"courseId" : "ff8080814e44227f014e479bb5a50074",
+				"courseName" : "CIMA Enterprise Operations（E1）",
+				"taskTotal" : 20,
+				"courseBkImage" : "/upload/201507/924f877d5ca942428216a8ddee8b04b9.jpg",
+				"teacherName" : "Maggie",
+				"teacherImage" : "/upload/201507/26ec729997fc4aee8438a196577748d9.jpg",
+				"teacherHonor" : "",
+				"lastmodifyTime" : 34234,
+				"expirationTime" : '',
+				"chapterId" : "ff8080814e48c660014e4c5c22500041",
+				"chapterName" : "Human resource practices",
+				"taskprogress" : 19
+			},{
+				"isU" : true,
+				"categoryId" : "ff8080814e44227f014e4797ca600073",
+				"categoryName" : "CIMA 阶段U+",
+				"subjectID" : "61160404-1edf-42c9-8b9d-63ee08b40d37",
+				"subjectName" : "F1 business...",
+				"courseId" : "ff8080814e44227f014e479bb5a50074",
+				"courseName" : "CIMA Enterprise Operations（E1）",
+				"taskTotal" : 20,
+				"courseBkImage" : "/upload/201507/924f877d5ca942428216a8ddee8b04b9.jpg",
+				"teacherName" : "Maggie",
+				"teacherImage" : "/upload/201507/26ec729997fc4aee8438a196577748d9.jpg",
+				"teacherHonor" : "",
+				"lastmodifyTime" : 34234,
+				"expirationTime" : '',
+				"chapterId" : "ff8080814e48c660014e4c5c22500041",
+				"chapterName" : "Human resource practices",
+				"taskprogress" : 19
+			},{
+				"isU" : true,
+				"categoryId" : "ff8080814e44227f014e4797ca600073",
+				"categoryName" : "CIMA 阶段U+",
+				"subjectID" : "61160404-1edf-42c9-8b9d-63ee08b40d37",
+				"subjectName" : "F1 business...",
+				"courseId" : "ff8080814e44227f014e479bb5a50074",
+				"courseName" : "CIMA Enterprise Operations（E1）",
+				"taskTotal" : 20,
+				"courseBkImage" : "/upload/201507/924f877d5ca942428216a8ddee8b04b9.jpg",
+				"teacherName" : "Maggie",
+				"teacherImage" : "/upload/201507/26ec729997fc4aee8438a196577748d9.jpg",
+				"teacherHonor" : "",
+				"lastmodifyTime" : 34234,
+				"expirationTime" : '',
+				"chapterId" : "ff8080814e48c660014e4c5c22500041",
+				"chapterName" : "Human resource practices",
+				"taskprogress" : 19
 			}]
 		};
 		var tpl = $('#tpl_course').html();
 		var content = doT.template(tpl);
 		$('#course_content').html(content(data));
+		progressBar();
 		return false;
 	}
 	ajaxRequest('api/v2.1/learning/learningcourse', 'get', {// 003.2 在学的课程列表（new）
@@ -74,7 +153,7 @@ function get_study() {//顶部学习
 					for(var i=0;i<learningcourse.length;i++){
 						courseArr.push(learningcourse[i].courseId);
 					}
-        	ajaxRequest({ 'origin': 'http://action.caicui.com/', 'pathname': 'api/userAction/course/getCourseProgress/v1.0/' }, 'get', {'token':getstor('token'),'memberId':getstor('memberId'),'courseId':courseArr.toString()}, function(ret, err) {
+        	ajaxRequest({ 'origin': 'http://action.caicui.com/', 'pathname': 'api/userAction/course/getCourseProgress/v1.0/' }, 'get', {'token':getstor('token'),'memberId':getstor('memberId'),'courseId':courseArr.toString()}, function(result, err) {
         			if (err) {
         					api.toast({
         							msg: err.msg,
@@ -82,85 +161,88 @@ function get_study() {//顶部学习
         					});
         					return false;
         			}
-        			for(var i=0;i<learningcourse.length;i++){
-        				for(var j=0;j<ret.data.length;j++){
-        					if(learningcourse[i].courseId == ret.data[j].courseId){
-        						learningcourse[i].showProgress = ret.data[j].courseProgress;
-                    learningcourse[i].createDate = ret.data[j].createDate;
+        			ajaxRequest('api/v2.1/study/getExamDate', 'get', {// 003.2 在学的课程列表（new）
+						memberId : getstor('memberId')
+					}, function(res, error) {
+						if (error) {
+	        					api.toast({
+	        							msg: err.msg,
+	        							location: 'middle'
+	        					});
+	        					return false;
+	        			}
+	        			var examDateCurr={};
+	        			if(res.data.length<1){
+	        				examDateCurr.examinationDate = "";
+	        				examDateCurr.categorySign = "";
+	        			}else{
+	        				examDateCurr.examinationDate = res.data[0].examinationDate;
+	        				examDateCurr.categorySign = res.data[0].categorySign;
+	        			}
+	        			
+	        			$api.setStorage('examDateCurr', examDateCurr);
+	        			api.sendEvent({
+		                    name: "examDateCurr"
+		                 });
+	        			var newLastProgress = {
+		                  RecentCourse : []
+		                };
+	        			for(var i=0;i<learningcourse.length;i++){
+	        				for(var j=0;j<result.data.length;j++){
+	        					if(learningcourse[i].courseId == result.data[j].courseId){
+	        						learningcourse[i].showProgress = result.data[j].courseProgress;
+	                    learningcourse[i].createDate = result.data[j].createDate;
 
-                    learningcourse[i].chapterId = ret.data[j].chapterId;
-                    learningcourse[i].chapterName = ret.data[j].chapterName;
-                    learningcourse[i].progress = ret.data[j].progress;
-                    learningcourse[i].taskId = ret.data[j].taskId;
-                    learningcourse[i].taskName = ret.data[j].taskName;
+	                    learningcourse[i].chapterId = result.data[j].chapterId;
+	                    learningcourse[i].chapterName = result.data[j].chapterName;
+	                    learningcourse[i].progress = result.data[j].progress;
+	                    learningcourse[i].taskId = result.data[j].taskId;
+	                    learningcourse[i].taskName = result.data[j].taskName;
+	                    for(var k=0;k<res.data.length;k++){
+	                    	if(learningcourse[i].subjectID == res.data[k].categoryId){
+		        				learningcourse[i].examinationDate = res.data[k].examinationDate
+		        			}
+	                    }
+	                    
+	                    newLastProgress.RecentCourse.push(learningcourse[i])
+	        					}
 
-        					}
-        				}
-        			}
+	        				}
+	        			}
+	              
+	              // var filterLastProgress = learningcourse;
+		              var filterLastProgress = newLastProgress.RecentCourse;
+		              var i = 0,
+		                  len = filterLastProgress.length,
+		                  j, d;
+		              for (; i < len; i++) {
+		                  for (j = 0; j < len; j++) {
+		                  
+		                      if (parseInt(filterLastProgress[i].createDate) > parseInt(filterLastProgress[j].createDate)) {
+		                          d = filterLastProgress[j];
+		                          filterLastProgress[j] = filterLastProgress[i];
+		                          filterLastProgress[i] = d;
+		                      }
+		                  }
+		              }
+	        			var ret={
+			                data : {
+			                  total : learningcourseData.data.total,
+			                  courselist : filterLastProgress.slice(0,4)
+			                }
+			              }
+
+						var tpl = $('#tpl_course').html();
+						var content = doT.template(tpl);
+						//ret.data['courselist']=bufferCourese(ret.data.courselist);
+						$('#course_content').html(content(ret.data));
+						saveExpire(ret.data.courselist);
+						api.parseTapmode();
+						circleProgress();
+					})
+        			
               
-              var filterLastProgress = learningcourse;
-              var i = 0,
-                  len = filterLastProgress.length,
-                  j, d;
-              for (; i < len; i++) {
-                  for (j = 0; j < len; j++) {
-                      if (parseInt(filterLastProgress[i].createDate) > parseInt(filterLastProgress[j].createDate)) {
-                          d = filterLastProgress[j];
-                          filterLastProgress[j] = filterLastProgress[i];
-                          filterLastProgress[i] = d;
-                      }
-                  }
-              }
-        //    var newLastProgress = {
-								// 	RecentCourse : []
-								// };
-
-        //    for(var i=0;i<learningcourse.length;i++){
-								// 	for(var j=0;j<ret.data.length;j++){
-								// 		if(learningcourse[i].courseId == ret.data[j].courseId){
-
-								// 			learningcourse[i].courseProgress = ret.data[j].courseProgress;
-					   //          learningcourse[i].createDate = ret.data[j].createDate;
-
-					   //          learningcourse[i].chapterId = ret.data[j].chapterId;
-					   //          learningcourse[i].chapterName = ret.data[j].chapterName;
-					   //          learningcourse[i].progress = ret.data[j].progress;
-					   //          learningcourse[i].taskId = ret.data[j].taskId;
-					   //          learningcourse[i].taskName = ret.data[j].taskName;
-					   //          newLastProgress.RecentCourse.push(learningcourse[i])
-								// 		}
-								// 	}
-								// }
-					   //    var filterLastProgress = newLastProgress.RecentCourse;
-					   //    var i = 0,
-					   //        len = filterLastProgress.length,
-					   //        j, d;
-					   //    for (i = 0; i < len; i++) {
-					   //        for (j = 0; j < len; j++) {
-					   //            if (parseInt(filterLastProgress[i].createDate) > parseInt(filterLastProgress[j].createDate)) {
-					   //                d = filterLastProgress[j];
-					   //                filterLastProgress[j] = filterLastProgress[i];
-					   //                filterLastProgress[i] = d;
-					   //            }
-					   //        }
-					   //    }
-					   //    if(filterLastProgress.length>3){
-					   //    	var filterLastProgress = filterLastProgress.slice(0,3)
-					   //    }
-
-              var ret={
-                data : {
-                  total : learningcourseData.data.total,
-                  courselist : filterLastProgress
-                }
-              }
-			var tpl = $('#tpl_course').html();
-			var content = doT.template(tpl);
-			//ret.data['courselist']=bufferCourese(ret.data.courselist);
-			$('#course_content').html(content(ret.data));
-			saveExpire(ret.data.courselist);
-			api.parseTapmode();
-			circleProgress();
+              
 			});
 		} else {
 			/*api.toast({
@@ -171,7 +253,40 @@ function get_study() {//顶部学习
 		}
 	});
 }
+//财萃活动
+function get_activity(){
+    if(is_debug){
+	    var data = {"data":[{"content":"<div style=\"background-position:center top;background-image:url(/upload/201703/a5894537d133450abec29197165634ca.jpg);background-repeat:no-repeat;background-color:#b4cc8e;\">\r\n\t<div class=\"exam-box\">\r\n\t\t<a href=\"http://www.caicui.com/static/Special/cfa-frm2017/\" target=\"_blank\"><img src=\"/upload/201703/6562eb20213e43e88c203a35d176ad07.jpg\" draggable=\"false\" /> </a> <br />\r\n\t</div>\r\n</div>","id":"095a0a6702f911e7afc400163e022e38","valid":true,"title":"cfafrm双语卓越班2017","other":"","imagePath":"/upload/201703/6562eb20213e43e88c203a35d176ad07.jpg","whereTag":0,"url":"http://www.caicui.com/static/Special/cfa-frm2017/"},{"content":"<div style=\"background-position:center top;background-image:url(/upload/201703/52b2e81be52948a5918f365a389925a9.jpg);background-repeat:no-repeat;background-color:#b4cc8e;\">\r\n\t<div class=\"exam-box\">\r\n\t\t<a href=\"http://www.caicui.com/static/Special/2017kaixue/\" target=\"_blank\"><img src=\"/upload/201703/fae04a90a7f941e681b68946913ab9a8.jpg\" draggable=\"false\" /> </a> <br />\r\n\t</div>\r\n</div>","id":"fd855d34057a11e7afc400163e022e38","valid":true,"title":"2017年CFA&FRM开学季","other":"","imagePath":"/upload/201703/52b2e81be52948a5918f365a389925a9.jpg","whereTag":0,"url":"http://www.caicui.com/static/Special/2017kaixue/"},{"content":"<div style=\"background-position:center top;background-image:url(/upload/201702/0acd5771a31c416c9d15155586d09fc2.png);background-repeat:no-repeat;background-color:#b4cc8e;\">\r\n\t<div class=\"exam-box\">\r\n\t\t<a href=\"http://www.caicui.com/static/Special/cma201703/\" target=\"_blank\"><img src=\"/upload/201702/b0c8ef2517f9462daf98cfa62004f913.png\" draggable=\"false\" /> </a> <br />\r\n\t</div>\r\n</div>","id":"86bf67cffcbe11e6afc400163e022e38","valid":true,"title":"CMA新课-一步通关课程专题","other":"","imagePath":"/upload/201702/b0c8ef2517f9462daf98cfa62004f913.png","whereTag":0,"url":""},{"content":"<div style=\"background-position:center top;background-image:url(/upload/201606/602c9b38117a4f89bb9a7a41d22491e6.jpg);background-repeat:no-repeat;\">\r\n\t<div class=\"exam-box\">\r\n\t\t<a href=\"http://www.caicui.com/course/list/CMA.html\" target=\"_blank\"><img src=\"/upload/201606/b9f1b1e6c1e44feb97454651a867e613.jpg\" draggable=\"false\" /> </a> \r\n\t</div>\r\n</div>","id":"6c3c7f563d1e11e6b04700163e022e38","valid":true,"title":"CMA新网课","other":"","imagePath":"/upload/201606/602c9b38117a4f89bb9a7a41d22491e6.jpg","whereTag":0,"url":"http://www.caicui.com/course/list/CMA.html"}],"state":"success","msg":""}
+	    var tpl = $('#tpl_activity').html();
+	    data.data = data.data.slice(0,3)
+	    var content = doT.template(tpl);
+	    $('#activity').html(content(data));
+    }
+    var tpl = $('#tpl_activity').html();
+    var content = doT.template(tpl);
+    // $('#activity').html(content(data));
 
+    ajaxRequest('api/v2.1/slide/list', 'get', { 
+        token: $api.getStorage('token'),
+        tag : 0,
+        valid : true,
+        count : 4
+    }, function(ret, err) {
+        if (err) {
+            api.toast({
+                msg: err.msg,
+                location: 'middle'
+            });
+            return false;
+        }
+        if (ret.state == 'success') {
+           var data = ret;
+           data.data = data.data.slice(0,3)
+           $('#activity').html(content(data));
+        }
+        
+    });
+}
 function create_lines(x, y1, y2) {
 	//曲线图
 	var ctx = document.getElementById("canvasLine").getContext("2d");
@@ -558,13 +673,15 @@ if (is_debug) {
 	//在学的课程
 	get_study();
 	//个人学习与所有人平均用时对比
-	get_used_avg();
+	//get_used_avg();
 	//学习用时占比
-	get_used();
+	//get_used();
 	//能力评估
-	get_ability();
+	//get_ability();
 	//消灭错题
 	//get_error();
+	//财萃活动
+	get_activity();
 }
 var loaded = false;
 apiready = function() {
@@ -574,13 +691,15 @@ apiready = function() {
         //在学的课程
         get_study();
         //个人学习与所有人平均用时对比
-        get_used_avg();
+        //get_used_avg();
         //学习用时占比
-        get_used();
+        //get_used();
         //能力评估
-        get_ability();
+        //get_ability();
         //消灭错题
-        get_error();
+        //get_error();
+        //财萃活动
+		get_activity();
     });
 	//监听下拉刷新
 	api.setRefreshHeaderInfo({
@@ -595,22 +714,27 @@ apiready = function() {
 		//在学的课程
 		get_study();
 		//个人学习与所有人平均用时对比
-		get_used_avg();
+		//get_used_avg();
 		//学习用时占比
-		get_used();
+		//get_used();
 		//能力评估
-		get_ability();
+		//get_ability();
 		//消灭错题
-		get_error();
+		//get_error();
+		//财萃活动
+		get_activity();
 	});
 	//在学的课程
 	get_study();
 	//个人学习与所有人平均用时对比
-	get_used_avg();
+	//get_used_avg();
 	//学习用时占比
-	get_used();
+	//get_used();
 	//能力评估
-	get_ability();
+	//get_ability();
 	//消灭错题
-	get_error();
+	//get_error();
+	//财萃活动
+	get_activity();
+
 };

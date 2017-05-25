@@ -15,12 +15,68 @@ var last_progress = 0;
 var newProgress = false;
 var saveTime = null;
 var isLoading = false;
-
+var isFinish;
 function  closeVideo() {
     demo.close();
 }
 
 apiready = function() {
+    //应用进入后台事件
+    api.addEventListener({
+        name: 'pause'
+    }, function(ret, err) {
+           
+        //判断在线还是离线
+       last_progress = getVideoProgress(videoid);
+        last_progress = DB.getTaskProgressSync(task_info.taskId).progress;
+        if(api.systemType == "android"){
+            if($api.getStorage(videoid) != 'YES'){
+                demo.stop();
+                demo.close();
+                play_video();
+            }
+        }
+        
+        
+        //在线 保存进度-服务器/数据库
+
+        //离线 保存进度-数据库
+    });
+    //应用从后台回到前台事件
+    api.addEventListener({
+        name: 'resume'
+    }, function(ret, err) {
+        //判断在线还是离线
+//      if(api.connectionType == 'unknown' || api.connectionType == 'none'){
+//          demo.close();
+//      }else{
+//          demo.start();
+//      }
+        demo.start();
+        
+        //在线 保存进度-服务器/数据库
+
+        //离线 保存进度-数据库
+
+    });
+    //在线变为离线
+    api.addEventListener({
+        name: 'offline'
+    }, function(ret, err) {
+        //保存进度-数据库
+        if (api.connectionType == 'unknown' || api.connectionType == 'none') {
+            api.alert({
+                msg: '网络已断开，请检查网络状态'
+            });
+        }
+    });
+    //离线变为在线
+    api.addEventListener({
+        name: 'online'
+    }, function(ret, err) {
+        //保存进度-服务器/数据库
+
+    });
     api.setScreenOrientation({
         orientation: 'auto_landscape'
     });
@@ -48,7 +104,7 @@ apiready = function() {
     course_detail = api.pageParam.course_detail;//课程详情
     courseName = course_detail.courseName;//课程名字
     //study_progress = api.pageParam.study_progress;//当前的进度
-
+    isFinish = api.pageParam.isFinish;
     task_info = api.pageParam.task_info;//任务信息
     videoid = task_info.videoCcid;
     videoTimes = task_info.videoTime;
@@ -147,6 +203,7 @@ apiready = function() {
     api.addEventListener({
         name : 'keyback'
     }, function(ret, err) {
+        last_progress = getVideoProgress(videoid);
         last_progress = DB.getTaskProgressSync(task_info.taskId).progress;
             
         closeThisWin(last_progress);
@@ -186,6 +243,7 @@ function check_net(videoid) {
             api.alert({
                 msg: '网络已断开，请检查网络状态'
             });
+//          closeThisWin(last_progress)
         } else if (api.connectionType == '2g' || api.connectionType == '3g' || api.connectionType == '4g' || api.connectionType == '2G' || api.connectionType == '3G' || api.connectionType == '4G') {
             is_check = true;
             // api.alert({
@@ -227,7 +285,9 @@ function play_video() {
                 UserId :UserId,
                 isEncryption:isEmpty(CCconfig[UserId]) ? 0 : 1
             };
-            param.isFinish=!isEmpty($api.getStorage(param.videoId))&&$api.getStorage(param.videoId)=='YES' ? true : false;
+            param.isFinish = isFinish;
+            param.userId = getstor('memberId');
+            // param.isFinish=!isEmpty($api.getStorage(param.videoId))&&$api.getStorage(param.videoId)=='YES' ? true : false;
             var quilty;
             switch ($api.getStorage('quality')) {
                 /*case '普通':
@@ -266,7 +326,8 @@ function play_video() {
             demo.open(param, function(ret, err) {
 
                 //4G下是否播放视频
-                if ((isEmpty($api.getStorage(videoid)) || $api.getStorage(videoid) != 'YES')) {
+                if ((isEmpty($api.getStorage("status"+videoid)) || $api.getStorage("status"+videoid) != 'YES')) {
+//           if (!isFinish) {
                     if(api.connectionType == '4g' || api.connectionType == '4G' && (ret.btnType != 1 && ret.btnType !=2 && ret.btnType!=3&& ret.btnType != 4 && ret.btnType !=5 && ret.btnType!=6&& ret.btnType != 7 && ret.btnType !=8 && ret.btnType!=9 && ret.btnType!=-1 && ret.btnType!='-1' && ret.btnType!='play')){
                         demo.stop();
                         api.confirm({
@@ -282,8 +343,7 @@ function play_video() {
                             }
                         });
                     }
-                }
-                
+             }
                 //$api.rmStorage('saveTaskProgress');
                  newProgress = false;
                 if(ret.status=='filedel'){
@@ -319,7 +379,7 @@ function play_video() {
                     }
                     return false;
                 }
-                if (ret.btnType == 1) {
+                if (ret.btnType == 99) {
                     if (ret.ctime == 'nan') {
                         isLoading = true;
                         //视频未加载完毕,视频进度为0
@@ -335,6 +395,7 @@ function play_video() {
                     closeThisWin(tmp_progress);
 
                 } else if (ret.btnType == 2) {
+                    $api.setStorage("currentPlayVideoId",videoid);
                     //点击右上角按钮,保存进度,并打开横屏的章节页
 
                     demo.stop(function(res) {
@@ -673,25 +734,20 @@ function play_video() {
                             jumptime = last_progress;
                         }
                         if(api.systemType == 'android'){
-                            
-                           // demo.seekTo({ 
-                           //      totime: jumptime
-                           //  }, function(res) {
-                           //      var ctime = res.ctime;
-                           //      // alert(ctime);
-                           //      if (api.systemType == 'android') {
-                           //          var tmp_progress = parseInt(ctime / 1000);
-                           //      } else {
-                           //          var tmp_progress = parseInt(ctime);
-                           //      }
-                           //      var total = videoTimes;
-                           //      if (total * 0.9 <= tmp_progress) {
-                           //          var state = 'complate';
-                           //      } else {
-                           //           var state = 'init';
-                           //      }
-                           //      saveTaskProgress(tmp_progress, total, state);
-                           //  }); 
+                            demo.getStudyProgress({
+                                totime: jumptime
+                            }, function(res) {
+                                var ctime = res.cTime;
+                                var tmp_progress = parseInt(ctime / 1000);                          
+                                var total = videoTimes;
+                                if (total * 0.9 <= tmp_progress) {
+                                    var state = 'complate';
+                                } else {
+                                    var state = 'init';
+                                }
+                                saveTaskProgress(tmp_progress, total, state);
+                            });
+                    
                         }else{
                              demo.iosGetStudyProgress({
                                 totime: jumptime
@@ -713,8 +769,7 @@ function play_video() {
                             });
                         }
                        
-
-                    }, 1000 * 60 * 2)
+                    }, 1000 * 30);
                    
                     is_check=false;
                     if(last_progress>0){
@@ -808,38 +863,47 @@ function prevVideo() {
 
 //执行新任务
 function exeNewTask() {
-     newProgress = true;//重置视频播放进度
+    newProgress = true;//重置视频播放进度
     isLoading = false;
     //如果任务类型为视频，则直接播放
+    demo.close();
+    $api.setStorage("setchapterId",task_info_detail.chapterId);
     if (task_info.taskType == 'video') {
         videoid = task_info.videoCcid;
         videoTimes = task_info.videoTime;
+
         if (api.systemType == 'android') {
             demo.close();
         }
+
         play_video();
+
+    }else if(task_info.taskType == 'knowledgePointExercise'){
+        nextVideo()
     } else {
+        
         //要传递到下个页面的参数
         var page_param = {
-            courseId : courseId, //课程id
-            course_detail : course_detail, //课程详情
+            courseId: courseId, //课程id
+            course_detail: course_detail, //课程详情
             //study_progress : study_progress,
-            last_progress : 0,
-            task_info : task_info, //任务信息
-            type : 'task'
+            last_progress: 0,
+            task_info: task_info, //任务信息
+            type: 'task'
         };
+        
         api.openWin({
-            name : 'course-test',
-            url : 'course-test.html',
-            reload : true,
-            pageParam : page_param,
-            delay : 200
+            name: 'course-test',
+            url: 'course-test.html',
+            reload: true,
+            pageParam: page_param,
+            delay: 200
         });
         api.closeWin({
-            animation : {
-                type : 'flip',
-                subType : 'from_left',
-                duration : 500
+            animation: {
+                type: 'flip',
+                subType: 'from_left',
+                duration: 500
             }
         });
     }
@@ -849,6 +913,12 @@ function exeNewTask() {
 
 //关闭当前页面，返回课程页面
 function closeThisWin(playtime) {
+    api.sendEvent({
+        name: 'flush_catalog',
+        extra: {
+            chapterName: task_info_detail.chapterName
+        }
+    });
     //保存进度,关闭页面
     if(api.systemType == 'android'){
         api.setFullScreen({

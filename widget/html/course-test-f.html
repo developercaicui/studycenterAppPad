@@ -42,23 +42,19 @@
       <div class="cours-contenet swiper-slide">
         <input type="checkbox" class="select-tag">
         <div class="course-test-title">
-          <p>{{ if(!isEmpty(value.title)) { }}  {{=value.title.replace(/\n|\r|\t|<[^<]*>/g,"")}} {{ } }}</p>
+          <p>{{ if(!isEmpty(value.title)) { }} {{=value.title}}  {{ } }}</p>
         </div>{{ if(value.questionTypes=='radio'){ }}
         <!--单项选择题-->
         <div data-type="{{=value.questionTypes}}" data-num="{{=key}}" class="course-test-selector exam-yf">{{~JSON.parse(value.context):val:kk}}
-        {{ if(!isEmpty(val.title)) { }}
           <div data-select="{{=numToAbc(kk)}}" onclick="select_radio(this,'{{=key}}')" tapmode data-check="{{=val.isChecked}}" class="selector-detail clearfix"><span>{{=numToAbc(kk)}}</span>
-            <p>{{=val.title.replace(/<[^<]*>/g,"")}}</p>
+            <p>{{=val.title}}</p>
           </div>{{~}}
-        {{ } }}
         </div>{{ }else if(value.questionTypes=='checkbox'){ }}
         <!--多项选择题-->
         <div data-type="{{=value.questionTypes}}" data-num="{{=key}}" class="course-test-selector exam-yf">{{~JSON.parse(value.context):val:kk}}
-        {{ if(!isEmpty(val.title)) { }}
           <div data-select="{{=numToAbc(kk)}}" onclick="select_checkbox(this,'{{=key}}')" tapmode data-check="{{=val.isChecked}}" class="selector-detail clear-fix"><span>{{=numToAbc(kk)}}</span>
-            <p>{{=val.title.replace(/<[^<]*>/g,"")}}</p>
+            <p>{{=val.title}}</p>
           </div>{{~}}
-        {{ } }}
         </div>{{ }else if(value.questionTypes=='question'){ }}
         <!--问答题-->
         <div data-type="{{=value.questionTypes}}" data-num="{{=key}}" class="course-test-selector course_selector1 exam-yf">
@@ -129,7 +125,11 @@
           <div class="answer-analysis-cont">
             <h3 class="showResult"></h3>
             <div class="answer-text"><i class="icon-folder"></i>
+              {{ if(value.questionTypes=='blank') { }}
+              <div class="cont">{{=JSON.parse(value.context)[0].blank}}</div>
+              {{ }else{ }}
               <div class="cont">{{=value.answerResolution}}</div>
+              {{ } }}
             </div>
             <div class="user-data"></div>
           </div>

@@ -284,7 +284,7 @@
           }
       }
       function out() {//退出登录
-          ajaxRequest('api/v2.1/logout', 'post', {token: $api.getStorage('token')}, function (ret, err) {//007.010 会员退出
+          ajaxRequest('api/zbids/member/loginout/v1.0', 'get', {token: $api.getStorage('token')}, function (ret, err) {//007.010 会员退出
           });
           $api.rmStorage('token');
           $api.rmStorage('mine');

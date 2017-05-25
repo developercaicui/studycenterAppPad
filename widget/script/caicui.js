@@ -169,30 +169,50 @@ function look(obj) {
 }
 // 圆环进度条
 function circleProgress(){
-    $('.circle-progress,.down-progress,.audio-progress').each(function(){
-        $(this).children('svg').remove();
-        var _ts = $(this);
-        var dt = new Date();
-        var cirI = dt.getTime();
-        var cirVal = parseInt(_ts.find('.val').text());
-        var cirW;
-        if(parseInt(_ts.width()) > 0){
-            cirW = parseInt(_ts.width());
-        }else{
-            if(_ts.hasClass('down-progress')){
-                cirW = svgDown
-            }else if(_ts.hasClass('audio-progress')){
-                cirW = svgAudio
-            }
-        }
-        _ts.prepend('<svg width="'+cirW+'" height="'+cirW+'" viewbox="0 0 '+ cirW + ' ' + cirW + '"><circle cx="'+ cirW/2 +'" cy="'+ cirW/2 +'" r="'+cirW * 0.45+'"></circle><circle id="circle'+cirI+'" cx="'+ cirW/2 +'" cy="'+ cirW/2 +'" r="'+cirW * 0.45+'"></circle></svg>');
+    var cirDonW = $('#svgDown').width();
+        $('.circle-progress,.audio-progress').each(function() {
+                var _ts = $(this);
+                var dt = new Date();
+                var cirI = dt.getTime();
+                var cirVal = parseInt(_ts.find('.val').text());
+                var cirW;
+                if (parseInt(_ts.width()) > 0) {
+                        cirW = parseInt(_ts.width());
+                } else {
+                        if (_ts.hasClass('down-progress')) {
+                                cirW = svgDown
+                        } else if (_ts.hasClass('audio-progress')) {
+                                cirW = svgAudio
+                        }
+                }
 
-        if(_ts.hasClass('down-progress')){
+                _ts.find('svg').remove();
+                _ts.prepend('<svg width="' + cirW + '" height="' + cirW + '" viewbox="0 0 ' + cirW + ' ' + cirW + '"><circle cx="' + cirW / 2 + '" cy="' + cirW / 2 + '" r="' + cirW * 0.45 + '"></circle><circle  id="circle' + cirI + '" cx="' + cirW / 2 + '" cy="' + cirW / 2 + '" r="' + cirW * 0.45 + '"></circle></svg>');
+                //console.log("#circle" + cirI, cirW, cirVal);
+                circleTrans("#circle" + cirI, cirW, cirVal);
+        });
+        $('.down-progress').each(function() {
+                var _ts = $(this);
+                var dt = new Date();
+                var cirI = dt.getTime();
+                var cirO = _ts.hasClass('svg-existing');
+//              if (!cirO) {
+//                      _ts.addClass('svg-existing');
+//                      _ts.prepend('<svg  width="' + cirDonW + '" height="' + cirDonW + '" viewbox="0 0 ' + cirDonW + ' ' + cirDonW + '"><circle cx="' + cirDonW / 2 + '" cy="' + cirDonW / 2 + '" r="' + cirDonW * 0.45 + '"></circle><circle  id="circle' + cirI + '" cx="' + cirDonW / 2 + '" cy="' + cirDonW / 2 + '" r="' + cirDonW * 0.45 + '" ></circle></svg>');
+//              }
+                if (!cirO) {
+                    var rotate = 0;
+                    if(api.systemType == "android"){
+                        rotate = -90;
+                    }
+                    _ts.css("position","relative");
+                    //_ts.css("background-color","red");
+                    _ts.addClass('svg-existing');
+                    _ts.prepend('<svg style="position:absolute;right:0" width="' + cirDonW + '" height="' + cirDonW + '" viewbox="0 0 ' + cirDonW + ' ' + cirDonW + '"><circle  cx="' + cirDonW / 2 + '" cy="' + cirDonW / 2 + '" r="' + cirDonW * 0.45 + '"></circle></svg>');
+                    _ts.prepend('<svg style="position:absolute;right:0" width="' + cirDonW + '" height="' + cirDonW + '" viewbox="0 0 ' + cirDonW + ' ' + cirDonW + '"><circle style="stroke-dasharray:1000 0;stroke:rgba(0,0,0,0.3);" id="circle' + cirI + '" cx="' + cirDonW / 2 + '" cy="' + cirDonW / 2 + '" r="' + cirDonW * 0.45 + '" ></circle></svg>');
+                }
 
-        }else {
-            circleTrans("#circle"+cirI , cirW , cirVal);
-        }
-    });
+        });
 }
 
 function circleTrans(e,s,v){
@@ -354,6 +374,9 @@ function myFrame(e,s,b,obj,f){
     if(e=='set-info' || e=='course-chapter'){
         //param.courseId = 1231
         reload=true;
+        if(e=='course-chapter'){
+            mh = "auto";
+        }
     }
     var bgCor = '#f3f3f3';
     if(e == 'set-info' || e == 'pop-msg'){
@@ -559,10 +582,21 @@ function progressBar() {
 
 //图片浏览器打开
 function openImageBrower(arr, i) {
-    var str= arr.split(',');
-    var data=[];
-    for(var p in str){
-        data.push(static_url+str[p]);
+    var str = arr.split(','),
+        strArr = [];
+    for(var j=0;j<str.length;j++){
+        if(!isEmpty(str[j])){
+            strArr.push(str[j])
+        }
+    }
+
+    var data = [];
+    for (var p in strArr) {
+        if(strArr[p].substr(0,4)!="http"){
+            data.push(static_url + strArr[p]);
+        }else{
+            data.push(strArr[p]);
+        }
     }
     //图片浏览器打开
     var obj = api.require('imageBrowser');
@@ -683,8 +717,30 @@ function removeList(id) {
 }
 
 //课程折叠、显示章节
-function toggleChild(e){
-    $(e).parents('dl').parent().toggleClass('hide-child');
+function toggleChild(e) {
+        $(e).parents('dl').parent().toggleClass('hide-child');
+        $(e).parents('dl').parent().find(".fath").toggleClass('hide-child');
+}
+function toggleCapt(e) {
+        $(e).parents('dl').parent().toggleClass('hide-child');
+        $(".fath").removeClass("hide-child")
+
+}
+//章节折叠、显示任务
+function toggleTasks(e) {
+    
+    $(".list").removeClass("activeTask");
+    $(e).closest(".list").next(".fath").toggleClass('hide-child');
+    if($(e).closest(".list").next(".fath").hasClass("hide-child")){
+        $(e).closest(".list").addClass("activeTask");
+    }else{
+        $(e).closest(".list").removeClass("activeTask");
+    }
+    
+}
+//课程折叠
+function toggleCourse(e) {
+        $(e).toggleClass('hide-child');
 }
 
 
@@ -709,7 +765,7 @@ function allremove(obj) {
 
 function checkremove(e) {
     api.sendEvent({
-        name : 'opena',
+        name : 'openachapt',
         extra : {
             sethomepage : e
         }

@@ -2,6 +2,7 @@
 var clickCount = 1;
 var timePicker;
 var y, h;
+$("#header.header").css({"height":"2.34rem","border-bottom":"1px solid #bbb","background":"#f5f5f5"});
 function rember(obj) {
     $(obj).children('div').toggleClass('bgcl');
     if ($(obj).children('div').hasClass('bgcl')) {
@@ -92,7 +93,6 @@ function login() {
     });
     set_token(function (res, error) {
         if (error) {
-            api.hideProgress();
             api.toast({
                 msg: error.msg,
                 location: 'middle'
@@ -104,8 +104,9 @@ function login() {
             param.account = name;
             param.password = password;
             param.token = res.data.token;
-            ajaxRequest('api/v2.1/login', 'post', param, function (ret, err) {
+            ajaxRequest('api/zbids/member/login/v1.0', 'post', param, function (ret, err) {
                 api.hideProgress();
+
                 if (err) {
                     api.toast({
                         msg: err.msg,
@@ -132,18 +133,21 @@ function login() {
                         to_ucenter();
                     }
                 } else if (ret.state == 'error') {
-                    var msg = '';
-                    if (err_conf_007[ret.msg]) {
-                        msg = err_conf_007[ret.msg];
-                        api.toast({
-                            msg: msg,
-                            location: 'middle'
-                        });
-                    }
+                    api.toast({
+                        msg: ret.msg,
+                        location: 'middle'
+                    });  
+                    // var msg = '';
+                    // if (err_conf_007[ret.msg]) {
+                    //     msg = err_conf_007[ret.msg];
+                    //     api.toast({
+                    //         msg: msg,
+                    //         location: 'middle'
+                    //     });
+                    // }
                 }
             });
         } else {
-            api.hideProgress();
             var err = '';
             if (!isEmpty(err_conf_007[res.msg])) {
                 err = err_conf_007[res.msg];
@@ -466,6 +470,7 @@ function init(callback) {
                 callback(false);
             }
             if (ret && ret.state == 'success') {
+                $api.setStorage('memberMessage',ret);
                 callback(ret.data);
             } else {
                 callback(false);
@@ -479,7 +484,7 @@ var cache_init = false;
 //去个人中心
 function to_ucenter() {
 
-
+    set_index(0);
     var jsfun = "relogin('" + true + "');";
     api.execScript({
         name: 'root',
@@ -504,6 +509,7 @@ function to_ucenter() {
     window.localStorage.caicui_svgDown = svgDown = $('#svgDown').width();
     window.localStorage.caicui_svgAudio = svgAudio = $('#svgAudio').width();
     //alert(headLh +" - "+ parseInt($('#sHead').height() - 9)); //我也不知道为什么一个相同的元素在不同页面时尺寸不一样（只能暂时先减去差值）
+   
     $('#leftMenu').css('min-height', $('#leftMenu').height());
     api.openFrameGroup({
         name: 'homeFrameGroup',
@@ -516,7 +522,7 @@ function to_ucenter() {
             h: api.winHeight - headLh
         },
         index: 0,
-        preload: 5,
+        preload: 0,
         frames: [{
             name: 'learning-center', //学习中心
             url: 'learning-center.html'
@@ -544,6 +550,7 @@ function to_ucenter() {
                 duration: 500
             }
         });
+        
         //是否继续下载
         var memberId = getstor('memberId');
         var downed = isEmpty($api.getStorage(memberId + 'downed')) ? '' : $api.getStorage(memberId + 'downed');
@@ -561,10 +568,82 @@ function to_ucenter() {
     getCCconfig(function () {
     }, true);
     center_num();
-    set_index(0);
-    saveTasksProgress.init();
+    //上次登录时间
+    get_ranking();
+    api.addEventListener({
+          name: 'examDateCurr'
+      }, function () {
+          var examDateCurr = $api.getStorage('examDateCurr', examDateCurr);
+          if(examDateCurr.examinationDate == ""){
+            $(".examDateCurr").html("最近考试：<span>暂无考试</span>")
+          }else{
+            $(".examDateCurr").html("最近考试：<span>"+examDateCurr.categorySign+"&nbsp;&nbsp;&nbsp;"+formatDate(examDateCurr.examinationDate/1000,'Y')+'/'+formatDate(examDateCurr.examinationDate/1000,'M')+'/'+formatDate(examDateCurr.examinationDate/1000,'D')+"</span>")
+          }
+          
+      });
+    //用户昵称和头像
+    var nickName = get_loc_val('mine', 'nickName');
+    var avatar = static_url + get_loc_val('mine', 'avatar');
+    $('.nickName').html(nickName);
+    //联系方式
+      ajaxRequest('api/v2/member/get',"get", {"token":$api.getStorage('token')}, function (ret, error) {
+        if(error){
+            api.toast({
+                msg:error.msg,
+                location:'middle'
+            });
+            return false;
+        }
+        if(ret){
+          if(ret.data.mobile){
+              $(".nickMessage").text(ret.data.mobile)
+          }else{
+              $(".nickMessage").text(ret.data.email)
+          } 
+        }
+                       
+      })
+    
+     saveTasksProgress.init();
 }
+function get_ranking() {
+    var memberId = getstor('memberId');
+    //上次登录时间
+    // $(".ranking").html("登陆成功");
+    ajaxRequest('api/zbids/member/getLoginLog',"get", {"memberid":memberId,"pageSize":1,"pageNo":1}, function (ret, error) {
+        
+        if(ret && ret.state == "success"){
+            var loginTime = ret.data[0].loginTime/1000;
+            $(".ranking").html("上次登录时间：<span>"+stringData(loginTime)+"</span>");
+        }
 
+    })
+}
+function stringData($_data){
+    $_data = parseInt($_data);
+    var $_return_string = '1分钟前';
+    var $_timestamp=parseInt(new Date().getTime()/1000);
+    var $_reste = $_timestamp - $_data;
+    if($_reste<=0){
+        $_reste = 1;
+    }
+    // if($_reste<60){
+    //     $_return_string = $_reste+'秒前';
+    // }else 
+    // if($_reste>=60 && $_reste <3600){
+    if($_reste <3600){
+        $_return_string = Math.ceil($_reste/60)+'分钟前';
+    }else if($_reste>=3600 && $_reste <(3600*24)){
+        $_return_string = Math.ceil($_reste/3600)+'小时前';
+    }else if($_reste>=(3600*24) && $_reste <(3600*24*30)){
+        $_return_string = Math.ceil($_reste/(3600*24))+'天前';
+    }else if($_reste>=(3600*24*30) && $_reste <(3600*24*30*12)){
+        $_return_string = Math.ceil($_reste/(3600*24*30))+'月前';
+    }else{
+        $_return_string = Math.ceil($_reste/3600)+'年前';
+    }
+    return $_return_string;
+}
 function to_login() {//去登陆
     $('input').blur();
     api.closeFrameGroup({
@@ -657,7 +736,7 @@ function DoLogin(account, password) {
             param.account = account;
             param.password = password;
             param.token = res.data.token;
-            myajaxRequest('api/v2.1/login', 'post', param, function (ret1, err1) {//007.005 会员登录
+            myajaxRequest('api/zbids/member/login/v1.0', 'post', param, function (ret1, err1) {//007.005 会员登录
                 if (ret1 && ret1.state == 'success') {
                     $api.setStorage('account', account);
 
@@ -704,7 +783,7 @@ function relogin(ckeck) {
 var is_resume;
 
 apiready = function () {
-saveTasksProgress.init();
+    saveTasksProgress.init();
     api.setScreenOrientation({
         orientation: 'auto_landscape'
     });
@@ -718,24 +797,24 @@ saveTasksProgress.init();
         is_resume = true;
         var memberId = getstor('memberId');
         if (memberId && api.systemType == 'ios') {
-            var downed = isEmpty($api.getStorage(memberId + 'downed')) ? '' : $api.getStorage(memberId + 'downed');
-            if (downed) {
-                $api.setStorage(memberId + 'backendDowned', downed);
-                $api.rmStorage(memberId + 'downed');
-                var chapterIdA = downed['chapterIdA'];
-                var chapterIdB = downed['chapterIdB'];
-                var chapterIdC = downed['chapterIdC'];
-                if (cache_model == null) {
-                    cache_model = api.require('lbbVideo');
-                }
-                cache_model.downloadStop(function (ret, err) {
+            // var downed = isEmpty($api.getStorage(memberId + 'downed')) ? '' : $api.getStorage(memberId + 'downed');
+            // if (downed) {
+            //     $api.setStorage(memberId + 'backendDowned', downed);
+            //     $api.rmStorage(memberId + 'downed');
+            //     var chapterIdA = downed['chapterIdA'];
+            //     var chapterIdB = downed['chapterIdB'];
+            //     var chapterIdC = downed['chapterIdC'];
+            //     if (cache_model == null) {
+            //         cache_model = api.require('lbbVideo');
+            //     }
+            //     cache_model.downloadStop({"userId":getstor('memberId')},function (ret, err) {
 
-                    set_down({type: 1, chapterida: chapterIdA, chapteridb: chapterIdB, chapteridc: chapterIdC});
-                    api.sendEvent({
-                        name: 'flush_cache'
-                    });
-                });
-            }
+            //         set_down({type: 1, chapterida: chapterIdA, chapteridb: chapterIdB, chapteridc: chapterIdC});
+            //         api.sendEvent({
+            //             name: 'flush_cache'
+            //         });
+            //     });
+            // }
         }
     });
 
@@ -746,8 +825,15 @@ saveTasksProgress.init();
     if (api.systemType == 'android') {
         if (cache_model == null) {
             cache_model = api.require('lbbVideo');
-            cache_model.initDownload();
+            cache_model.initDownload({"userId":getstor('memberId')});
             cache_model.init();
+        }
+    }
+    if (api.systemType == 'ios') {
+        if (cache_model == null) {
+            cache_model = api.require('lbbVideo');
+            cache_model.downloadCourseTabel();
+            cache_model.initDownload({"userId":getstor('memberId')});
         }
     }
     api.addEventListener({
@@ -762,21 +848,21 @@ saveTasksProgress.init();
             });
         }
         if (api.systemType == 'ios') {
-            cachemodel = api.require('lbbVideo');
-            cachemodel.init();
+            // cachemodel = api.require('lbbVideo');
+            // cachemodel.init();
         }
         if (api.systemType == 'ios') {
-            cachemodel = api.require('lbbVideo');
-            cachemodel.init();
-            var memberId = getstor('memberId');
-            if (memberId && api.systemType == 'ios') {
-                var downed = isEmpty($api.getStorage(memberId + 'backendDowned')) ? '' : $api.getStorage(memberId + 'backendDowned');
-                if (downed) {
-                    $api.rmStorage(memberId + 'backendDowned');
-                    downed['type'] = 2;
-                    mydown(downed);
-                }
-            }
+            // cachemodel = api.require('lbbVideo');
+            // cachemodel.init();
+            // var memberId = getstor('memberId');
+            // if (memberId && api.systemType == 'ios') {
+            //     var downed = isEmpty($api.getStorage(memberId + 'backendDowned')) ? '' : $api.getStorage(memberId + 'backendDowned');
+            //     if (downed) {
+            //         $api.rmStorage(memberId + 'backendDowned');
+            //         downed['type'] = 2;
+            //         mydown(downed);
+            //     }
+            // }
         }
     });
     var memberId = getstor('memberId');
@@ -790,7 +876,7 @@ saveTasksProgress.init();
             if (cache_model == null) {
                 cache_model = api.require('lbbVideo');
             }
-            cache_model.downloadStop(function (ret, err) {
+            cache_model.downloadStop({"userId":getstor('memberId')},function (ret, err) {
 
                 set_down({type: '1', chapterida: chapterIdA, chapteridb: chapterIdB, chapteridc: chapterIdC});
                 api.sendEvent({
@@ -822,7 +908,7 @@ saveTasksProgress.init();
                 cache_model = api.require('lbbVideo');
             }
             if (api.connectionType == 'unknown' || api.connectionType == 'none') {
-                cache_model.downloadStop(function (ret, err) {
+                cache_model.downloadStop({"userId":getstor('memberId')},function (ret, err) {
 
                     set_down({
                         type: 'shut_network',
@@ -836,7 +922,7 @@ saveTasksProgress.init();
                 });
             } else if (api.connectionType == '2g' || api.connectionType == '3g' || api.connectionType == '4g' || api.connectionType == '2G' || api.connectionType == '3G' || api.connectionType == '4G') {
                 window.shut_network = false;
-                cache_model.downloadStop(function (ret, err) {
+                cache_model.downloadStop({"userId":getstor('memberId')},function (ret, err) {
 
                     set_down({
                         type: 'not_wifi',
@@ -873,7 +959,7 @@ saveTasksProgress.init();
                 if (cache_model == null) {
                     cache_model = api.require('lbbVideo');
                 }
-                cache_model.downloadStop(function (ret, err) {
+                cache_model.downloadStop({"userId":getstor('memberId')},function (ret, err) {
 
                     set_down({
                         type: 'not_wifi',
@@ -896,6 +982,7 @@ saveTasksProgress.init();
         $('.cache').children().eq(2).removeClass('none');
         checkremove(2);
     });
+    
     //修改资料
     api.addEventListener({
         name: 'modify'
@@ -910,6 +997,7 @@ saveTasksProgress.init();
         to_ucenter();
     }
     init(function (ret) {
+        
         if (ret) {//已经有登录状态
             $api.setStorage('mine', ret);
             if (isEmpty(ret.isAvatar)) {
@@ -992,7 +1080,7 @@ saveTasksProgress.init();
                         param.account = account;
                         param.password = password;
                         param.token = res.data.token;
-                        ajaxRequest('api/v2.1/login', 'post', param, function (ret, err) {//007.005 会员登录
+                        ajaxRequest('api/zbids/member/login/v1.0', 'post', param, function (ret, err) {//007.005 会员登录
                             if (ret.state == 'success') {
                                 $api.setStorage('account', account);
 
@@ -1142,6 +1230,11 @@ saveTasksProgress.init();
         });
         set_index(1);
     });
+    api.addEventListener({
+        name : 'flush_index'
+    }, function(ret) {
+        get_ranking();
+    });
 };
 function talk_sort() {
     api.openFrame({
@@ -1172,6 +1265,15 @@ function modify() {
 }
 
 function set_index(a) {
+    if(a != 0){
+        if(a == 1){
+            $("#header.header").css({"height":"0.5rem","border-bottom":"none","background":"#f5f5f5"});
+        }else{
+            $("#header.header").css({"height":"1.25rem","border-bottom":"1px solid #bbb"});
+        }
+    }else{
+        $("#header.header").css({"height":"2.34rem","border-bottom":"1px solid #bbb","background":"#f5f5f5"});
+    }
     if (a == 5) {
         api.sendEvent({
             name: 'flush_cache'
@@ -1179,6 +1281,9 @@ function set_index(a) {
         api.sendEvent({
             name: 'init_cache'
         });
+        $api.setStorage("video-cacheTime",true);
+    }else{
+        $api.setStorage("video-cacheTime",false);
     }
     hideSearchBar();
     $('#header').attr('head', a);
@@ -1191,11 +1296,24 @@ function set_index(a) {
     api.closeFrame({name: 'my-answer-detail-f'});
     api.closeFrame({name: 'my-talk-detail'});
     api.closeFrame({name: 'my-talk-detail-f'});
-
+    api.closeFrame({name: 'tasks-cache'});
+    api.closeFrame({name: 'tasks-cache-f'});
+    var header = $api.byId('header');
+    $api.fixIos7Bar(header);
+    window.localStorage.caicui_headLh = headLh = $api.offset(header).h;
+    window.localStorage.caicui_headSh = headSh = parseInt($('#sHead').height() - 0 + headLh);
+    window.localStorage.caicui_leftLw = leftLw = $('#slider').width();
     api.setFrameGroupAttr({
         name: 'homeFrameGroup',
-        hidden: false
+        hidden: false,
+        rect: {
+                x: leftLw,
+                y: headLh,
+                w: api.winWidth - leftLw,
+                h: "auto"
+            }
     });
+
     api.setFrameGroupIndex({
         name: 'homeFrameGroup',
         index: a
@@ -1212,6 +1330,7 @@ function set_index(a) {
         }
     });
     if (a == 1) {
+ 
         api.openFrameGroup({
             name: 'courseFrameGroup',
             rect: {
@@ -1272,7 +1391,27 @@ function set_index(a) {
  });
  }
  */
-
+function checkDownlond(e) {
+      api.sendEvent({
+          name: 'openachapt',
+          extra: {sethomepage: e}
+      });
+  }
+  function showSet() {
+      checkDownlond(1);
+      $('.right li').removeClass('none');
+      $(this).addClass('none');
+  }
+  //取消
+  function setAll1() {
+      checkDownlond(2);
+      $('.right li').addClass('none');
+      $('.right li').eq(0).removeClass('none');
+  }
+  //全选
+  function setAll2() {
+      checkDownlond(3);
+  }
 
 //中心消息数量
 function center_num() {
