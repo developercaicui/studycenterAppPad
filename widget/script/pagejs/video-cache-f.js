@@ -85,6 +85,9 @@ function init_check(){
             to_cacheHeight =84;
             to_cacheState = true;
         }
+        if(api.systemType != "ios" && api.pageParam.courseId){
+            to_cacheHeight = 55;
+        }
         api.openFrame({
               delay:200,
               name : "tasks-cache",
@@ -261,7 +264,7 @@ function initDom() {
         }
 
            cache_model.getCourseJsonWithCourseId(param,function(ret,err){ 
-                    
+                  
                if(JSON.parse(ret.data).length<1){
                     $('#content').html('');
                     $('body').addClass('null');

@@ -18,7 +18,7 @@ var is_debug = false;
            var task_tpl = $('#task_tpl').html();
           var content = doT.template(task_tpl);
           $('#chaTask').html(content(arr)).show();
-          init_check()
+          init_check();
           return false;
         }
         
@@ -86,6 +86,7 @@ var is_debug = false;
 
 	      $('#chaTask').html(content(course_detail)).show();
 	      initDomDownStatus();
+	      init_check();
 	      task_arr = save_tasks(course_detail);
       	  courseId = course_detail.courseId; //课程id
       	  var len = 0;
@@ -140,7 +141,6 @@ var is_debug = false;
           getdownrecord();
           setSpeed();
       },1000)
-      init_check();
       
 //    api.setRefreshHeaderInfo({
 //      visible: true,
@@ -234,12 +234,15 @@ var is_debug = false;
     }
       
 function init_check() {
-	$('.chapter-task').on("click",".icon-check",function() {
-	    if ($(this).hasClass('active')) {
-	        $(this).removeClass('active')
-	    } else {
-	        $(this).addClass('active');
-	    }
+	$('.video-catego').on("click","dd",function() {
+		if($(this).find(".icon-check").css("display") != "none"){
+			if ($(this).find(".icon-check").hasClass('active')) {
+		        $(this).find(".icon-check").removeClass('active')
+		    } else {
+		        $(this).find(".icon-check").addClass('active');
+		    }
+		}	
+	    
 	});
 }  
 
