@@ -323,8 +323,8 @@ function play_video() {
                 return false;
             }
 
-            demo.open(param, function(ret, err) {
 
+            demo.open(param, function(ret, err) {
                 //4G下是否播放视频
                 if ((isEmpty($api.getStorage("status"+videoid)) || $api.getStorage("status"+videoid) != 'YES')) {
 //           if (!isFinish) {

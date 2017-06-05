@@ -83,7 +83,7 @@ var is_debug = false;
 	   		
 	      course_detail = ret_data[0];
 	      var content = doT.template(task_tpl);
-
+	      getVersionId(ret_data[0])
 	      $('#chaTask').html(content(course_detail)).show();
 	      initDomDownStatus();
 	      init_check();
@@ -108,6 +108,24 @@ var is_debug = false;
 		cache_model.getCurrentDownloadVideoSize({"userId" : getstor('memberId')},function(ret,err){
     	
 	    	var videoId = ret.currentVideoId;
+	    	api.getFreeDiskSpace(function(ret, err) {
+	             var size = (ret.size / 1000 / 1000).toFixed(2);
+	             if (Math.ceil(size) < 300) {
+	                clearInterval(down_timer);
+	                clearTimeout(down_setTimeout);
+	                clearInterval(getStatusTime);
+	                $('.down-progress[type="1"]').attr({
+	                    type : 2
+	                }).siblings('.down_speed').html('').addClass('none');
+	                api.toast({
+	                    msg : '可用空间不足,下载已暂停',
+	                    location : 'middle'
+	                });
+	             } else {
+	                $(".space").html("可用空间" + size + "MB<span></span>");
+	                
+	             }
+	        });
 	   		var speedT = $api.getStorage("speedT"+videoId) ? $api.getStorage("speedT"+videoId) : 0;
 	   		$api.setStorage("speedT"+videoId,ret.data);
 	   		

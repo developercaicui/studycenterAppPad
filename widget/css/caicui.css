@@ -796,8 +796,8 @@ ul.footer-nav li.active {
   background: #fff;
   border-radius: 0.2rem;
   position: absolute;
-  top: 1rem;
-  right: 0.2rem;
+  top: 1.8rem;
+  right: 1.1rem;
   z-index: 7;
 }
 .pop-msg:before {
@@ -882,6 +882,7 @@ ul.footer-nav li.active {
   font-weight: bold;
   position: relative;
   margin-bottom: 0.2rem;
+  padding-right: 1.3rem;
 }
 .info_des ul li .info_examine .examine_tit .time_box {
   color: #a8a8a8;

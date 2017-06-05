@@ -54,7 +54,7 @@ function getdownrecord(){
         //------------------结束获取--------------------------
      	var usedTime,speedDown;
         var saverecordObj = JSON.parse(ret.data);
-       
+       // alert(JSON.stringify(ret))
         ///设置下一次读取下载的某个时间之后变化的所有记录
         lastgettime = saverecordObj.readTime;
         //循环处理每一条返回的下载记录，并统计分析最后变化值
@@ -269,7 +269,7 @@ function initDom(){
          }
      });
     }
-     
+
 }
 
 clearInterval(getStatusTime);
@@ -317,13 +317,25 @@ function setSpace(){
        	}
        	api.getFreeDiskSpace(function(ret, err) {
 	         var size = (ret.size / 1000 / 1000).toFixed(2);
-	         $(".space").html("可用空间" + size + "MB<span></span>");
+	         if (Math.ceil(size) < 300) {
+                clearInterval(down_timer);
+                clearTimeout(down_setTimeout);
+                clearInterval(getStatusTime);
+                $('.down-progress[type="1"]').attr({
+                    type : 2
+                }).siblings('.down_speed').html('').addClass('none');
+                api.toast({
+                    msg : '可用空间不足,下载已暂停',
+                    location : 'middle'
+                });
+             } else {
+                $(".space").html("可用空间" + size + "MB<span></span>");
+                
+             }
 	    });
 	   
-   		var speedT = $api.getStorage("speedT"+videoId) ? $api.getStorage("speedT"+videoId) : 0;
-   		
-   		$api.setStorage("speedT"+videoId,ret.data);
-   		
+   		var speedT = $api.getStorage("speedT"+videoId) ? $api.getStorage("speedT"+videoId) : 0;  		
+   		$api.setStorage("speedT"+videoId,ret.data);  		
    		speedTime = ret.data - speedT;	
    		if(speedTime<0){
    			speedTime = 0;
@@ -345,6 +357,10 @@ function setTask(){
     })
 }
 function init_process(){
+	//Android可用空间icon位置调整
+	if(api.systemType != "ios"){
+    	$(".space span").css({"margin-top":"0.6rem"});
+    }
     circleProgress();
     //圆形进度条绘制
     $.each($('.down-progress'), function(k, v) {
@@ -395,13 +411,24 @@ apiready = function() {
         getdownrecord();
   		getData();
   	});
-    $('.circle_btn').click(function() {
-        if ($(this).find('.active_btn').hasClass('hide')) {
-            $(this).find('.active_btn').removeClass('hide');
-        } else {
-            $(this).find('.active_btn').addClass('hide');
-        }
+  	api.setRefreshHeaderInfo({
+        visible: true,
+        loadingImg: 'widget://image/arrow-down-o.png',
+        bgColor: '#f3f3f3',
+        textColor: '#787b7c',
+        textDown: '下拉更多',
+        textUp: '松开刷新',
+        showTime: false
+    }, function (ret, err) {
+        getData();
     });
+    // $('.circle_btn').click(function() {
+    //     if ($(this).find('.active_btn').hasClass('hide')) {
+    //         $(this).find('.active_btn').removeClass('hide');
+    //     } else {
+    //         $(this).find('.active_btn').addClass('hide');
+    //     }
+    // });
 };
 function set_down_status(str){
     //var data=JSON.parse(str);
@@ -646,27 +673,7 @@ function set_down_status(str){
     }
 }
 
-function getVersionId(data){
-    var versionId = data.versionId;
-    var coursestatus ={};
-    ajaxRequest('api/v2.1/study/coursestatus', 'get',{"token":$api.getStorage('token'),"versionId":versionId}, function(ret, err) {
-        if(ret.state == "success"){
-            var lockStatusNum = 0;
-            for(var i=0;i<ret.data.length;i++){
-                if(ret.data[i].lockStatus == 0){
-                    lockStatusNum = i;
-                }   
-            }
-            coursestatus.islock = ret.data[lockStatusNum].lockStatus;
-            coursestatus.activestate = ret.data[lockStatusNum].activeState;
-            coursestatus.expirationTime = ret.data[lockStatusNum].expirationTime;
-            if(ret.data[lockStatusNum].activeState == "acitve"){
-                coursestatus.isbuy = 1;
-            }                   
-            $api.setStorage("coursestatus"+versionId,coursestatus)
-        }
-    })
-} 
+
 //获取章节列表
 function getChapterList(flag) {
     setTimeout(function(){

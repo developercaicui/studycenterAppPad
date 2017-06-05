@@ -237,7 +237,7 @@ function set_data(num) {
             clearInterval(getStatusTime);
         }
         getdownrecord();
-    },1000)
+    },3000)
 
 }
 //测试
@@ -263,31 +263,31 @@ function initDom() {
             $('#content').css({"padding-top":"1.25rem"});
         }
 
-           cache_model.getCourseJsonWithCourseId(param,function(ret,err){ 
-                  
-               if(JSON.parse(ret.data).length<1){
-                    $('#content').html('');
-                    $('body').addClass('null');
-                    api.hideProgress();
-                    return false;
-               }
-                $.each(JSON.parse(ret.data),function(k,v){
-                    var ret_data = JSON.parse(v.courseJson);
-                    var res = {
-                        data: ret_data[0]
-                    };
-                    mydata.push(res); 
-                    
-                })
-                
-                init_data();
-                initDomDownStatus();
-                //处理圈圈
-                isSolidcircle('circle', '', '');
-                showCacheList();
+       cache_model.getCourseJsonWithCourseId(param,function(ret,err){  
 
-           })
-        }
+           if(JSON.parse(ret.data).length<1){
+                $('#content').html('');
+                $('body').addClass('null');
+                api.hideProgress();
+                return false;
+           }
+            $.each(JSON.parse(ret.data),function(k,v){
+                var ret_data = JSON.parse(v.courseJson);
+                var res = {
+                    data: ret_data[0]
+                };
+                mydata.push(res); 
+                
+            })
+            
+            init_data();
+            initDomDownStatus();
+            //处理圈圈
+            isSolidcircle('circle', '', '');
+            showCacheList();
+
+       })
+    }
 
 function initDomDownStatus(){
         if(isEmpty($api.getStorage("videochangelist"))){
@@ -836,7 +836,7 @@ apiready = function() {
         clearInterval(getStatusTime);
         getStatusTime = setInterval(function(){
             getdownrecord();
-        },2000)
+        },3000)
 
     });
     api.addEventListener({

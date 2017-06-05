@@ -783,13 +783,214 @@ function relogin(ckeck) {
 var is_resume;
 
 apiready = function () {
+    //初始话视频
+    if (api.systemType == 'android') {
+        if (cache_model == null) {
+            cache_model = api.require('lbbVideo');
+            cache_model.initDownload({"userId":getstor('memberId')});
+            cache_model.init();
+        }
+    }
+    if (api.systemType == 'ios') {
+        if (cache_model == null) {
+            cache_model = api.require('lbbVideo');
+            cache_model.downloadCourseTabel();
+            cache_model.initDownload({"userId":getstor('memberId')});
+        }
+    }
+    
+    memberId = getstor('memberId');
+    var data = $api.getStorage(memberId + 'video-buffer');
+
+    if (typeof(data) != "undefined" || !isEmpty(data)) { //有下载列表
+        mydata = [];
+        set_data(0);
+        var len = Object.keys(data).length; //  2
+        function set_data(num) {
+            //全部缓存列表
+            read_file(memberId + data[num] + '.db', function(ret, err) {                
+                if (ret) {
+                    var ret_data = JSON.parse(ret.data);
+                    var res = {
+                        data: ret_data
+                    };
+                    mydata.push(res);
+                    // alert(JSON.stringify(mydata))
+                    if (num < len - 1) {
+                        num++;
+                        set_data(num);
+                    } else {
+                        init_data();
+                    }
+                }
+            });
+        }
+        $api.rmStorage(memberId + 'video-buffer');
+    }
+
+
+
+function init_data(){
+    cache_model = api.require('lbbVideo');
+
+    $.each(mydata,function(key,value){
+        var tasks_info = gets_tasks(value.data[0]);
+ 
+        // 保存课程信息库
+        if(api.systemType == "ios"){
+            cache_model.inserCourseDetailJson({
+                "userId" : memberId,
+                "courseId" : value.data[0].courseId,
+                "courseJson" : JSON.stringify(value.data)
+            },function(ret,err){
+             
+            })
+        }else{
+            cache_model.inserCourseDetailJson({
+                "userId" : memberId,
+                "courseId" : value.data[0].courseId,
+                "courseJson" :value.data
+            },function(ret,err){
+                
+            })
+        }
+        
+        for(var i in tasks_info){
+            if(tasks_info[i].progress != 0 && tasks_info[i].taskInfo.taskType == "video"){
+                var downObj = {
+                    userId : memberId,
+                    courseId : tasks_info[i].courseId,
+                    apiKey : tasks_info[i].taskInfo.apiKey,
+                    videoId : tasks_info[i].taskInfo.videoCcid,
+                    path : tasks_info[i].path,
+                    UserId : tasks_info[i].taskInfo.videoSiteId,
+                    state : tasks_info[i].state,
+                    progress : tasks_info[i].progress
+                }
+              
+                cache_model.insertLastDownloadCourseState(downObj,function(ret){
+                    
+                })
+                
+            }
+        }
+
+    })
+}
+
+/*获取课程里所有的任务*/
+function gets_tasks(courseDetail) {
+        var arr = {};
+        var data_arr;
+        if(courseDetail.chapters){
+            data_arr = courseDetail.chapters;
+        }        
+        var courseName = courseDetail.courseName;
+        var courseId = courseDetail.courseId;
+        for (var i in data_arr) {
+                if (data_arr[i].isLeaf == 'false') {
+                        var child = data_arr[i].children;
+                        for (var j in child) {
+                                if (child[j].isLeaf == 'false') {
+                                        var child2 = child[j].children;
+                                        for (var k in child2) {
+                                                var cId = child2[k].chapterId;
+                                                var cName = child2[k].chapterTitle;
+                                                for (var x in child2[k].tasks) {
+                                                        if (child2[k].isLeaf != 'false') {
+                                                                var taskid = child2[k].tasks[x].taskId;
+                                                                var progress = get_dowm(data_arr[i].chapterId, child[j].chapterId, cId);
+                                                                var state = 3;
+                                                                if(progress==0 ){
+                                                                    state=3;
+                                                                }else if(progress>=100){
+                                                                    state=4;
+                                                                }else if(progress>0 &&  progress<100){
+                                                                    state=2;
+                                                                }
+                                                                var obj_data = {
+                                                                        courseId: courseId,
+                                                                        courseName: courseName,
+                                                                        chapterId: cId,
+                                                                        chapterName: cName,
+                                                                        progress : progress,
+                                                                        state : state,
+                                                                        taskInfo: child2[k].tasks[x],
+                                                                        path : courseId+"//"+data_arr[i].chapterId+"//"+child[j].chapterId+"//"+cId+"//"+child2[k].tasks[x].videoCcid
+                                                                };
+
+                                                                arr[taskid] = obj_data;
+                                                        }
+                                                }
+                                        }
+                                } else {
+                                        var cId = child[j].chapterId;
+                                        var cName = child[j].chapterTitle;
+                                        for (var k in child[j].tasks) {
+                                                var taskid = child[j].tasks[k].taskId;
+                                                var progress = get_dowm(data_arr[i].chapterId, cId, "");
+                                                var state = 3;
+                                                if(progress==0 ){
+                                                    state=3;
+                                                }else if(progress>=100){
+                                                    state=4;
+                                                }else if(progress>0 &&  progress<100){
+                                                    state=2;
+                                                }
+                                                var obj_data = {
+                                                        courseId: courseId,
+                                                        courseName: courseName,
+                                                        chapterId: cId,
+                                                        chapterName: cName,
+                                                        progress : progress,
+                                                        state : state,
+                                                        taskInfo: child[j].tasks[k],
+                                                        path : courseId+"//"+data_arr[i].chapterId+"//"+cId+"//"+child[j].tasks[k].videoCcid
+                                                };
+                                                arr[taskid] = obj_data;
+                                        }
+                                }
+                        }
+                } else {
+                        var cId = data_arr[i].chapterId;
+                        var cName = data_arr[i].chapterTitle;
+                        for (var k in data_arr[i].tasks) {
+                                var taskid = data_arr[i].tasks[k].taskId;
+                                var progress = get_dowm(cId, "", "");
+                                var state = 3;
+                                if(progress==0 ){
+                                    state=3;
+                                }else if(progress>=100){
+                                    state=4;
+                                }else if(progress>0 &&  progress<100){
+                                    state=2;
+                                }
+                                var obj_data = {
+                                        courseId: courseId,
+                                        courseName: courseName,
+                                        chapterId: cId,
+                                        chapterName: cName,
+                                        progress : progress,
+                                        state : state,
+                                        taskInfo: data_arr[i].tasks[k],
+                                        path : courseId+"//"+cId+"//"+data_arr[i].tasks[k].videoCcid
+                                };
+                                arr[taskid] = obj_data;
+                        }
+                }
+        }
+        return arr;
+}
+
+
+
     saveTasksProgress.init();
     api.setScreenOrientation({
         orientation: 'auto_landscape'
     });
 
     is_resume = false;
-
+    
     api.addEventListener({
         name: 'pause'
     }, function (ret, err) {
@@ -821,21 +1022,7 @@ apiready = function () {
     api.setKeepScreenOn({
         keepOn: true
     });
-    //初始话视频
-    if (api.systemType == 'android') {
-        if (cache_model == null) {
-            cache_model = api.require('lbbVideo');
-            cache_model.initDownload({"userId":getstor('memberId')});
-            cache_model.init();
-        }
-    }
-    if (api.systemType == 'ios') {
-        if (cache_model == null) {
-            cache_model = api.require('lbbVideo');
-            cache_model.downloadCourseTabel();
-            cache_model.initDownload({"userId":getstor('memberId')});
-        }
-    }
+    
     api.addEventListener({
         name: 'resume'
     }, function (ret, err) {

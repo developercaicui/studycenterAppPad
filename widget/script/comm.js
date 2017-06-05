@@ -919,11 +919,20 @@ function write_file(filename, data, callback) {
 }
 
 function read_file(filename, callback) {
-	api.readFile({
-		path : 'box://' + filename
-	}, function(ret, err) {
-		callback(ret, err);
-	});
+	if(api.systemType == "ios"){
+		api.readFile({
+			path : 'fs://' + filename
+		}, function(ret, err) {
+			callback(ret, err);
+		});
+	}else{
+		api.readFile({
+			path : 'box://' + filename
+		}, function(ret, err) {
+			callback(ret, err);
+		});
+	}
+	
 }
 
 function in_array(str, array) {
@@ -937,26 +946,27 @@ function in_array(str, array) {
 
 function set_cache(courseId, data) {
 	$api.setStorage(courseId, data[0]);
-    var memberId = getstor('memberId');
-    var obj_data = $api.getStorage(memberId + 'video-buffer');
+    //var memberId = getstor('memberId');
+    //var obj_data = $api.getStorage(memberId + 'video-buffer');
     var param = $api.getStorage('my_to_down');
-
-    if (!isEmpty(obj_data)) {
-        // if (!in_array(courseId, obj_data)) {
-            obj_data.push(courseId);
-            $api.setStorage(memberId + 'video-buffer', obj_data);
-            write_file(memberId + courseId + '.db', JSON.stringify(data), function(ret, err) {})
-            param.courseJson = data;
-            $api.setStorage('my_to_down', param);
-        // }
-    } else {
-        obj_data = [];
-        obj_data.push(courseId);
-        $api.setStorage(memberId + 'video-buffer', obj_data);
-        write_file(memberId + courseId + '.db', JSON.stringify(data), function(ret, err) {})
-        param.courseJson = data;
-        $api.setStorage('my_to_down', param);
-    }
+    param.courseJson = data;
+    $api.setStorage('my_to_down', param);
+    // if (!isEmpty(obj_data)) {
+    //     // if (!in_array(courseId, obj_data)) {
+    //         obj_data.push(courseId);
+    //         //$api.setStorage(memberId + 'video-buffer', obj_data);
+    //         //write_file(memberId + courseId + '.db', JSON.stringify(data), function(ret, err) {})
+    //         param.courseJson = data;
+    //         $api.setStorage('my_to_down', param);
+    //     // }
+    // } else {
+    //     obj_data = [];
+    //     obj_data.push(courseId);
+    //     //$api.setStorage(memberId + 'video-buffer', obj_data);
+    //     //write_file(memberId + courseId + '.db', JSON.stringify(data), function(ret, err) {})
+    //     param.courseJson = data;
+    //     $api.setStorage('my_to_down', param);
+    // }
 }
 
 function set_cache_lst(courseId, chapId) {
@@ -1152,7 +1162,7 @@ function mydown(result) {
               $api.setStorage('isDownding',ret.isDownding);
 //            alert($api.getStorage('isDownding'))
         })
-        
+
         // 保存课程信息库
         if(api.systemType == "ios"){
 	        cache_model.inserCourseDetailJson({
@@ -1297,44 +1307,44 @@ function mydown(result) {
                                 $api.setStorage(memberId + chapterIdC + 'progress', 1);
                             }
                             //下载队列
-                            read_file(memberId + 'Queue.db', function(res, err) {
-                                if (res.status && res.data) {
-                                    var Queue = JSON.parse(res.data);
-                                    ////变成等待中的状态
-                                    // data.type = 'wait';
-                                    // data.type = 5;
-                                    // set_down(data);
-                                    var flag = true;
-                                    for (var p in Queue) {
-                                        //一级章节下载记录
-                                        if (!isEmpty(chapterIdA) && isEmpty(chapterIdB) && isEmpty(chapterIdC)) {
-                                            if ((!isEmpty(Queue[p]['chapterIdA']) && Queue[p]['chapterIdA'] == chapterIdA) || (!isEmpty(Queue[p]['chapterida']) && Queue[p]['chapterida'] == chapterIdA)) {
-                                                flag = false;
-                                            }
-                                        }
-                                        //二级章节下载记录
-                                        if (!isEmpty(chapterIdA) && !isEmpty(chapterIdB) && isEmpty(chapterIdC)) {
-                                            if ((!isEmpty(Queue[p]['chapterIdB']) && Queue[p]['chapterIdB'] == chapterIdB) || (!isEmpty(Queue[p]['chapteridb']) && Queue[p]['chapteridb'] == chapterIdB)) {
-                                                flag = false;
-                                            }
-                                        }
-                                        //三级章节下载记录
-                                        if (!isEmpty(chapterIdC) && !isEmpty(chapterIdA) && !isEmpty(chapterIdB)) {
-                                            if ((!isEmpty(Queue[p]['chapterIdC']) && Queue[p]['chapterIdC'] == chapterIdC) || (!isEmpty(Queue[p]['chapteridc']) && Queue[p]['chapteridc'] == chapterIdC)) {
-                                                flag = false;
-                                            }
-                                        }
-                                    }
-                                    if (flag) {
-                                        Queue.push(down_data);
-                                        write_file(memberId + 'Queue.db', JSON.stringify(Queue), function(ret, err) {})
-                                    }
-                                } else {
-                                    Queue = [];
-                                    Queue.push(down_data);
-                                    write_file(memberId + 'Queue.db', JSON.stringify(Queue), function(ret, err) {})
-                                }
-                            });
+                            // read_file(memberId + 'Queue.db', function(res, err) {
+                            //     if (res.status && res.data) {
+                            //         var Queue = JSON.parse(res.data);
+                            //         ////变成等待中的状态
+                            //         // data.type = 'wait';
+                            //         // data.type = 5;
+                            //         // set_down(data);
+                            //         var flag = true;
+                            //         for (var p in Queue) {
+                            //             //一级章节下载记录
+                            //             if (!isEmpty(chapterIdA) && isEmpty(chapterIdB) && isEmpty(chapterIdC)) {
+                            //                 if ((!isEmpty(Queue[p]['chapterIdA']) && Queue[p]['chapterIdA'] == chapterIdA) || (!isEmpty(Queue[p]['chapterida']) && Queue[p]['chapterida'] == chapterIdA)) {
+                            //                     flag = false;
+                            //                 }
+                            //             }
+                            //             //二级章节下载记录
+                            //             if (!isEmpty(chapterIdA) && !isEmpty(chapterIdB) && isEmpty(chapterIdC)) {
+                            //                 if ((!isEmpty(Queue[p]['chapterIdB']) && Queue[p]['chapterIdB'] == chapterIdB) || (!isEmpty(Queue[p]['chapteridb']) && Queue[p]['chapteridb'] == chapterIdB)) {
+                            //                     flag = false;
+                            //                 }
+                            //             }
+                            //             //三级章节下载记录
+                            //             if (!isEmpty(chapterIdC) && !isEmpty(chapterIdA) && !isEmpty(chapterIdB)) {
+                            //                 if ((!isEmpty(Queue[p]['chapterIdC']) && Queue[p]['chapterIdC'] == chapterIdC) || (!isEmpty(Queue[p]['chapteridc']) && Queue[p]['chapteridc'] == chapterIdC)) {
+                            //                     flag = false;
+                            //                 }
+                            //             }
+                            //         }
+                            //         if (flag) {
+                            //             Queue.push(down_data);
+                            //             write_file(memberId + 'Queue.db', JSON.stringify(Queue), function(ret, err) {})
+                            //         }
+                            //     } else {
+                            //         Queue = [];
+                            //         Queue.push(down_data);
+                            //         write_file(memberId + 'Queue.db', JSON.stringify(Queue), function(ret, err) {})
+                            //     }
+                            // });
                             
                             return false;
                             
@@ -2184,6 +2194,28 @@ function initDomDownStatus(){
     //     });
     // }
 }
+
+function getVersionId(data){
+    var versionId = data.versionId;
+    var coursestatus ={};
+    ajaxRequest('api/v2.1/study/coursestatus', 'get',{"token":$api.getStorage('token'),"versionId":versionId}, function(ret, err) {
+        if(ret.state == "success"){
+            var lockStatusNum = 0;
+            for(var i=0;i<ret.data.length;i++){
+                if(ret.data[i].lockStatus == 0){
+                    lockStatusNum = i;
+                }   
+            }
+            coursestatus.islock = ret.data[lockStatusNum].lockStatus;
+            coursestatus.activestate = ret.data[lockStatusNum].activeState;
+            coursestatus.expirationTime = ret.data[lockStatusNum].expirationTime;
+            if(ret.data[lockStatusNum].activeState == "acitve"){
+                coursestatus.isbuy = 1;
+            }                   
+            $api.setStorage("coursestatus"+versionId,coursestatus)
+        }
+    })
+} 
 
 //计算下载速度
 function getFormatSize(size){

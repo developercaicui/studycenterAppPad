@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <widget id="A6999359375355" version="0.0.1"> 
   <name>财萃课堂PAD</name>  
@@ -17,7 +17,7 @@
   <preference name="fullScreen" value="false"/>  
   <preference name="autoUpdate" value="true"/>  
   <preference name="smartUpdate" value="true"/>  
-  <preference name="debug" value="false"/>  
+  <preference name="debug" value="true"/>  
   <preference name="iOS7StatusBarAppearance" value="true"/>  
   <preference name="allowKeyboardExtension" value="false"/>  
   <permission name="readPhoneState"/>  
