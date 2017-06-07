@@ -92,13 +92,22 @@
         height: 0.45rem;
         position: absolute;
         left: 0.6rem;
+        top:0.6rem;
+        text-align: center;
+        }
+        .chapter-task .video-catego>span>b{
+          display: inline-block;
+          width: 1rem;
+          margin-left: -0.25rem;
+          margin-top: 0.2rem;
+          font-weight: normal;
         }
         .chapter-task .note-catego>span{
           background: url(../image/task2.png) no-repeat;
         background-size: 100% 100%;
         width: 0.45rem;
         height: 0.45rem;
-        top: 0.6rem;
+        top: 0.8rem;
     /*left: 10%;*/
         }
         .taskVideo{
@@ -186,7 +195,7 @@
           {{~val2.children:val3:key3}}
             {{~val3.tasks:val4:key4}}
             {{ if(val4.taskType=='video'){ }}
-            <li class="video-catego" style="display: none;"><span class="taskVideo"></span>
+            <li class="video-catego" style="display: none;"><span class="taskVideo"><b>{{=formatSeconds(val4.videoTime)}}</b></span>
               <div>
                 <dl class="taskList" style="display: table;">
                   <dt onclick="task_event(this,'{{=key4}}','{{=val4.taskId}}','{{=val3.chapterId}}')" tapmode >
@@ -229,7 +238,7 @@
           {{ }else{ }}
             {{~val2.tasks:val4:key4}}
             {{ if(val4.taskType=='video'){ }}
-            <li class="video-catego" style="display: none;"><span class="taskVideo"></span>
+            <li class="video-catego" style="display: none;"><span class="taskVideo"><b>{{=formatSeconds(val4.videoTime)}}</b></span>
               <div>
                 <dl class="taskList" style="display: table;">
                   <dt onclick="task_event(this,'{{=key4}}','{{=val4.taskId}}','{{=val2.chapterId}}')" tapmode >
@@ -273,7 +282,7 @@
       {{ }else{ }}
         {{~val.tasks:val4:key4}}
             {{ if(val4.taskType=='video'){ }}
-            <li class="video-catego" style="display: none;"><span class="taskVideo"></span>
+            <li class="video-catego" style="display: none;"><span class="taskVideo"><b>{{=formatSeconds(val4.videoTime)}}</b></span>
             <div>
                   <dl class="taskList">
                     <dt tapmode  onclick="task_event(this,'{{=key4}}','{{=val4.taskId}}','{{=val.chapterId}}')">
@@ -325,7 +334,9 @@
               if (isEmpty(tmp_course_detail)) {
                   //获取课程的详细信息
                   //api/v2.1/course/courseDetail，接口编号：004-006
-                  ajaxRequest('api/v2.1/course/courseDetail', 'get', {
+                  // ajaxRequest('api/v2.1/course/courseDetail', 'get', {
+                  ajaxRequest('api/teachsource/course/courseDetail', 'get',{
+                  
                       courseId: courseId
                   }, function (ret, err) {//004.006获取课程的详细信息
                       if (err) {
@@ -551,7 +562,8 @@
           if (isEmpty(tmp_course_detail)) {
               //获取课程的详细信息
               //api/v2.1/course/courseDetail，接口编号：004-006
-              ajaxRequest('api/v2.1/course/courseDetail', 'get', {
+              // ajaxRequest('api/v2.1/course/courseDetail', 'get', {
+              ajaxRequest('api/teachsource/course/courseDetail', 'get',{
                   courseId: courseId
               }, function (ret, err) {//004.006获取课程的详细信息
                   if (err) {

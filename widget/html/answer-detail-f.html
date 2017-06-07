@@ -207,19 +207,19 @@
                   if (isEmpty(ret.data.id)) {
                       is_loaded = true;
                   }
-                  if(!isEmpty(ret.data.replys.length)&&ret.data.replys.length>0) {
+                  if(!isEmpty(ret.data.replys)&&ret.data.replys.length>0) {
                       api.sendEvent({
                           name: 'answerChange'
                       });
                   }
                   if(page == 1){
                       $('#content1').html(content1(ret.data));
-                      if (!isEmpty(ret.data.replys.length)&&ret.data.replys.length > 0) {
+                      if (!isEmpty(ret.data.replys)&&ret.data.replys.length > 0) {
                           content2 = doT.template(tpl_con2);
                           $('#content2').html(content2(ret.data.replys));
                       }
                   }else{
-                      if (!isEmpty(ret.data.replys.length)&&ret.data.replys.length > 0) {
+                      if (!isEmpty(ret.data.replys)&&ret.data.replys.length > 0) {
                           content2 = doT.template(tpl_con2);
                           $('#content2').append(content2(ret.data.replys));
                       }

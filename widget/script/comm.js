@@ -319,7 +319,7 @@ function myajaxRequest(url, method, params, callBack) {
 		}
 		// api.hideProgress();
 		// api.refreshHeaderLoadDone();
-		// if (src != 'api/v2/member/get' && !isEmpty(ret) && ret.state == 'error' && ret.msg == 'nologin') {
+		// if (src != 'api/zbids/member/getmemberinfo' && !isEmpty(ret) && ret.state == 'error' && ret.msg == 'nologin') {
 		// 	api.sendEvent({
 		// 		name : 'to_login'
 		// 	});
@@ -370,7 +370,7 @@ function myajaxRequest(url, method, params, callBack) {
 // 					myajaxRequest(url, method, params, function(re, er) {
 // 						api.hideProgress();
 // 						api.refreshHeaderLoadDone();
-// 						if (src != 'api/v2/member/get' && !isEmpty(re) && re.state == 'error' && re.msg == 'nologin') {
+// 						if (src != 'api/zbids/member/getmemberinfo' && !isEmpty(re) && re.state == 'error' && re.msg == 'nologin') {
 // 							api.sendEvent({
 // 								name : 'to_login'
 // 							});
@@ -380,7 +380,7 @@ function myajaxRequest(url, method, params, callBack) {
 // 				}
 // 			});
 // 		}
-// 		if (src != 'api/v2/member/get' && !isEmpty(ret) && ret.state == 'error' && ret.msg == 'nologin') {
+// 		if (src != 'api/zbids/member/getmemberinfo' && !isEmpty(ret) && ret.state == 'error' && ret.msg == 'nologin') {
 //
 // 		}
 // 		callBack(ret, err);
@@ -444,7 +444,7 @@ function ajaxRequest(url, method, params, callBack) {
 		//             myajaxRequest(url, method, params, function (re, er) {
 		//                 api.hideProgress();
 		//                 api.refreshHeaderLoadDone();
-		//                 if (src != 'api/v2/member/get' && !isEmpty(re) && re.state == 'error' && re.msg == 'nologin') {
+		//                 if (src != 'api/zbids/member/getmemberinfo' && !isEmpty(re) && re.state == 'error' && re.msg == 'nologin') {
 		//                     out();
 		//                 }
 		//                 callBack(re, er);
@@ -452,7 +452,7 @@ function ajaxRequest(url, method, params, callBack) {
 		//         }
 		//     });
 		// }
-		if (src != 'api/v2/member/get' && !isEmpty(ret) && ret.state == 'error' && ret.msg == 'nologin') {
+		if (src != 'api/zbids/member/getmemberinfo' && !isEmpty(ret) && ret.state == 'error' && ret.msg == 'nologin') {
 			api.sendEvent({
 				name : 'to_login'
 			});
@@ -555,6 +555,7 @@ function get_token() {
 
 function getstor(key) {
 	var val = get_loc_val('mine', key);
+
 	if (val) {
 		return val;
 	} else {
@@ -979,7 +980,8 @@ function set_cache_lst(courseId, chapId) {
 	} else {
 		var param = {};
 		param.courseId = courseId;
-		ajaxRequest('api/v2.1/course/courseDetail', 'get', param, function(rets, errs) {
+		// ajaxRequest('api/v2.1/course/courseDetail', 'get', param, function(rets, errs) {
+		ajaxRequest('api/teachsource/course/courseDetail', 'get', param, function(rets, errs) {
 			if (rets && rets.state == 'success') {
 				var data = rets.data;
 				if (isEmpty(data)) {
@@ -2072,6 +2074,7 @@ function procRecord(videorecord){
                 }
                 //更新进度，已有任务变更: (当前进度*任务数量+(当前任务新进度-当前任务老进度)/(任务数量)
                 videoDownInfo[strs[j]].progress =(videoDownInfo[strs[j]].progress*videoDownInfo[strs[j]].tasknum+(videorecord.progress-videoDownInfo[strs[pathlen-1]].progress))/videoDownInfo[strs[j]].tasknum;
+                videoDownInfo[strs[j]].downloadSize = videorecord.downloadSize;
                 //如果子节点有一个处于下载，则为下载，如果没有，如果有一个在队列，则为队列，如果没有，则为停止，如果全部下载完成，则为下载完成
                 //0:停止  1:等待  2:下载中  3: 下载完成
                 //以下节点下载状态叶子节点是准的,父节点不准,没考虑其它子节点的下载状态
@@ -2100,6 +2103,7 @@ function procRecord(videorecord){
             //更新进度，新下载任务: (当前进度*任务数量+新任务进度)/(任务数量+1)
             videoDownInfo[strs[j]].progress =(videoDownInfo[strs[j]].progress*videoDownInfo[strs[j]].tasknum+videorecord.progress)/(videoDownInfo[strs[j]].tasknum+1);
             videoDownInfo[strs[j]].tasknum ++;
+            videoDownInfo[strs[j]].downloadSize = videorecord.downloadSize;
             //如果子节点有一个处于下载，则为下载，如果没有，如果有一个在队列，则为队列，如果没有，则为停止，如果全部下载完成，则为下载完成
             //0:停止  1:等待  2:下载中  3: 下载完成
             //以下节点下载状态叶子节点是准的,父节点不准,没考虑其它子节点的下载状态
@@ -2198,7 +2202,7 @@ function initDomDownStatus(){
 function getVersionId(data){
     var versionId = data.versionId;
     var coursestatus ={};
-    ajaxRequest('api/v2.1/study/coursestatus', 'get',{"token":$api.getStorage('token'),"versionId":versionId}, function(ret, err) {
+    ajaxRequest('api/business/learning/courseactivestatus', 'get',{"token":$api.getStorage('token'),"versionId":versionId}, function(ret, err) {
         if(ret.state == "success"){
             var lockStatusNum = 0;
             for(var i=0;i<ret.data.length;i++){
@@ -2237,6 +2241,29 @@ function getFormatSize(size){
     var teraBytes = gigaByte/1024;  
      if(teraBytes < 1) {  
      	return gigaByte.toFixed(0)+ "GB/s";   
+     }  
+
+}
+//计算视频文件大小
+function getVideoSize(size){
+    
+	var kiloByte = size/1024; 
+      if(kiloByte < 1) {  
+          return size + "B";  
+     }   
+     var megaByte = kiloByte/1024;  
+     if(megaByte < 1) { 
+      	return kiloByte.toFixed(0)+ "KB"; 
+     }  
+     
+     var gigaByte = megaByte/1024;  
+     if(gigaByte < 1) {  
+     	return megaByte.toFixed(0)+ "MB";  
+     }  
+       
+    var teraBytes = gigaByte/1024;  
+     if(teraBytes < 1) {  
+     	return gigaByte.toFixed(0)+ "GB";   
      }  
 
 }

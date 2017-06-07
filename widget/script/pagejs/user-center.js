@@ -857,20 +857,33 @@ function init_data(){
         
         for(var i in tasks_info){
             if(tasks_info[i].progress != 0 && tasks_info[i].taskInfo.taskType == "video"){
-                var downObj = {
-                    userId : memberId,
-                    courseId : tasks_info[i].courseId,
-                    apiKey : tasks_info[i].taskInfo.apiKey,
-                    videoId : tasks_info[i].taskInfo.videoCcid,
-                    path : tasks_info[i].path,
-                    UserId : tasks_info[i].taskInfo.videoSiteId,
-                    state : tasks_info[i].state,
-                    progress : tasks_info[i].progress
+                if(tasks_info[i].state != 4){
+
+                    var ccids = [];
+                    ccids.push(tasks_info[i].taskInfo.videoCcid);
+                    var jsfun = "rmVideo('" + JSON.stringify(ccids) + "');";
+                     api.execScript({
+                        name: 'root',
+                        script: jsfun
+                     });
+
+                }else{
+                    var downObj = {
+                        userId : memberId,
+                        courseId : tasks_info[i].courseId,
+                        apiKey : tasks_info[i].taskInfo.apiKey,
+                        videoId : tasks_info[i].taskInfo.videoCcid,
+                        path : tasks_info[i].path,
+                        UserId : tasks_info[i].taskInfo.videoSiteId,
+                        state : tasks_info[i].state,
+                        progress : tasks_info[i].progress
+                    }
+                  
+                    cache_model.insertLastDownloadCourseState(downObj,function(ret){
+                        
+                    })
                 }
-              
-                cache_model.insertLastDownloadCourseState(downObj,function(ret){
-                    
-                })
+                
                 
             }
         }

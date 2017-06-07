@@ -227,7 +227,8 @@ function initDom(){
 
      var param = {};
      param.courseId = courseId;
-     ajaxRequest('api/v2.1/course/courseDetail', 'get', param, function(ret, err) {
+     // ajaxRequest('api/v2.1/course/courseDetail', 'get', param, function(ret, err) {
+     ajaxRequest('api/teachsource/course/courseDetail', 'get', param, function(ret, err) {  
          api.parseTapmode();
          if (err) {
              /*api.toast({
@@ -319,7 +320,7 @@ function setSpace(){
 	         var size = (ret.size / 1000 / 1000).toFixed(2);
 	         if (Math.ceil(size) < 300) {
                 clearInterval(down_timer);
-                clearTimeout(down_setTimeout);
+                //// clearTimeout(down_setTimeout);
                 clearInterval(getStatusTime);
                 $('.down-progress[type="1"]').attr({
                     type : 2
@@ -489,7 +490,7 @@ function set_down_status(str){
             break;
         case 'less_space':
             clearInterval(down_timer);
-            clearTimeout(down_setTimeout);
+         //   clearTimeout(down_setTimeout);
             is_count = false;
             $(obj).attr({
                 type : 2
@@ -504,7 +505,7 @@ function set_down_status(str){
             break;
         case 'not_wifi':
             clearInterval(down_timer);
-            clearTimeout(down_setTimeout);
+         //   clearTimeout(down_setTimeout);
             is_count = false;
             $(obj).attr({
                 type : 2
@@ -519,7 +520,7 @@ function set_down_status(str){
             break;
         case 'deny_down':
             clearInterval(down_timer);
-            clearTimeout(down_setTimeout);
+         //   clearTimeout(down_setTimeout);
             is_count = false;
             $(obj).attr({
                 type : 2
@@ -534,7 +535,7 @@ function set_down_status(str){
             break;
         case 'shut_network':
             clearInterval(down_timer);
-            clearTimeout(down_setTimeout);
+         //   clearTimeout(down_setTimeout);
             is_count = false;
             $(obj).attr({
                 type : 2
@@ -550,7 +551,7 @@ function set_down_status(str){
             break;
         case 'wait':
             clearInterval(down_timer);
-            clearTimeout(down_setTimeout);
+         //   clearTimeout(down_setTimeout);
             is_count = false;
             $(obj).attr({
                 'type' : 2
@@ -559,7 +560,7 @@ function set_down_status(str){
         case '1':
         case 1:
             clearInterval(down_timer);
-            clearTimeout(down_setTimeout);
+         //   clearTimeout(down_setTimeout);
             is_count = false;
             //下载中->暂停
             // $('.down-progress[type="1"]').attr({
@@ -664,7 +665,7 @@ function set_down_status(str){
             break;
         case 'end':
             clearInterval(down_timer);
-            clearTimeout(down_setTimeout);
+         //   clearTimeout(down_setTimeout);
             is_count = false;
             $(obj).attr({
                 type : 4

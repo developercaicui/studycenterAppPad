@@ -86,6 +86,9 @@
 .about-video-content ul li.video-catego {
   height: 1.6rem;
 }
+.about-video-content ul li.note-catego {
+  height: 1.6rem;
+}
 .about-video-content ul li.out-li {
   border-bottom: 1px solid #606160;
 }

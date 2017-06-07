@@ -150,7 +150,8 @@
                       var param = {};
                       param.courseId =courseId;
                       param.token = $api.getStorage('token');
-                      ajaxRequest('api/v2.1/course/courseDetail', 'get', param, function (rets, errs) {
+                      // ajaxRequest('api/v2.1/course/courseDetail', 'get', param, function (rets, errs) {
+                      ajaxRequest('api/teachsource/course/courseDetail', 'get', param, function (rets, errs) {
                           if (errs) {
                               /*api.toast({
                                   msg: errs.msg
@@ -440,7 +441,8 @@
           });
           var tmp_course_detail = $api.getStorage(courseId);
           if (isEmpty(tmp_course_detail) || isEmpty(tmp_course_detail['chapters'])) {
-              ajaxRequest('api/v2.1/course/courseDetail', 'get', {courseId: courseId}, function (ret, err) {//004.006获取课程的详细信息
+              // ajaxRequest('api/v2.1/course/courseDetail', 'get', {courseId: courseId}, function (ret, err) {//004.006获取课程的详细信息
+              ajaxRequest('api/teachsource/course/courseDetail', 'get', {courseId: courseId}, function (ret, err) {
                   if (err) {
                       api.hideProgress();
                       api.toast({

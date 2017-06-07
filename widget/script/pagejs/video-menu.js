@@ -89,7 +89,7 @@ function set_down_status(str){
             break;
         case 'less_space':
             clearInterval(down_timer);
-            clearTimeout(down_setTimeout);
+            //clearTimeout(down_setTimeout);
             is_count = false;
             $(obj).attr({
                 type : 2
@@ -104,7 +104,7 @@ function set_down_status(str){
             break;
         case 'not_wifi':
             clearInterval(down_timer);
-            clearTimeout(down_setTimeout);
+            //clearTimeout(down_setTimeout);
             is_count = false;
             $(obj).attr({
                 type : 2
@@ -119,7 +119,7 @@ function set_down_status(str){
             break;
         case 'deny_down':
             clearInterval(down_timer);
-            clearTimeout(down_setTimeout);
+            //clearTimeout(down_setTimeout);
             is_count = false;
             $(obj).attr({
                 type : 2
@@ -134,7 +134,7 @@ function set_down_status(str){
             break;
         case 'shut_network':
             clearInterval(down_timer);
-            clearTimeout(down_setTimeout);
+            //clearTimeout(down_setTimeout);
             is_count = false;
             $(obj).attr({
                 type : 2
@@ -149,7 +149,7 @@ function set_down_status(str){
             break;
         case 'wait':
             clearInterval(down_timer);
-            clearTimeout(down_setTimeout);
+            //clearTimeout(down_setTimeout);
             is_count = false;
             $(obj).attr({
                 'type' : 2
@@ -158,7 +158,7 @@ function set_down_status(str){
         case '1':
         case 1:
             clearInterval(down_timer);
-            clearTimeout(down_setTimeout);
+            //clearTimeout(down_setTimeout);
             is_count = false;
             //下载中->暂停
             // $('.down-progress[type="1"]').attr({
@@ -262,7 +262,7 @@ function set_down_status(str){
             break;
         case 'end':
             clearInterval(down_timer);
-            clearTimeout(down_setTimeout);
+            //clearTimeout(down_setTimeout);
             is_count = false;
             $(obj).attr({
                 type : 4
@@ -363,7 +363,7 @@ function setSpeed(){
              var size = (ret.size / 1000 / 1000).toFixed(2);
              if (Math.ceil(size) < 300) {
                 clearInterval(down_timer);
-                clearTimeout(down_setTimeout);
+                //clearTimeout(down_setTimeout);
                 clearInterval(getStatusTime);
                 $('.down-progress[type="1"]').attr({
                     type : 2
@@ -503,7 +503,7 @@ function getChapterList() {
     //处理圈圈
     isSolidcircle('circle', '', '', courseId, 'video-menu');
 }
-//getChapterTask();
+// getChapterTask();
 //获取本章任务
 function getChapterTask() {
     if (is_over_task == false) {
@@ -4412,10 +4412,10 @@ function getChapterTask() {
 //      } ]
 //    } ]
 //  } ],
-//"state" : "success",
-//"msg" : null,
-//"code" : null
-//}
+// "state" : "success",
+// "msg" : null,
+// "code" : null
+// }
 
         var task_tpl = $('#task_tpl').html();
         var content = doT.template(task_tpl);
@@ -4444,7 +4444,8 @@ function getChapterTask() {
           if (isEmpty(tmp_course_detail)) {
               //获取课程的详细信息
               //api/v2.1/course/courseDetail，接口编号：004-006
-              ajaxRequest('api/v2.1/course/courseDetail', 'get', {
+              // ajaxRequest('api/v2.1/course/courseDetail', 'get', {
+              ajaxRequest('api/teachsource/course/courseDetail', 'get', {
                   courseId: courseId
               }, function (ret, err) {//004.006获取课程的详细信息
                   if (err) {

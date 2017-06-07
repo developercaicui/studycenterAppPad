@@ -30,10 +30,16 @@
          color:#000;
       }
       .chapter-task li .v-name span:nth-child(1) {
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          width: 3.2rem;
+          top: -0.4rem;
+          color: #00a085;
+          font-size: .3rem;
+          float: right;
+          right: -19.6%;
+          left: initial;
+          width: initial;
+      }
+      .chapter-task li .v-name span:nth-child(1) b{
+          font-weight: normal;
       }
       .chapter-task li .v-name span:nth-child(2) {
           position: absolute;
@@ -58,7 +64,7 @@
           width: 0.64rem;
       }
       .chapter-task li .v-progress {
-          width: 75%;
+          width: 88%;
           background-color: #b7e6de;
       }
       .about-video-content ul li {
@@ -158,7 +164,7 @@
                   <dl class="taskList">
                     <dt tapmode  onclick="task_event(this,'{{=key4}}','{{=val4.taskId}}','{{=val3.chapterId}}')">
                       <p style="color:#000;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">{{=val4.title}}</p>
-                      <p class="v-name"><span class="span11"></span><span></span></p>
+                      <p class="v-name"><span class="span11"><b></b>/50MB</span><span></span></p>
                       <p class="v-progress"><span style="font-size: 0;" data-taskid="{{=val.taskId}}" class="taskProgress"></span></p>
                     </dt>
                     <dd>
@@ -183,7 +189,7 @@
                   <dl class="taskList">
                     <dt tapmode  onclick="task_event(this,'{{=key4}}','{{=val4.taskId}}','{{=val2.chapterId}}')">
                       <p style="color:#000;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">{{=val4.title}}</p>
-                      <p class="v-name"><span class="span11"></span><span></span></p>
+                      <p class="v-name"><span class="span11"><b></b>/50MB</span><span></span></p>
                       <p class="v-progress"><span style="font-size: 0;" data-taskid="{{=val.taskId}}" class="taskProgress"></span></p>
                     </dt>
                     <dd>
@@ -209,7 +215,7 @@
                   <dl class="taskList">
                     <dt tapmode  onclick="task_event(this,'{{=key4}}','{{=val4.taskId}}','{{=val.chapterId}}')">
                       <p style="color:#000;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">{{=val4.title}}</p>
-                      <p class="v-name"><span class="span11"></span><span></span></p>
+                      <p class="v-name"><span class="span11"><b></b>/50MB</span><span></span></p>
                       <p class="v-progress"><span style="font-size: 0;" data-taskid="{{=val.taskId}}" class="taskProgress"></span></p>
                     </dt>
                     <dd>
@@ -397,7 +403,8 @@
           if (isEmpty(tmp_course_detail)) {
               //获取课程的详细信息
               //api/v2.1/course/courseDetail，接口编号：004-006
-              ajaxRequest('api/v2.1/course/courseDetail', 'get', {
+              // ajaxRequest('api/v2.1/course/courseDetail', 'get', {
+              ajaxRequest('api/teachsource/course/courseDetail', 'get',{
                   courseId: courseId
               }, function (ret, err) {//004.006获取课程的详细信息
                   if (err) {

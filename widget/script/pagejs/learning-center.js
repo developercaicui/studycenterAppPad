@@ -134,7 +134,8 @@ function get_study() {//顶部学习
 		progressBar();
 		return false;
 	}
-	ajaxRequest('api/v2.1/learning/learningcourse', 'get', {// 003.2 在学的课程列表（new）
+	// ajaxRequest('api/v2.1/learning/learningcourse', 'get', {// 003.2 在学的课程列表（new）
+	ajaxRequest('api/business/learning/learningcourse/v1.0', 'get', {// 003.2 在学的课程列表（new）
 		token : $api.getStorage('token'),
 		pageSize : 1000,
 		pageNo : 0

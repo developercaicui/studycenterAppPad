@@ -156,7 +156,7 @@
             <div class="taskList" id="{{=val4.videoCcid}}">
               <dl style="padding-left: .8rem;">          
                 <dt onclick="next(3,'{{=key}}','{{=key2}}','{{=key3}}',this,'{{=val3.chapterId}}')"><i type="1" data-chapId="{{=val3.chapterId}}" data-taskid="{{=val4.taskId}}" class="dot-status"></i><span class="taskVideo"></span>
-                  <p style="padding-left: 1.1rem;width: 82%;">{{=val4.title}}</p>                
+                  <p style="padding-left: 1.1rem;width: 82%;">{{=val4.title}}&nbsp;&nbsp;&nbsp;&nbsp;{{=formatSeconds(val4.videoTime)}}</p>                
                 </dt>
                 <dd>                 
                  <span class="down_speed none"></span>
@@ -207,7 +207,7 @@
             <div class="taskList">
               <dl style="padding-left:0.7rem">          
                 <dt onclick="next(2,'{{=key}}','{{=key2}}',-1,this,'{{=val2.chapterId}}')"><i type="1" data-chapId="{{=val2.chapterId}}" data-taskid="{{=val4.taskId}}" class="dot-status"></i><span class="taskVideo"></span>
-                  <p style="padding-left: 1.1rem;width: 82%;">{{=val4.title}}</p>                  
+                  <p style="padding-left: 1.1rem;width: 82%;">{{=val4.title}}&nbsp;&nbsp;&nbsp;&nbsp;{{=formatSeconds(val4.videoTime)}}</p>                  
                 </dt>
                 <dd>
                   <span class="down_speed none"></span>                 
@@ -254,7 +254,7 @@
             <div class="taskList">      
               <dl>
                 <dt onclick="next(1,'{{=key}}',-1,-1,this,'{{=val.chapterId}}')"><i type="1" style="left: 0.3rem;" data-chapId="{{=val.chapterId}}" data-taskid="{{=val4.taskId}}" class="dot-status"></i><span class="taskVideo" style="margin-left: .6rem;"></span>
-                  <p style="padding-left: 1rem;top: 0.65rem;color:#787878;width: 82%;font-size:0.25rem;">{{=val4.title}}</p>          
+                  <p style="padding-left: 1rem;top: 0.65rem;color:#787878;width: 82%;font-size:0.25rem;">{{=val4.title}}&nbsp;&nbsp;&nbsp;&nbsp;{{=formatSeconds(val4.videoTime)}}</p>          
                 </dt>
                 <dd>
                   <span class="down_speed none" style="top:0.35rem;font-size: 0.26rem;"></span>                  
@@ -298,7 +298,8 @@
               if (isEmpty(tmp_course_detail)) {
                   //获取课程的详细信息
                   //api/v2.1/course/courseDetail，接口编号：004-006
-                  ajaxRequest('api/v2.1/course/courseDetail', 'get', {
+                  //ajaxRequest('api/v2.1/course/courseDetail', 'get', {
+              ajaxRequest('api/teachsource/course/courseDetail', 'get', {  
                       courseId: courseId
                   }, function (ret, err) {//004.006获取课程的详细信息
                       if (err) {
@@ -594,7 +595,8 @@
           if (isEmpty(tmp_course_detail)) {
               //获取课程的详细信息
               //api/v2.1/course/courseDetail，接口编号：004-006
-              ajaxRequest('api/v2.1/course/courseDetail', 'get', {
+              //ajaxRequest('api/v2.1/course/courseDetail', 'get', {
+              ajaxRequest('api/teachsource/course/courseDetail', 'get', {  
                   courseId: courseId
               }, function (ret, err) {//004.006获取课程的详细信息
                   if (err) {
