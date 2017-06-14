@@ -112,7 +112,6 @@ apiready = function() {
         last_progress = api.pageParam.last_progress;
     }
     task_arr = save_tasks(course_detail);
-
     task_info_detail = task_arr[task_info.taskId];
     //获取章节信息
     //getChapterInfo();
@@ -304,7 +303,7 @@ function play_video() {
                     break;
             }
 
-            param.definition=quilty;
+            param.definition = quilty;
             if(!is_check) {
                 check_net(videoid);
             }
@@ -323,8 +322,8 @@ function play_video() {
                 return false;
             }
 
-
             demo.open(param, function(ret, err) {
+
                 //4G下是否播放视频
                 if ((isEmpty($api.getStorage("status"+videoid)) || $api.getStorage("status"+videoid) != 'YES')) {
 //           if (!isFinish) {

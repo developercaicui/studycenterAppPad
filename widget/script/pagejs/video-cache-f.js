@@ -170,10 +170,11 @@ function init_data() {
     var content = doT.template(tpl)(mydata);
     $('body').removeClass('null');
     $('#content').html('');
-    $('#content').html(content);
+    $('#content').html(content); 
     get_percent();
     circleProgress();
     init_check();
+    api.parseTapmode();
     if(api.pageParam.courseId){
         $(".cache-list dl,.cache-list dl.haschild").css({"padding-left":"0.3rem"});
     }
@@ -232,8 +233,9 @@ function set_data(num) {
     //2:根据couselist获取所有缓存课程的章节详情，如果在线，从服务器获取，否则本地数据库获取
     initDom();
     clearInterval(getStatusTime);
+    
     getStatusTime = setInterval(function(){
-        if($api.getStorage("video-cacheTime") == "false"){
+        if($api.getStorage("video-cacheTime") == "false" || $('.down-progress[type="1"]').length<1){
             clearInterval(getStatusTime);
         }
         getdownrecord();
@@ -264,7 +266,6 @@ function initDom() {
         }
 
        cache_model.getCourseJsonWithCourseId(param,function(ret,err){  
-
            if(JSON.parse(ret.data).length<1){
                 $('#content').html('');
                 $('body').addClass('null');
@@ -280,12 +281,13 @@ function initDom() {
                 
             })
             
+            
             init_data();
             initDomDownStatus();
             //处理圈圈
-            isSolidcircle('circle', '', '');
+            circleProgress();
             showCacheList();
-
+            
        })
     }
 
@@ -322,8 +324,6 @@ function initDomDownStatus(){
         init_process();
         //    ------------------设置结束--------------------------
     
-       
-
         
     }
     function setCapterState(){
@@ -354,7 +354,8 @@ function initDomDownStatus(){
              }
              // taskList.html(domprogress);
         })
-
+        
+     
     }
 function showCacheList(){
     $.each($(".cache-course"),function(kk,vv){
@@ -835,6 +836,9 @@ apiready = function() {
         $('.icon-check').removeClass('active');
         clearInterval(getStatusTime);
         getStatusTime = setInterval(function(){
+            if($('.down-progress[type="1"]').length<1){
+                clearInterval(getStatusTime);
+            }
             getdownrecord();
         },3000)
 

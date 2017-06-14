@@ -18,6 +18,7 @@ var is_debug = false;
            var task_tpl = $('#task_tpl').html();
           var content = doT.template(task_tpl);
           $('#chaTask').html(content(arr)).show();
+
           init_check();
           return false;
         }
@@ -33,7 +34,7 @@ var is_debug = false;
     var strs = $api.getStorage("videochangelist").split(","); //字符分割
     var pathlen = strs.length;
     //从1开始，因为拼接videochangelist的时候用,开始的
-    
+    $(".chapt"+api.pageParam.chapterId).show();
     for (j=1; j<pathlen;j++ ){
         var domInfo = videoDownInfo[strs[j]];
 		var domid = strs[j];
@@ -42,6 +43,7 @@ var is_debug = false;
             var domprogress = videoDownInfo[strs[j]].progress;
             var domstatus = videoDownInfo[strs[j]].status;
             var domtasknum = videoDownInfo[strs[j]].tasknum;
+            var totalSize = videoDownInfo[strs[j]].totalSize;
             var downloadSize = videoDownInfo[strs[j]].downloadSize;
             // ------------------设置界面对应id节点dom下载状态，并设置为可见--------------------------
 			//          alert(domid+"==="+api.pageParam.chapterId);
@@ -50,7 +52,14 @@ var is_debug = false;
                 $(".task"+domid).attr("type",domstatus);
 	            $(".task"+domid).find(".val").html(domprogress);
 	            $(".task"+domid).parent().prev().find(".v-progress").find("span").css("width",domprogress+"%");
-	            $(".task"+domid).parent().prev().find(".v-name").find(".span11 b").text(getVideoSize(downloadSize));
+	            if(totalSize == -1){
+	            	$(".task"+domid).parent().prev().find(".v-name").find(".span11 b").text(getVideoSize(downloadSize));
+	            }else if(totalSize == "未知"){
+	            	$(".task"+domid).parent().prev().find(".v-name").find(".span11 b").text("大小未知");
+	            }else{
+	            	$(".task"+domid).parent().prev().find(".v-name").find(".span11 b").text(getVideoSize(totalSize));
+	            }
+	            
 //	            $(".task"+domid).parent().prev().find(".v-name").find("span").eq(1).text(Math.round(domprogress)+"%");
             }
             
@@ -85,11 +94,13 @@ var is_debug = false;
 	   		
 	      course_detail = ret_data[0];
 	      var content = doT.template(task_tpl);
-	      getVersionId(ret_data[0])
+	      // getVersionId(ret_data[0])
 	      $('#chaTask').html(content(course_detail)).show();
+	      api.parseTapmode();
 	      initDomDownStatus();
 	      init_check();
 	      task_arr = save_tasks(course_detail);
+	      
       	  courseId = course_detail.courseId; //课程id
       	  var len = 0;
  		  $.each($(".video-catego"),function(k,v){
@@ -145,7 +156,7 @@ var is_debug = false;
 	       	$.each($('.down-progress[type="4"]'),function(){
 	       		$(this).parent().prev().find(".v-name").find("span").eq(1).text("完成");
 	       	})
-		
+
 	   })
 	}
     apiready = function(){
@@ -159,7 +170,7 @@ var is_debug = false;
       getStatusTime = setInterval(function(){
           getdownrecord();
           setSpeed();
-      },1000)
+      },2000)
       
 //    api.setRefreshHeaderInfo({
 //      visible: true,
@@ -176,11 +187,22 @@ var is_debug = false;
       api.addEventListener({
           name: 'flush_catalog'
       }, function(ret) {
+      		clearInterval(getStatusTime);
       		getStatusTime = setInterval(function(){
 	          getdownrecord();
 	          setSpeed();
-	      },1000)
+	      },2000)
       })
+      api.addEventListener({
+          name: 'open_getStatusTime'
+      }, function(ret) {
+      		clearInterval(getStatusTime);
+      		getStatusTime = setInterval(function(){
+	          getdownrecord();
+	          setSpeed();
+	      },2000)
+      })
+
       api.addEventListener({
           name: 'opena'
       }, function(ret) {

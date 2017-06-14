@@ -165,6 +165,7 @@ function get_study() {//顶部学习
         			ajaxRequest('api/v2.1/study/getExamDate', 'get', {// 003.2 在学的课程列表（new）
 						memberId : getstor('memberId')
 					}, function(res, error) {
+					
 						if (error) {
 	        					api.toast({
 	        							msg: err.msg,
@@ -236,6 +237,7 @@ function get_study() {//顶部学习
 						var tpl = $('#tpl_course').html();
 						var content = doT.template(tpl);
 						//ret.data['courselist']=bufferCourese(ret.data.courselist);
+						
 						$('#course_content').html(content(ret.data));
 						saveExpire(ret.data.courselist);
 						api.parseTapmode();

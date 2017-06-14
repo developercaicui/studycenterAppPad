@@ -463,13 +463,14 @@ function init(callback) {
     }
     var token = isEmpty($api.getStorage('token')) ? '' : $api.getStorage('token');
     if (token != '') {
-        ajaxRequest('api/v2/member/get', 'get', {
+        ajaxRequest('api/zbids/member/getmemberinfo', 'get', {
             token: token
         }, function (ret, err) {
             if (err) {
                 callback(false);
             }
             if (ret && ret.state == 'success') {
+                ret.data.memberId = ret.data.id;
                 $api.setStorage('memberMessage',ret);
                 callback(ret.data);
             } else {
@@ -586,7 +587,7 @@ function to_ucenter() {
     var avatar = static_url + get_loc_val('mine', 'avatar');
     $('.nickName').html(nickName);
     //联系方式
-      ajaxRequest('api/v2/member/get',"get", {"token":$api.getStorage('token')}, function (ret, error) {
+      ajaxRequest('api/zbids/member/getmemberinfo',"get", {"token":$api.getStorage('token')}, function (ret, error) {
         if(error){
             api.toast({
                 msg:error.msg,
@@ -608,6 +609,10 @@ function to_ucenter() {
 }
 function get_ranking() {
     var memberId = getstor('memberId');
+    if(memberId == false){
+        $(".ranking").html("上次登录时间：<span>1分钟前</span>");
+        return false;
+    }
     //上次登录时间
     // $(".ranking").html("登陆成功");
     ajaxRequest('api/zbids/member/getLoginLog',"get", {"memberid":memberId,"pageSize":1,"pageNo":1}, function (ret, error) {
@@ -1233,6 +1238,7 @@ function gets_tasks(courseDetail) {
                                     duration: 500
                                 }
                             });
+
                             if (ret && ret.state == 'success') {
                                 $api.setStorage('token', ret.data.token);
                                 $api.setStorage('mine', ret.data);
