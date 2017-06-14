@@ -58,7 +58,7 @@
               <div class="footer">
                 <div class="count"><i class="icon-replys"></i><span>{{=isEmpty(it.replyCount)?'0':it.replyCount }}</span></div>
                 <div class="time"><span>{{ if(!isEmpty(it.updateTime))  { }}{{=formatDate(it.updateTime,'Y')+'-'+formatDate(it.updateTime,'M')+'-'+formatDate(it.updateTime,'D')}} {{ } }}</span><span>{{ if(!isEmpty(it.updateTime))  { }}{{=formatDate(it.updateTime,'h')+':'+formatDate(it.updateTime,'m')}} {{ } }}</span></div>
-                <div class="course-name">{{if(it.askprogress != '-1' && it.courseId && it.courseId != ' ' && it.chapterId && it.chapterId != ' ' && it.taskId && it.taskId != ' '){ }}<span class="tag-video-time"><i class="icon-play-o"></i><span tapmode onclick="jump_task('{{=it.taskprogress}}','{{=it.courseId}}','{{=it.taskId}}')">{{=formatType(it.taskType,it.taskprogress)}}</span></span>{{ } }}
+                <div class="course-name">{{if(it.taskType == 'video' &&　it.askprogress != '-1' && it.courseId && it.courseId != ' ' && it.chapterId && it.chapterId != ' ' && it.taskId && it.taskId != ' '){ }}<span class="tag-video-time"><i class="icon-play-o"></i><span tapmode onclick="jump_task('{{=it.taskprogress}}','{{=it.courseId}}','{{=it.taskId}}')">{{=formatType(it.taskType,it.taskprogress)}}</span></span>{{ } }}
                   {{ if(it.coursename && it.coursename != null){ }}<span class="course-tit"> {{=it.coursename}}</span>{{ } }}
                 </div>
               </div>
