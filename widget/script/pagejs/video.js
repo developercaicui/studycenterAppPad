@@ -258,7 +258,8 @@ function check_net(videoid) {
 //播放视频函数
 function play_video() {
     getCCconfig(function(CCconfig){
-        if(CCconfig) {
+        if(CCconfig) {   
+            demo.init();    
             var UserId = task_info.videoSiteId;
             if(api.systemType == 'android'){
                 api.setFullScreen({
@@ -271,7 +272,7 @@ function play_video() {
             if(newProgress){
                 last_progress = DB.getTaskProgressSync(task_info.taskId).progress;            
             }
-            if(last_progress == videoTimes){
+            if( last_progress == videoTimes || last_progress == (videoTimes-1) || last_progress == (videoTimes+1)){
                 last_progress = 0;
             }
             //alert(UserId+'====='+(isEmpty(CCconfig[UserId]) ? 0 : 1));

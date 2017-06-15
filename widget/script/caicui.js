@@ -954,6 +954,7 @@ function buys(id, goods_price) {
         iap.getProducts({
                 productIds: [goods_id]
         }, function(res, err) {
+            console.log(JSON.stringify(res))
                 if (res) {
                         if (res.products) {
                                 iap.purchase({
