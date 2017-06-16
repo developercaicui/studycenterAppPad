@@ -14,19 +14,35 @@
     <script type="text/javascript" src="../script/zepto.js"></script>
     <script src="../script/jquery.min.js" type="text/javascript" charset="utf-8"></script>
     <style type="text/css">
+      .cache-list > dl {
+          background: #00a085;
+          color: #fff;
+      }
+      .cache-list > dl dt {
+          padding-top: 0.5rem;
+          padding-top: 0.5rem;
+      }
+      .cache-list > dl dt p {
+          font-size: 0.3rem;
+          top: 0.4rem;
+      }
       .cache-list .progress-box2 {
-          width: 100%;
+          width: 90%;
       }
       .cache-list .progress-box2 .progress2 {
           width: 100%;
           background: #158f78;
       }
-      .cache-list dl{
+      .cache-list dl,.cache-list dl.haschild{
           padding-right: .2rem;
+          padding-left: 1.1rem; 
       }
+      /*.cache-list dl:nth-child(1){
+          background: #f5f5f5;
+      }*/
       .icon-arrow-right{
         font-size: .3rem;
-        line-height: 1rem;
+        line-height: 1.5rem;
         font-weight: bold;
       }
       .cache-list .list .list > dl dt p {
@@ -35,6 +51,7 @@
       }
       .cache-list dl dd {
           width: 15%;
+          padding-right: 0.2rem;
       }
     </style>
   </head>
@@ -44,13 +61,28 @@
         <div class="val">2</div>
       </div>
     </div>
-    <div id="content"></div>
+    <div id="header" class="header header-white header-home" style="left: 0;position: fixed;display: none;">
+    <div class="header-cache" style="display: block;">
+          <div tapmode onclick="my_close()" class="left back"><i class="icon-back"></i></div>
+          <div class="center">缓存列表</div>
+          <ul class="right cache">
+            <li tapmode onclick="rightcancel($(this))" class="none">
+              <div class="btn btn-o">取消</div>
+            </li>
+            <li tapmode onclick="allremove($(this))" class="none">
+              <div class="btn btn-o red">批量删除</div>
+            </li>
+            <li tapmode onclick="righttrash($(this))"><i class="icon-trash"></i></li>
+          </ul>
+        </div>
+    </div>
+    <div id="content" style=""></div>
     <script id="tpl" type="text/x-dot-template">{{~it:value:k }}
       <div class="cache-course">
         <div class="cache-list">
           <dl class="cache-list-title">
             <dt>
-              <p>{{=it[k].data.courseName}}</p>
+              <p style="margin-left: -0.2rem;">{{=it[k].data.courseName}}</p>
               <div class="progress-box2" id="course{{=it[k].data.courseId}}">
                 <div class="progress2">
                   <div role="progressbar" min="0" max="0" class="progress-bar2"></div>
@@ -58,29 +90,29 @@
                 <div class="progress-val2"></div>
               </div>
             </dt>
-            <dd><i dataid="{{=it[k].data.courseId}}" class="icon-check courseid"></i></dd>
+            <dd><i dataid="{{=it[k].data.courseId}}" tapmode class="icon-check courseid"></i></dd>
           </dl>
         </div>{{~it[k].data.chapters:val:key}}
         {{ if(val.isLeaf=='false'){ }}
         <ul class="cache-list">
           <li class="list mycaptA {{=is_loadA(val.chapterId)}}">
             <dl>
-              <dt onclick="toggleChild(this)"><i class="icon-arrow-down"></i>
+              <dt  tapmode="" onclick="toggleChild(this)"><i class="icon-arrow-down"></i>
                 <p>{{=val.chapterTitle}}</p>
               </dt>
-              <dd><i dataid="{{=val.chapterId}}" class="icon-check chaptera"></i></dd>
+              <dd><i dataid="{{=val.chapterId}}" tapmode class="icon-check chaptera"></i></dd>
             </dl>{{~val.children:val2:key2}}
             {{ if(val2.isLeaf=='false'){ }}
             <ul class="list mycaptB {{=is_loadB(val2.chapterId)}}">
-              <dl class="haschild">
-                <dt onclick="toggleCapt(this)"><i class="icon-arrow-down"></i>
+              <dl class="haschild" style="padding-left:1.8rem;">
+                <dt  tapmode="" onclick="toggleCapt(this)"><i class="icon-arrow-down"></i>
                   <p>{{=val2.chapterTitle}}</p>
                 </dt>
-                <dd><i dataid="{{=val2.chapterId}}" class="icon-check chapterb"></i></dd>
+                <dd><i dataid="{{=val2.chapterId}}" tapmode class="icon-check chapterb"></i></dd>
               </dl>{{~val2.children:val3:key3}}
               {{ var is_show=is_loadC(val3.chapterId);}}
               <li class="list mycaptC {{=is_show}} tasksCache" data-chapId="{{=val3.chapterId}}" tapmode="tapcolor">
-                <dl class="haschild">
+                <dl class="haschild" style="padding-left:2.1rem;">
                   {{var state=3;}}
                   {{var progress=get_dowm('{{=val.chapterId}}','{{=val2.chapterId}}','{{=val3.chapterId}}');}}
       
@@ -88,7 +120,7 @@
                   <i type="1" data-chapId="{{=val3.chapterId}}" class="dot-status"></i>
                     <p>{{=val3.chapterTitle}}</p>
                   </dt>
-                  <dd><span style="font-size: .3rem;position: absolute;right: 1.4rem;top: .3rem;"></span><i dataid="{{=val3.chapterId}}" class="icon-check chapterc"></i><!-- {{ if(progress==0 ){state=3;}else if(progress>100){state=4}else if(progress>0 &&  progress<100){state=2}}}<span class="down_speed none"></span> -->
+                  <dd><span style="font-size: .3rem;position: absolute;right: 1.4rem;top: .3rem;"></span><i dataid="{{=val3.chapterId}}" tapmode class="icon-check chapterc"></i><!-- {{ if(progress==0 ){state=3;}else if(progress>100){state=4}else if(progress>0 &&  progress<100){state=2}}}<span class="down_speed none"></span> -->
                     <div id="{{=val3.chapterId}}" courseid="{{=it[k].data.courseId}}" chapterida="{{=val.chapterId}}" chapteridb="{{=val2.chapterId}}" chapteridc="{{=val3.chapterId}}" type="3" class="down-progress task{{=val3.chapterId}}"><i class="icon-download3"></i>
                       <div class="val {{=is_show}}"></div>
                     </div>
@@ -101,13 +133,13 @@
             <div class="taskList {{=is_show}} none">
               <dl style="padding-left: .8rem;">
           
-                <dt onclick="next(3,'{{=key}}','{{=key2}}','{{=key3}}',this,'{{=val3.chapterId}}')"><i type="1" data-chapId="{{=val3.chapterId}}" class="dot-status"></i><i class="icon-video" style="font-size: .3rem;margin-left:.45rem;"></i>
+                <dt  tapmode="" onclick="next(3,'{{=key}}','{{=key2}}','{{=key3}}',this,'{{=val3.chapterId}}')"><i type="1" data-chapId="{{=val3.chapterId}}" class="dot-status"></i><i class="icon-video" style="font-size: .3rem;margin-left:.45rem;"></i>
                   <p style="padding-left: .9rem;">{{=val4.title}}</p>
             
                 </dt>
                 <dd>
   
-                  <div id="{{=val3.chapterId}}" courseid="{{=it.courseId}}" chapterida="{{=val.chapterId}}" chapteridb="{{=val2.chapterId}}" chapteridc="{{=val3.chapterId}}" chapterNamea="{{=val.chapterTitle}}" chapterNameb="{{=val2.chapterTitle}}" chapterNamec="{{=val3.chapterTitle}}" courseName="{{=it.courseName}}" versionid="{{=it.versionId}}" type="3" onclick="down(this)" class="down-progress task{{=val4.videoCcid}}"><i class="icon-download3"></i>
+                  <div id="{{=val3.chapterId}}" courseid="{{=it.courseId}}" chapterida="{{=val.chapterId}}" chapteridb="{{=val2.chapterId}}" chapteridc="{{=val3.chapterId}}" chapterNamea="{{=val.chapterTitle}}" chapterNameb="{{=val2.chapterTitle}}" chapterNamec="{{=val3.chapterTitle}}" courseName="{{=it.courseName}}" versionid="{{=it.versionId}}" type="3"  tapmode="" onclick="down(this)" class="down-progress task{{=val4.videoCcid}}"><i class="icon-download3"></i>
                     <div class="val"></div>
                   </div>
                   <div class="down_data none">{{=JSON.stringify(val4)}}</div>
@@ -128,7 +160,7 @@
                 <i type="1" data-chapId="{{=val2.chapterId}}" class="dot-status"></i>
                   <p>{{=val2.chapterTitle}}</p>
                 </dt>
-                <dd><span style="font-size: .3rem;position: absolute;right: 1.4rem;top: .3rem;"></span><i dataid="{{=val2.chapterId}}" class="icon-check chapterb"></i><!-- {{ if(progress==0 ){state=3;}else if(progress>=100){state=4}else if(progress>0 &&  progress<100){state=2}}}<span class="down_speed none"></span> -->
+                <dd><span style="font-size: .3rem;position: absolute;right: 1.4rem;top: .3rem;"></span><i dataid="{{=val2.chapterId}}" tapmode class="icon-check chapterb"></i><!-- {{ if(progress==0 ){state=3;}else if(progress>=100){state=4}else if(progress>0 &&  progress<100){state=2}}}<span class="down_speed none"></span> -->
                   <div id="{{=val2.chapterId}}" courseid="{{=it[k].data.courseId}}" chapterida="{{=val.chapterId}}" chapteridb="{{=val2.chapterId}}" chapteridc="" type="3" class="down-progress task{{=val2.chapterId}}"><i class="icon-download3"></i>
                     <div class="val {{=is_show}}"></div>
                   </div>
@@ -140,13 +172,13 @@
             {{ if(val4.taskType=='video'){ }}
             <div class="taskList {{=is_show}} none">
               <dl>
-                <dt onclick="next(2,'{{=key}}','{{=key2}}',-1,this,'{{=val2.chapterId}}')"><i type="1" data-chapId="{{=val2.chapterId}}" class="dot-status"></i><i class="icon-video" style="font-size: .3rem;margin-left:.45rem;"></i>
+                <dt  tapmode="" onclick="next(2,'{{=key}}','{{=key2}}',-1,this,'{{=val2.chapterId}}')"><i type="1" data-chapId="{{=val2.chapterId}}" class="dot-status"></i><i class="icon-video" style="font-size: .3rem;margin-left:.45rem;"></i>
                   <p style="padding-left: .9rem;">{{=val4.title}}</p>
                   
                 </dt>
                 <dd>
                 
-                  <div id="{{=val2.chapterId}}" courseid="{{=it.courseId}}" chapterida="{{=val.chapterId}}" chapteridb="{{=val2.chapterId}}" chapteridc="" chapterNamea="{{=val.chapterTitle}}" chapterNameb="{{=val2.chapterTitle}}" chapterNamec="" courseName="{{=it.courseName}}" versionid="{{=it.versionId}}"  type="3" onclick="down(this)" class="down-progress task{{=val4.videoCcid}}"><i class="icon-download3"></i>
+                  <div id="{{=val2.chapterId}}" courseid="{{=it.courseId}}" chapterida="{{=val.chapterId}}" chapteridb="{{=val2.chapterId}}" chapteridc="" chapterNamea="{{=val.chapterTitle}}" chapterNameb="{{=val2.chapterTitle}}" chapterNamec="" courseName="{{=it.courseName}}" versionid="{{=it.versionId}}"  type="3"  tapmode="" onclick="down(this)" class="down-progress task{{=val4.videoCcid}}"><i class="icon-download3"></i>
                     <div class="val"></div>
                   </div>
                   
@@ -171,7 +203,7 @@
               <i type="1" data-chapId="{{=val.chapterId}}" class="dot-status"></i>
                 <p> {{=val.chapterTitle}}</p>
               </dt>
-              <dd><span style="font-size: .3rem;position: absolute;right: 1.4rem;top: .3rem;"></span><i dataid="{{=val.chapterId}}" class="icon-check chaptera"></i><!-- {{ if(progress==0 ){state=3;}else if(progress>=100){state=4}else if(progress>0 &&  progress<100){state=2}}}<span class="down_speed none"></span> -->
+              <dd><span style="font-size: .3rem;position: absolute;right: 1.4rem;top: .3rem;"></span><i dataid="{{=val.chapterId}}" tapmode class="icon-check chaptera"></i><!-- {{ if(progress==0 ){state=3;}else if(progress>=100){state=4}else if(progress>0 &&  progress<100){state=2}}}<span class="down_speed none"></span> -->
                 <div id="{{=val.chapterId}}" courseid="{{=it[k].data.courseId}}" chapterida="{{=val.chapterId}}" chapteridb="" chapteridc="" type="3" class="down-progress task{{=val.chapterId}}"><i class="icon-download3"></i>
                   <div class="val {{=is_show}}"></div>
                 </div>
@@ -184,13 +216,13 @@
             <div class="taskList {{=is_show}} none">
       
               <dl>
-                <dt onclick="next(1,'{{=key}}',-1,-1,this,'{{=val.chapterId}}')"><i type="1" data-chapId="{{=val.chapterId}}" class="dot-status"></i><i class="icon-video" style="font-size: .3rem;margin-left:.45rem;"></i>
+                <dt  tapmode="" onclick="next(1,'{{=key}}',-1,-1,this,'{{=val.chapterId}}')"><i type="1" data-chapId="{{=val.chapterId}}" class="dot-status"></i><i class="icon-video" style="font-size: .3rem;margin-left:.45rem;"></i>
                   <p style="padding-left: .9rem;">{{=val4.title}}</p>
                 
                 </dt>
                 <dd>
                   
-                  <div id="{{=val.chapterId}}" courseid="{{=it.courseId}}" chapterida="{{=val.chapterId}}" chapteridb="" chapteridc="" chapterNamea="{{=val.chapterTitle}}" chapterNameb="" chapterNamec="" courseName="{{=it.courseName}}" versionid="{{=it.versionId}}"  type="3" onclick="down(this)" class="down-progress task{{=val4.videoCcid}}"><i class="icon-download3"></i>
+                  <div id="{{=val.chapterId}}" courseid="{{=it.courseId}}" chapterida="{{=val.chapterId}}" chapteridb="" chapteridc="" chapterNamea="{{=val.chapterTitle}}" chapterNameb="" chapterNamec="" courseName="{{=it.courseName}}" versionid="{{=it.versionId}}"  type="3"  tapmode="" onclick="down(this)" class="down-progress task{{=val4.videoCcid}}"><i class="icon-download3"></i>
                     <div class="val"></div>
                   </div>
                   <div class="down_data none">{{=JSON.stringify(val4)}}</div>
@@ -209,7 +241,15 @@
     <script type="text/javascript" src="../script/db.js"></script>
     <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
     <script>
-    	function isSolidcircle(type, chap_id, task_id, course_id, from) {
+      function my_close() {
+          api.closeFrame({
+            name: 'video-cache-f'
+          });
+          api.sendEvent({
+            name: 'flush_catalog'
+        });
+      }
+      function isSolidcircle(type, chap_id, task_id, course_id, from) {
           if (isEmpty(course_id)) {
               var courseId = api.pageParam.course_id;
           } else {
@@ -220,7 +260,8 @@
           if (isEmpty(tmp_course_detail)) {
               //获取课程的详细信息
               //api/v2.1/course/courseDetail，接口编号：004-006
-              ajaxRequest('api/v2.1/course/courseDetail', 'get', {
+              // ajaxRequest('api/v2.1/course/courseDetail', 'get', {
+              ajaxRequest('api/teachsource/course/courseDetail', 'get',{
                   courseId: courseId
               }, function (ret, err) {//004.006获取课程的详细信息
                   if (err) {
@@ -390,34 +431,34 @@
                                       });
                                       
                                       $('.fath').each(function (k,v) {
-			                              $(v).find('.dot-status').each(function (key,val) {
-				                              var tmp_chapID = $(val).attr('data-chapId');
-				                              var tmp_taskID = $(val).attr('data-taskid');
-		//		                              alert(tmp_chapID +"===="+ tmp_taskID)
-				                              if (!isEmpty(tmp_chapID) && !isEmpty(tmp_taskID)) {
-				                                  var tmp_task_progress = arr[tmp_chapID][tmp_taskID];
-				                                  
-				                                  if (isEmpty(tmp_task_progress) || isEmpty(tmp_task_progress.isok)) {
-		//		                                      $(this).css('width', '0%');
-													  $(val).attr('type', 1);
-				                                  } else if (tmp_task_progress.isok == 3) {
-		//		                                      $(this).css('width', '100%');
-													  $(val).attr('type', 3);
-				                                  } else if (tmp_task_progress.isok == 0) {
-		//		                                      $(this).css('width', '0%');
-													  $(val).attr('type', 1);
-				                                  } else if (tmp_task_progress.isok == 1) {
-				                                      var tmpwidth = ((tmp_task_progress.progress * 100) / tmp_task_progress.total).toFixed(2) + '%';
-		//		                                      $(this).css('width', tmpwidth);
-													  $(val).attr('type', 2);
-				                                  }
-				                              } else {
-		//		                                  $(this).css('width', '0%');
-												  $(val).attr('type', 1);
-				                              }
-				                          });
-		                              
-		                              })
+                                    $(v).find('.dot-status').each(function (key,val) {
+                                      var tmp_chapID = $(val).attr('data-chapId');
+                                      var tmp_taskID = $(val).attr('data-taskid');
+    //                                  alert(tmp_chapID +"===="+ tmp_taskID)
+                                      if (!isEmpty(tmp_chapID) && !isEmpty(tmp_taskID)) {
+                                          var tmp_task_progress = arr[tmp_chapID][tmp_taskID];
+                                          
+                                          if (isEmpty(tmp_task_progress) || isEmpty(tmp_task_progress.isok)) {
+    //                                          $(this).css('width', '0%');
+                            $(val).attr('type', 1);
+                                          } else if (tmp_task_progress.isok == 3) {
+    //                                          $(this).css('width', '100%');
+                            $(val).attr('type', 3);
+                                          } else if (tmp_task_progress.isok == 0) {
+    //                                          $(this).css('width', '0%');
+                            $(val).attr('type', 1);
+                                          } else if (tmp_task_progress.isok == 1) {
+                                              var tmpwidth = ((tmp_task_progress.progress * 100) / tmp_task_progress.total).toFixed(2) + '%';
+    //                                          $(this).css('width', tmpwidth);
+                            $(val).attr('type', 2);
+                                          }
+                                      } else {
+    //                                      $(this).css('width', '0%');
+                          $(val).attr('type', 1);
+                                      }
+                                  });
+                                  
+                                  })
                                       
                                   }
                               } else if (type == 'progress') {
@@ -596,32 +637,32 @@
                                   }
                               });
                               $('.fath').each(function (k,v) {
-	                              $(v).find('.dot-status').each(function (key,val) {
-		                              var tmp_chapID = $(val).attr('data-chapId');
-		                              var tmp_taskID = $(val).attr('data-taskid');
-//		                              alert(tmp_chapID +"===="+ tmp_taskID)
-		                              if (!isEmpty(tmp_chapID) && !isEmpty(tmp_taskID)) {
-		                                  var tmp_task_progress = arr[tmp_chapID][tmp_taskID];
-		                                  
-		                                  if (isEmpty(tmp_task_progress) || isEmpty(tmp_task_progress.isok)) {
-//		                                      $(this).css('width', '0%');
-											  $(val).attr('type', 1);
-		                                  } else if (tmp_task_progress.isok == 3) {
-//		                                      $(this).css('width', '100%');
-											  $(val).attr('type', 3);
-		                                  } else if (tmp_task_progress.isok == 0) {
-//		                                      $(this).css('width', '0%');
-											  $(val).attr('type', 1);
-		                                  } else if (tmp_task_progress.isok == 1) {
-		                                      var tmpwidth = ((tmp_task_progress.progress * 100) / tmp_task_progress.total).toFixed(2) + '%';
-//		                                      $(this).css('width', tmpwidth);
-											  $(val).attr('type', 2);
-		                                  }
-		                              } else {
-//		                                  $(this).css('width', '0%');
-										  $(val).attr('type', 1);
-		                              }
-		                          });
+                                $(v).find('.dot-status').each(function (key,val) {
+                                  var tmp_chapID = $(val).attr('data-chapId');
+                                  var tmp_taskID = $(val).attr('data-taskid');
+//                                  alert(tmp_chapID +"===="+ tmp_taskID)
+                                  if (!isEmpty(tmp_chapID) && !isEmpty(tmp_taskID)) {
+                                      var tmp_task_progress = arr[tmp_chapID][tmp_taskID];
+                                      
+                                      if (isEmpty(tmp_task_progress) || isEmpty(tmp_task_progress.isok)) {
+//                                          $(this).css('width', '0%');
+                        $(val).attr('type', 1);
+                                      } else if (tmp_task_progress.isok == 3) {
+//                                          $(this).css('width', '100%');
+                        $(val).attr('type', 3);
+                                      } else if (tmp_task_progress.isok == 0) {
+//                                          $(this).css('width', '0%');
+                        $(val).attr('type', 1);
+                                      } else if (tmp_task_progress.isok == 1) {
+                                          var tmpwidth = ((tmp_task_progress.progress * 100) / tmp_task_progress.total).toFixed(2) + '%';
+//                                          $(this).css('width', tmpwidth);
+                        $(val).attr('type', 2);
+                                      }
+                                  } else {
+//                                      $(this).css('width', '0%');
+                      $(val).attr('type', 1);
+                                  }
+                              });
                               
                               })
                               
@@ -667,7 +708,7 @@
           }
       }
     
-    	
+      
     </script>
     <script src="../script/pagejs/video-cache-f.js" type="text/javascript" charset="utf-8"></script>
   </body>

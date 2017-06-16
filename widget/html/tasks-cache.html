@@ -20,7 +20,7 @@
         .header .left-next {
             font-size: 0.36rem;
             padding-left: 0;
-            max-width:90%; 
+/*            max-width:90%; */
             overflow: hidden;
             word-wrap: normal;
             text-overflow: ellipsis;
@@ -31,13 +31,13 @@
     </style>
   </head>
   <body>
-    <div id="header" class="header">
-      <div tapmode onclick="my_close()" class="left back"><i class="icon-arrow-left"></i></div>
+    <div id="header" class="header" style="height: 1.25rem;">
+      <div tapmode onclick="my_close()" class="left back"><i class="icon-back"></i></div>
       <div class="left-next">任务缓存</div>
       <ul class="right">
         <li tapmode onclick="showSet()"><i class="icon-trash"></i></li>
-        <li tapmode onclick="setAll2()" class="hide">全选</li>
-        <li tapmode onclick="setAll1()" class="hide">取消</li>
+        <li tapmode onclick="setAll2()" class="none">全选</li>
+        <li tapmode onclick="setAll1()" class="none">取消</li>
       </ul>
     </div>
     <script type="text/javascript" src="../script/comm.js"></script>
@@ -51,21 +51,28 @@
               name: 'flush_cache'
           });
           api.sendEvent({
-            name: "cancle_del"
+            name: "cancle_check"
          });
 //        api.sendEvent({
 //            name: 'reloadPage'
 //        });
-      
-          api.closeWin();
+          api.closeFrame({
+            name: 'tasks-cache-f'
+          });
+          api.closeFrame({
+            name: 'tasks-cache'
+          });
      
       }
       apiready = function () {
-          var header = $api.byId('header');
-          $api.fixIos7Bar(header);
-          var headerPos = $api.offset(header);
-          var width = api.winWidth;
-          var height = api.winHeight - headerPos.h;
+          
+          if(api.pageParam.to_cacheState){
+            headLh = headLh+64
+          }else{
+            var header = $api.byId('header');
+            $api.fixIos7Bar(header);
+          }
+
           api.openFrame({
               name: 'tasks-cache-f',
               url: 'tasks-cache-f.html',
@@ -75,11 +82,11 @@
               vScrollBarEnabled: false,
               bgColor: '#fff',
               rect: {
-                  x: 0,
-                  y: headerPos.h,
-                  w: width,
-                  h: height
-              },
+                    x: leftLw,
+                    y: headLh,
+                    w: api.winWidth - leftLw,
+                    h: api.winHeight - headLh
+                },
               pageParam: api.pageParam
           });
           api.addEventListener({
@@ -90,9 +97,16 @@
           api.addEventListener({
               name: 'cancle_del'
           }, function () {
-              $('.right li').addClass('hide');
-              $('.right li').eq(0).removeClass('hide');
+              $('.right li').addClass('none');
+              $('.right li').eq(0).removeClass('none');
           });
+           //监听关闭
+        api.addEventListener({
+            name : 'closeFrameAll'
+        }, function() {
+            api.closeFrame();
+        });
+
       };
       function checkDownlond(e) {
           api.sendEvent({
@@ -102,14 +116,14 @@
       }
       function showSet() {
           checkDownlond(1);
-          $('.right li').removeClass('hide');
-          $(this).addClass('hide');
+          $('.right li').removeClass('none');
+          $(this).addClass('none');
       }
       //取消
       function setAll1() {
           checkDownlond(2);
-          $('.right li').addClass('hide');
-          $('.right li').eq(0).removeClass('hide');
+          $('.right li').addClass('none');
+          $('.right li').eq(0).removeClass('none');
       }
       //全选
       function setAll2() {
