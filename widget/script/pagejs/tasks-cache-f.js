@@ -18,8 +18,7 @@ var is_debug = false;
            var task_tpl = $('#task_tpl').html();
           var content = doT.template(task_tpl);
           $('#chaTask').html(content(arr)).show();
-
-          init_check();
+          init_check()
           return false;
         }
         
@@ -34,7 +33,7 @@ var is_debug = false;
     var strs = $api.getStorage("videochangelist").split(","); //字符分割
     var pathlen = strs.length;
     //从1开始，因为拼接videochangelist的时候用,开始的
-    $(".chapt"+api.pageParam.chapterId).show();
+    // alert(strs+"====="+JSON.stringify(videoDownInfo))
     for (j=1; j<pathlen;j++ ){
         var domInfo = videoDownInfo[strs[j]];
 		var domid = strs[j];
@@ -43,8 +42,6 @@ var is_debug = false;
             var domprogress = videoDownInfo[strs[j]].progress;
             var domstatus = videoDownInfo[strs[j]].status;
             var domtasknum = videoDownInfo[strs[j]].tasknum;
-            var totalSize = videoDownInfo[strs[j]].totalSize;
-            var downloadSize = videoDownInfo[strs[j]].downloadSize;
             // ------------------设置界面对应id节点dom下载状态，并设置为可见--------------------------
 			//          alert(domid+"==="+api.pageParam.chapterId);
             if($(".task"+domid).attr("id") == api.pageParam.chapterId){
@@ -52,14 +49,6 @@ var is_debug = false;
                 $(".task"+domid).attr("type",domstatus);
 	            $(".task"+domid).find(".val").html(domprogress);
 	            $(".task"+domid).parent().prev().find(".v-progress").find("span").css("width",domprogress+"%");
-	            if(totalSize == -1){
-	            	$(".task"+domid).parent().prev().find(".v-name").find(".span11 b").text(getVideoSize(downloadSize));
-	            }else if(totalSize == "未知"){
-	            	$(".task"+domid).parent().prev().find(".v-name").find(".span11 b").text("大小未知");
-	            }else{
-	            	$(".task"+domid).parent().prev().find(".v-name").find(".span11 b").text(getVideoSize(totalSize));
-	            }
-	            
 //	            $(".task"+domid).parent().prev().find(".v-name").find("span").eq(1).text(Math.round(domprogress)+"%");
             }
             
@@ -70,13 +59,6 @@ var is_debug = false;
     
     
 }
-//测试
-// var aa={"courseJson":"[{\"availability\":\"<p>\\r\\n\\tCMA P1 中文 前导讲义有更新，更新章节：\\r\\n</p>\\r\\n<p>\\r\\n\\t第1章-第1节-知识点1\\r\\n</p>\\r\\n<p>\\r\\n\\t<span style=\\\"line-height:1.5;\\\">第1章-第2节-知识点2</span> \\r\\n</p>\\r\\n第3章-第1节-知识点1<br />\",\"courseBackgroundImage\":\"/upload/201604/92da0abdac4a45f5b46f9546ade771ac.jpg\",\"categoryName\":\"CMA中文\",\"courseIndex\":130,\"knowledgePointId\":\"\",\"teacherName\":\"QiQi Wu\",\"chapters\":[{\"chapterId\":\"8a22ecb553eab1280153f3774d3a0080\",\"isFree\":\"true\",\"knowledgePointId\":null,\"chapterTitle\":\"第一章 管理会计基础\",\"isLeaf\":\"false\",\"tasks\":null,\"chapterFiles\":null,\"children\":[{\"chapterId\":\"8a22ecb553eab1280153f38a4e240087\",\"isFree\":\"false\",\"knowledgePointId\":null,\"chapterTitle\":\"前导\",\"isLeaf\":\"true\",\"tasks\":[{\"apiKey\":\"q6pLhLMSit3QuuYAD4TIyQ3pJNKiY0Ez\",\"taskId\":\"8a22ecb553eab12801540452360300b6\",\"videoCcid\":\"1636D8924AA82ED29C33DC5901307461\",\"videoTime\":256,\"taskType\":\"video\",\"title\":\"前导课\",\"taskLevel\":null,\"id\":\"8a22ecb553eab1280154044018bd009a\",\"videoSiteId\":\"D550E277598F7D23\",\"attachmentPath\":\"\",\"express\":null}],\"chapterFiles\":null,\"children\":null,\"chapterExtends\":null},{\"chapterId\":\"8a22ecb553eab1280153f384b5c30084\",\"isFree\":\"false\",\"knowledgePointId\":null,\"chapterTitle\":\"第一节 管理会计的产生与发展\",\"isLeaf\":\"false\",\"tasks\":null,\"chapterFiles\":null,\"children\":[{\"chapterId\":\"8a22ecb55b1ec7e9015b428d7faa063d\",\"isFree\":\"false\",\"knowledgePointId\":\"\",\"chapterTitle\":\"知识点1 管理会计的产生\",\"isLeaf\":\"true\",\"tasks\":[{\"apiKey\":\"q6pLhLMSit3QuuYAD4TIyQ3pJNKiY0Ez\",\"taskId\":\"8a22ecb553eab12801540468f39800ba\",\"videoCcid\":\"72D12CCB7EBFE95C9C33DC5901307461\",\"videoTime\":1263,\"taskType\":\"video\",\"title\":\"知识点1 管理会计的形成\",\"taskLevel\":null,\"id\":\"8a22ecb553eab128015404410a66009c\",\"videoSiteId\":\"D550E277598F7D23\",\"attachmentPath\":\"/upload/201703/ca2b169f8e9b4baf8106ce21e62e0b74.pdf\",\"express\":null}],\"chapterFiles\":null,\"children\":null,\"chapterExtends\":null},{\"chapterId\":\"8a22ecb55b1ec7e9015b428db65c063e\",\"isFree\":\"false\",\"knowledgePointId\":\"\",\"chapterTitle\":\"知识点2 管理会计的发展\",\"isLeaf\":\"true\",\"tasks\":[{\"apiKey\":\"q6pLhLMSit3QuuYAD4TIyQ3pJNKiY0Ez\",\"taskId\":\"8a22ecb553eab128015404696af800bb\",\"videoCcid\":\"15F603BEEC1D737C9C33DC5901307461\",\"videoTime\":1157,\"taskType\":\"video\",\"title\":\"知识点2 管理会计的发展\",\"taskLevel\":null,\"id\":\"8a22ecb553eab12801540441487a009d\",\"videoSiteId\":\"D550E277598F7D23\",\"attachmentPath\":\"/upload/201702/78b9c138f43246ecafe3c0cf1303a6c4.pdf\",\"express\":null}],\"chapterFiles\":null,\"children\":null,\"chapterExtends\":null}],\"chapterExtends\":null},{\"chapterId\":\"8a22ecb553eab1280153f3857f2f0085\",\"isFree\":\"false\",\"knowledgePointId\":null,\"chapterTitle\":\"第二节 管理会计和财务会计的关系\",\"isLeaf\":\"false\",\"tasks\":null,\"chapterFiles\":null,\"children\":[{\"chapterId\":\"8a22ecb55b1ec7e9015b428dfb64063f\",\"isFree\":\"false\",\"knowledgePointId\":\"\",\"chapterTitle\":\"知识点1 管理会计和财务会计的区别\",\"isLeaf\":\"true\",\"tasks\":[{\"apiKey\":\"q6pLhLMSit3QuuYAD4TIyQ3pJNKiY0Ez\",\"taskId\":\"8a22ecb553eab1280154046a01eb00bc\",\"videoCcid\":\"224E39210AD2ED299C33DC5901307461\",\"videoTime\":1295,\"taskType\":\"video\",\"title\":\"知识点1 管理会计和财务会计的区别\",\"taskLevel\":null,\"id\":\"8a22ecb553eab12801540445c98000a0\",\"videoSiteId\":\"D550E277598F7D23\",\"attachmentPath\":\"/upload/201702/6a7cd4b8b89343479c927b179d5b1b4b.pdf\",\"express\":null}],\"chapterFiles\":null,\"children\":null,\"chapterExtends\":null},{\"chapterId\":\"8a22ecb55b1ec7e9015b428e3c470640\",\"isFree\":\"false\",\"knowledgePointId\":\"\",\"chapterTitle\":\"知识点2 管理会计和财务会计的联系\",\"isLeaf\":\"true\",\"tasks\":[{\"apiKey\":\"q6pLhLMSit3QuuYAD4TIyQ3pJNKiY0Ez\",\"taskId\":\"8a22ecb553eab1280154046a5cca00bd\",\"videoCcid\":\"619E2E8F9E67C7069C33DC5901307461\",\"videoTime\":773,\"taskType\":\"video\",\"title\":\"知识点2 管理会计和财务会计的联系\",\"taskLevel\":null,\"id\":\"8a22ecb553eab128015404461e5b00a1\",\"videoSiteId\":\"D550E277598F7D23\",\"attachmentPath\":\"/upload/201703/a8f4ea0173c64b23b54a85b0cdb1283b.pdf\",\"express\":null}],\"chapterFiles\":null,\"children\":null,\"chapterExtends\":null}],\"chapterExtends\":null},{\"chapterId\":\"8a22ecb553eab1280153f386da630086\",\"isFree\":\"false\",\"knowledgePointId\":null,\"chapterTitle\":\"第三节 管理会计的职能与目标\",\"isLeaf\":\"false\",\"tasks\":null,\"chapterFiles\":null,\"children\":[{\"chapterId\":\"8a22ecb55b1ec7e9015b428e96a00641\",\"isFree\":\"false\",\"knowledgePointId\":\"\",\"chapterTitle\":\"知识点1 管理会计的目标\",\"isLeaf\":\"true\",\"tasks\":[{\"apiKey\":\"q6pLhLMSit3QuuYAD4TIyQ3pJNKiY0Ez\",\"taskId\":\"8a22ecb553eab128015404717e5d00be\",\"videoCcid\":\"64D4A4A6C6DFEFDB9C33DC5901307461\",\"videoTime\":657,\"taskType\":\"video\",\"title\":\"知识点1 管理会计的目标\",\"taskLevel\":null,\"id\":\"8a22ecb553eab12801540441c9c9009e\",\"videoSiteId\":\"D550E277598F7D23\",\"attachmentPath\":\"/upload/201702/3f96ba19658747d3b96bb0db2c265a35.pdf\",\"express\":null}],\"chapterFiles\":null,\"children\":null,\"chapterExtends\":null},{\"chapterId\":\"8a22ecb55b1ec7e9015b428ee9ae0642\",\"isFree\":\"false\",\"knowledgePointId\":\"\",\"chapterTitle\":\"知识点2 管理会计的职能\",\"isLeaf\":\"true\",\"tasks\":[{\"apiKey\":\"q6pLhLMSit3QuuYAD4TIyQ3pJNKiY0Ez\",\"taskId\":\"8a22ecb553eab12801540472130c00bf\",\"videoCcid\":\"CF1338E6CCBD08BE9C33DC5901307461\",\"videoTime\":1534,\"taskType\":\"video\",\"title\":\"知识点2 管理会计的职能\",\"taskLevel\":null,\"id\":\"8a22ecb553eab128015404424d88009f\",\"videoSiteId\":\"D550E277598F7D23\",\"attachmentPath\":\"/upload/201702/caca3dcb54ed444cb0c8659907c4a51d.pdf\",\"express\":null}],\"chapterFiles\":null,\"children\":null,\"chapterExtends\":null}],\"chapterExtends\":null},{\"chapterId\":\"8a22ecb553eab1280153f3ada7730088\",\"isFree\":\"false\",\"knowledgePointId\":null,\"chapterTitle\":\"第四节 管理会计的基本原则\",\"isLeaf\":\"false\",\"tasks\":null,\"chapterFiles\":null,\"children\":[{\"chapterId\":\"8a22ecb55b1ec7e9015b428f72b40643\",\"isFree\":\"false\",\"knowledgePointId\":\"\",\"chapterTitle\":\"知识点1 管理会计的基本原则\",\"isLeaf\":\"true\",\"tasks\":[{\"apiKey\":\"q6pLhLMSit3QuuYAD4TIyQ3pJNKiY0Ez\",\"taskId\":\"8a22ecb553eab1280154047a85fd00c0\",\"videoCcid\":\"597686C27C1E399E9C33DC5901307461\",\"videoTime\":974,\"taskType\":\"video\",\"title\":\"知识点1 管理会计的基本假设和原则\",\"taskLevel\":null,\"id\":\"8a22ecb553eab128015404472fdc00a4\",\"videoSiteId\":\"D550E277598F7D23\",\"attachmentPath\":\"/upload/201702/b9ce17fb3dca44a39cb4a2d7ac07d1bc.pdf\",\"express\":null}],\"chapterFiles\":null,\"children\":null,\"chapterExtends\":null}],\"chapterExtends\":null}],\"chapterExtends\":null},{\"chapterId\":\"8a22ecb553eab1280153f37e94c40082\",\"isFree\":\"true\",\"knowledgePointId\":null,\"chapterTitle\":\"第二章 成本会计基础\",\"isLeaf\":\"false\",\"tasks\":null,\"chapterFiles\":null,\"children\":[{\"chapterId\":\"8a22ecb553eab1280153f3aeb5a00089\",\"isFree\":\"false\",\"knowledgePointId\":null,\"chapterTitle\":\"前导\",\"isLeaf\":\"true\",\"tasks\":[{\"apiKey\":\"q6pLhLMSit3QuuYAD4TIyQ3pJNKiY0Ez\",\"taskId\":\"8a22ecb553eab1280154047b2ac200c1\",\"videoCcid\":\"12D3532E116F451E9C33DC5901307461\",\"videoTime\":236,\"taskType\":\"video\",\"title\":\"前导课\",\"taskLevel\":null,\"id\":\"8a22ecb553eab1280154044ce58d00af\",\"videoSiteId\":\"D550E277598F7D23\",\"attachmentPath\":\"\",\"express\":null}],\"chapterFiles\":null,\"children\":null,\"chapterExtends\":null},{\"chapterId\":\"8a22ecb553eab1280153f3af23ec008a\",\"isFree\":\"false\",\"knowledgePointId\":null,\"chapterTitle\":\"第一节 成本的概述\",\"isLeaf\":\"false\",\"tasks\":null,\"chapterFiles\":null,\"children\":[{\"chapterId\":\"8a22ecb55b1ec7e9015b428fc3050644\",\"isFree\":\"false\",\"knowledgePointId\":\"\",\"chapterTitle\":\"知识点1 成本的概述\",\"isLeaf\":\"true\",\"tasks\":[{\"apiKey\":\"q6pLhLMSit3QuuYAD4TIyQ3pJNKiY0Ez\",\"taskId\":\"8a22ecb553eab1280154047c42aa00c2\",\"videoCcid\":\"046063D29FF4BB029C33DC5901307461\",\"videoTime\":1228,\"taskType\":\"video\",\"title\":\"知识点1 成本的概述\",\"taskLevel\":null,\"id\":\"8a22ecb553eab1280154044dc65c00b0\",\"videoSiteId\":\"D550E277598F7D23\",\"attachmentPath\":\"/upload/201702/1190b1db4b4b4c94bd2cb72f57c43b25.pdf\",\"express\":null}],\"chapterFiles\":null,\"children\":null,\"chapterExtends\":null}],\"chapterExtends\":null},{\"chapterId\":\"8a22ecb553eab1280153f3afdeb0008b\",\"isFree\":\"false\",\"knowledgePointId\":null,\"chapterTitle\":\"第二节 成本分类\",\"isLeaf\":\"false\",\"tasks\":null,\"chapterFiles\":null,\"children\":[{\"chapterId\":\"8a22ecb55b1ec7e9015b42900abd0645\",\"isFree\":\"false\",\"knowledgePointId\":\"\",\"chapterTitle\":\"知识点1 财务会计中的成本分类\",\"isLeaf\":\"true\",\"tasks\":[{\"apiKey\":\"q6pLhLMSit3QuuYAD4TIyQ3pJNKiY0Ez\",\"taskId\":\"8a22ecb553eab1280154047dc29300c3\",\"videoCcid\":\"CFD7A741EC682FA29C33DC5901307461\",\"videoTime\":1234,\"taskType\":\"video\",\"title\":\"知识点1 财务会计中成本的分类\",\"taskLevel\":null,\"id\":\"8a22ecb55aeff242015b14aa07ca0338\",\"videoSiteId\":\"D550E277598F7D23\",\"attachmentPath\":\"\",\"express\":null}],\"chapterFiles\":null,\"children\":null,\"chapterExtends\":null},{\"chapterId\":\"8a22ecb55b1ec7e9015b429045f60646\",\"isFree\":\"false\",\"knowledgePointId\":\"\",\"chapterTitle\":\"知识点2 成本性态分析\",\"isLeaf\":\"true\",\"tasks\":[{\"apiKey\":\"q6pLhLMSit3QuuYAD4TIyQ3pJNKiY0Ez\",\"taskId\":\"8a22ecb553eab12801540481f60200c4\",\"videoCcid\":\"E541DE80C943D0819C33DC5901307461\",\"videoTime\":1310,\"taskType\":\"video\",\"title\":\"知识点2 成本性态分析\",\"taskLevel\":null,\"id\":\"8a22ecb553eab1280154044e95e100b2\",\"videoSiteId\":\"D550E277598F7D23\",\"attachmentPath\":\"/upload/201704/1692af46a74946afa94c1e82b277254d.pdf\",\"express\":null}],\"chapterFiles\":null,\"children\":null,\"chapterExtends\":null},{\"chapterId\":\"8a22ecb55b1ec7e9015b42909bf60647\",\"isFree\":\"false\",\"knowledgePointId\":\"\",\"chapterTitle\":\"知识点3 短期决策下的成本概念\",\"isLeaf\":\"true\",\"tasks\":[{\"apiKey\":\"q6pLhLMSit3QuuYAD4TIyQ3pJNKiY0Ez\",\"taskId\":\"8a22ecb553eab12801540482853a00c5\",\"videoCcid\":\"4D61D12747687DF99C33DC5901307461\",\"videoTime\":1315,\"taskType\":\"video\",\"title\":\"知识点3 短期决策下的成本概念-1\",\"taskLevel\":null,\"id\":\"8a22ecb553eab1280154044eff7200b4\",\"videoSiteId\":\"D550E277598F7D23\",\"attachmentPath\":\"/upload/201702/223feb776d5a4ff3b36a16a36977d194.pdf\",\"express\":null},{\"apiKey\":\"q6pLhLMSit3QuuYAD4TIyQ3pJNKiY0Ez\",\"taskId\":\"8a22ecb553eab12801540482b1a900c6\",\"videoCcid\":\"B9AD8B8C5F613F059C33DC5901307461\",\"videoTime\":803,\"taskType\":\"video\",\"title\":\"知识点3 短期决策下的成本概念-2\",\"taskLevel\":null,\"id\":\"8a22ecb553eab1280154044f381100b5\",\"videoSiteId\":\"D550E277598F7D23\",\"attachmentPath\":\"\",\"express\":null}],\"chapterFiles\":null,\"children\":null,\"chapterExtends\":null}],\"chapterExtends\":null}],\"chapterExtends\":null},{\"chapterId\":\"8a22ecb553eab1280153f37f16340083\",\"isFree\":\"true\",\"knowledgePointId\":null,\"chapterTitle\":\"第三章 财务会计基础\",\"isLeaf\":\"false\",\"tasks\":null,\"chapterFiles\":null,\"children\":[{\"chapterId\":\"8a22ecb553eab1280153f3b0337b008c\",\"isFree\":\"false\",\"knowledgePointId\":null,\"chapterTitle\":\"前导\",\"isLeaf\":\"true\",\"tasks\":[{\"apiKey\":\"q6pLhLMSit3QuuYAD4TIyQ3pJNKiY0Ez\",\"taskId\":\"8a22ecb553eab128015404832d2300c7\",\"videoCcid\":\"C9875EB0FC628EC09C33DC5901307461\",\"videoTime\":303,\"taskType\":\"video\",\"title\":\"前导课\",\"taskLevel\":null,\"id\":\"8a22ecb553eab12801540447e63100a5\",\"videoSiteId\":\"D550E277598F7D23\",\"attachmentPath\":\"\",\"express\":null}],\"chapterFiles\":null,\"children\":null,\"chapterExtends\":null},{\"chapterId\":\"8a22ecb553eab1280153f3b28f04008d\",\"isFree\":\"false\",\"knowledgePointId\":null,\"chapterTitle\":\"第一节 财务会计概述\",\"isLeaf\":\"false\",\"tasks\":null,\"chapterFiles\":null,\"children\":[{\"chapterId\":\"8a22ecb55b1ec7e9015b4290e0d00648\",\"isFree\":\"false\",\"knowledgePointId\":\"\",\"chapterTitle\":\"知识点1 财务会计的基本要素\",\"isLeaf\":\"true\",\"tasks\":[{\"apiKey\":\"q6pLhLMSit3QuuYAD4TIyQ3pJNKiY0Ez\",\"taskId\":\"8a22ecb553eab12801540483c08200c8\",\"videoCcid\":\"9FEC4E4EFA2461F19C33DC5901307461\",\"videoTime\":869,\"taskType\":\"video\",\"title\":\"知识点1 财务会计的基本要素\",\"taskLevel\":null,\"id\":\"8a22ecb553eab1280154044a5a8400a7\",\"videoSiteId\":\"D550E277598F7D23\",\"attachmentPath\":\"/upload/201703/a1af2e68aa4648cba8be16406e71d8c6.pdf\",\"express\":null}],\"chapterFiles\":null,\"children\":null,\"chapterExtends\":null}],\"chapterExtends\":null},{\"chapterId\":\"8a22ecb553eab1280153f3b3983e008e\",\"isFree\":\"false\",\"knowledgePointId\":null,\"chapterTitle\":\"第二节 会计要素的分类\",\"isLeaf\":\"false\",\"tasks\":null,\"chapterFiles\":null,\"children\":[{\"chapterId\":\"8a22ecb55b1ec7e9015b429110200649\",\"isFree\":\"false\",\"knowledgePointId\":\"\",\"chapterTitle\":\"知识点1 资产要素\",\"isLeaf\":\"true\",\"tasks\":[{\"apiKey\":\"q6pLhLMSit3QuuYAD4TIyQ3pJNKiY0Ez\",\"taskId\":\"8a22ecb553eab1280154048549a100c9\",\"videoCcid\":\"E6F24766709759E59C33DC5901307461\",\"videoTime\":957,\"taskType\":\"video\",\"title\":\"知识点1 资产要素\",\"taskLevel\":null,\"id\":\"8a22ecb553eab1280154044af56d00a8\",\"videoSiteId\":\"D550E277598F7D23\",\"attachmentPath\":\"/upload/201705/fcfa40b606db404895be16f1b2053f79.pdf\",\"express\":null}],\"chapterFiles\":null,\"children\":null,\"chapterExtends\":null},{\"chapterId\":\"8a22ecb55b1ec7e9015b42914044064a\",\"isFree\":\"false\",\"knowledgePointId\":\"\",\"chapterTitle\":\"知识点2 负债要素\",\"isLeaf\":\"true\",\"tasks\":[{\"apiKey\":\"q6pLhLMSit3QuuYAD4TIyQ3pJNKiY0Ez\",\"taskId\":\"8a22ecb553eab12801540485b5ff00ca\",\"videoCcid\":\"429903A1FCE4237E9C33DC5901307461\",\"videoTime\":677,\"taskType\":\"video\",\"title\":\"知识点2 负债要素\",\"taskLevel\":null,\"id\":\"8a22ecb553eab1280154044b8c0200aa\",\"videoSiteId\":\"D550E277598F7D23\",\"attachmentPath\":\"/upload/201702/3bfd1a77c7184f0ea7be9af76c834578.pdf\",\"express\":null}],\"chapterFiles\":null,\"children\":null,\"chapterExtends\":null},{\"chapterId\":\"8a22ecb55b1ec7e9015b42917097064b\",\"isFree\":\"false\",\"knowledgePointId\":\"\",\"chapterTitle\":\"知识点3 所有者权益\",\"isLeaf\":\"true\",\"tasks\":[{\"apiKey\":\"q6pLhLMSit3QuuYAD4TIyQ3pJNKiY0Ez\",\"taskId\":\"8a22ecb553eab12801540486417500cb\",\"videoCcid\":\"35D1EBCCC9D174539C33DC5901307461\",\"videoTime\":716,\"taskType\":\"video\",\"title\":\"知识点3 所有者权益要素\",\"taskLevel\":null,\"id\":\"8a22ecb553eab1280154044bc61700ab\",\"videoSiteId\":\"D550E277598F7D23\",\"attachmentPath\":\"/upload/201702/a57911a75fef471694d44e9dd75cfded.pdf\",\"express\":null}],\"chapterFiles\":null,\"children\":null,\"chapterExtends\":null},{\"chapterId\":\"8a22ecb55b1ec7e9015b4291a30f064c\",\"isFree\":\"false\",\"knowledgePointId\":\"\",\"chapterTitle\":\"知识点4 收入要素\",\"isLeaf\":\"true\",\"tasks\":[{\"apiKey\":\"q6pLhLMSit3QuuYAD4TIyQ3pJNKiY0Ez\",\"taskId\":\"8a22ecb553eab128015404868b2800cc\",\"videoCcid\":\"9FC98FC38164DD1B9C33DC5901307461\",\"videoTime\":594,\"taskType\":\"video\",\"title\":\"知识点4 收入要素\",\"taskLevel\":null,\"id\":\"8a22ecb553eab1280154044c22a700ad\",\"videoSiteId\":\"D550E277598F7D23\",\"attachmentPath\":\"/upload/201702/592693fe6b234ed49f4a90c48cc4b132.pdf\",\"express\":null}],\"chapterFiles\":null,\"children\":null,\"chapterExtends\":null},{\"chapterId\":\"8a22ecb55b1ec7e9015b4291d20a064d\",\"isFree\":\"false\",\"knowledgePointId\":\"\",\"chapterTitle\":\"知识点5 费用和利润类要素\",\"isLeaf\":\"true\",\"tasks\":[{\"apiKey\":\"q6pLhLMSit3QuuYAD4TIyQ3pJNKiY0Ez\",\"taskId\":\"8a22ecb553eab12801540486cce400cd\",\"videoCcid\":\"84DFF8BDDE292B079C33DC5901307461\",\"videoTime\":1153,\"taskType\":\"video\",\"title\":\"知识点5 费用和利润类要素\",\"taskLevel\":null,\"id\":\"8a22ecb553eab1280154044c7d9e00ae\",\"videoSiteId\":\"D550E277598F7D23\",\"attachmentPath\":\"/upload/201702/c18f86bb73c44a7ca2469e88136423d6.pdf\",\"express\":null}],\"chapterFiles\":null,\"children\":null,\"chapterExtends\":null}],\"chapterExtends\":null}],\"chapterExtends\":null}],\"bigCoverPath\":\"/upload/201507/32b2575cc3094dde8461f32731ea3058.png\",\"subjectName\":\"CMA 中文 Part-1\",\"outline\":\"\",\"aim\":\"P1前导课主要学习管理会计、财务会计、成本会计的基础知识，前导课偏重基础知识的理解，要求重点掌握管理会计与财务会计的联系与区别，分别从管理会计和财务会计的角度理解并记忆成本的分类，以及财务报表的六大要素\",\"versionId\":\"ff808081491181a3014917d1bec90762\",\"effectiveDay\":280,\"coverPath\":\"/upload/201604/92da0abdac4a45f5b46f9546ade771ac.jpg\",\"teacherImage\":\"/upload/201606/09c9342818e24393a970aa93d25b9a4d.png\",\"courseModuleType\":\"KNOWLEDGE_MODULE\",\"subjectId\":\"ff808081486933e601489c799f0f0868\",\"courseId\":\"8a22ecb553eab1280153f36f380a007f\",\"courseName\":\"CMA Part I 中文 前导\",\"lastModifyTime\":1460078,\"taskNum\":\"21\",\"taskTotal\":\"21\",\"createTime\":1460078065,\"chapterNum\":\"48\",\"teacherHonor\":\"吴奇奇\",\"subjectIndex\":50,\"categoryId\":\"ff808081486933e601489c4662f60851\",\"categoryIndex\":10}]"}
-// var task_tpl = $('#task_tpl').html();
-// ret_data = JSON.parse(aa.courseJson) 		
-// course_detail = ret_data[0];
-// var content = doT.template(task_tpl);
-// $('#chaTask').html(content(course_detail)).show();
 
     // tasksCache();
     function initDom(){
@@ -85,68 +67,51 @@ var is_debug = false;
 	         api.refreshHeaderLoadDone();
 	     }, 100);
 	     $('body').removeClass('checking');
+	     var len = 0; 
 	   
 	   courseId = api.pageParam.courseId;
 	   cache_model.getCourseJsonWithCourseId({"userId":getstor('memberId'),"courseId":courseId},function(ret,err){
-	   		
 	   		var ret_data = JSON.parse(JSON.parse(ret.data)[0].courseJson);
 	   		var task_tpl = $('#task_tpl').html();
 	   		
 	      course_detail = ret_data[0];
 	      var content = doT.template(task_tpl);
-	      // getVersionId(ret_data[0])
-	      $('#chaTask').html(content(course_detail)).show();
-	      api.parseTapmode();
-	      initDomDownStatus();
-	      init_check();
-	      task_arr = save_tasks(course_detail);
-	      
-      	  courseId = course_detail.courseId; //课程id
-      	  var len = 0;
- 		  $.each($(".video-catego"),function(k,v){
-	     	 if($(v).css("display") != "none"){
-	     		len++;
-	     	 }
-	      })
-	      if(len<1){
-	  	     $('#chaTask').html('');
-		     $('body').addClass('null');
-		     return false;
-	      }
 
+	      $('#chaTask').html(content(course_detail)).show();
+	      initDomDownStatus();
+	      task_arr = save_tasks(course_detail);
+      	  courseId = course_detail.courseId; //课程id
 	   })
-	 
+//	      
+	      
+	      
+	      
+//		 var len = 0;
+//		 $.each($(".video-catego"),function(k,v){
+//	     	 if($(v).css("display") != "none"){
+//	     		len++;
+//	     	 }
+//	     })
+//	     alert(len)
+//	     if(len<1){
+//	  	   $('#chaTask').html('');
+//		   $('body').addClass('null');
+//		   return false;
+//	     }
     }
 	function setSpeed(){
 		cache_model.getCurrentDownloadVideoSize({"userId" : getstor('memberId')},function(ret,err){
     	
 	    	var videoId = ret.currentVideoId;
-	    	api.getFreeDiskSpace(function(ret, err) {
-	             var size = (ret.size / 1000 / 1000).toFixed(2);
-	             if (Math.ceil(size) < 300) {
-	                clearInterval(down_timer);
-	                //clearTimeout(down_setTimeout);
-	                clearInterval(getStatusTime);
-	                $('.down-progress[type="1"]').attr({
-	                    type : 2
-	                }).siblings('.down_speed').html('').addClass('none');
-	                api.toast({
-	                    msg : '可用空间不足,下载已暂停',
-	                    location : 'middle'
-	                });
-	             } else {
-	                $(".space").html("可用空间" + size + "MB<span></span>");
-	                
-	             }
-	        });
 	   		var speedT = $api.getStorage("speedT"+videoId) ? $api.getStorage("speedT"+videoId) : 0;
 	   		$api.setStorage("speedT"+videoId,ret.data);
+	   		
 	   		speedTime = ret.data - speedT;	
 	   		if(speedTime<0){
 	   			speedTime = 0;
 	   		}		 
 			var down_speed = getFormatSize(speedTime);
-			$('.down-progress[type="1"]').parent().prev().find(".v-name").find("span").eq(1).text(down_speed);
+	       	$('.down-progress[type="1"]').parent().prev().find(".v-name").find("span").eq(1).text(down_speed);
 	       	$.each($('.down-progress[type="2"]'),function(){
 	       		$(this).parent().prev().find(".v-name").find("span").eq(1).text("等待中");
 	       	})
@@ -156,7 +121,7 @@ var is_debug = false;
 	       	$.each($('.down-progress[type="4"]'),function(){
 	       		$(this).parent().prev().find(".v-name").find("span").eq(1).text("完成");
 	       	})
-
+		
 	   })
 	}
     apiready = function(){
@@ -170,7 +135,8 @@ var is_debug = false;
       getStatusTime = setInterval(function(){
           getdownrecord();
           setSpeed();
-      },2000)
+      },1000)
+      init_check();
       
 //    api.setRefreshHeaderInfo({
 //      visible: true,
@@ -187,22 +153,11 @@ var is_debug = false;
       api.addEventListener({
           name: 'flush_catalog'
       }, function(ret) {
-      		clearInterval(getStatusTime);
       		getStatusTime = setInterval(function(){
 	          getdownrecord();
 	          setSpeed();
-	      },2000)
+	      },1000)
       })
-      api.addEventListener({
-          name: 'open_getStatusTime'
-      }, function(ret) {
-      		clearInterval(getStatusTime);
-      		getStatusTime = setInterval(function(){
-	          getdownrecord();
-	          setSpeed();
-	      },2000)
-      })
-
       api.addEventListener({
           name: 'opena'
       }, function(ret) {
@@ -271,24 +226,16 @@ var is_debug = false;
           }
       });
 
-     //监听关闭
-    api.addEventListener({
-        name : 'closeFrameAll'
-    }, function() {
-        api.closeFrame();
-    });
-}
+      
+    }
       
 function init_check() {
-	$('.video-catego').on("click","dd",function() {
-		if($(this).find(".icon-check").css("display") != "none"){
-			if ($(this).find(".icon-check").hasClass('active')) {
-		        $(this).find(".icon-check").removeClass('active')
-		    } else {
-		        $(this).find(".icon-check").addClass('active');
-		    }
-		}	
-	    
+	$('.chapter-task').on("click",".icon-check",function() {
+	    if ($(this).hasClass('active')) {
+	        $(this).removeClass('active')
+	    } else {
+	        $(this).addClass('active');
+	    }
 	});
 }  
 
@@ -299,8 +246,7 @@ function next(obj, num1 , courseId) {
       if (isEmpty(tmp_course_detail)) {
           //获取课程的详细信息
           //api/v2.1/course/courseDetail，接口编号：004-006
-          // ajaxRequest('api/v2.1/course/courseDetail', 'get', {
-          ajaxRequest('api/teachsource/course/courseDetail', 'get', {
+          ajaxRequest('api/v2.1/course/courseDetail', 'get', {
               courseId: courseId
           }, function (ret, err) {//004.006获取课程的详细信息
               if (err) {
@@ -487,7 +433,7 @@ function set_down_status(str){
             break;
         case 'less_space':
             clearInterval(down_timer);
-            //clearTimeout(down_setTimeout);
+            clearTimeout(down_setTimeout);
             is_count = false;
             $(obj).attr({
                 type : 2
@@ -502,7 +448,7 @@ function set_down_status(str){
             break;
         case 'not_wifi':
             clearInterval(down_timer);
-            //clearTimeout(down_setTimeout);
+            clearTimeout(down_setTimeout);
             is_count = false;
             $(obj).attr({
                 type : 2
@@ -517,7 +463,7 @@ function set_down_status(str){
             break;
         case 'deny_down':
             clearInterval(down_timer);
-            //clearTimeout(down_setTimeout);
+            clearTimeout(down_setTimeout);
             is_count = false;
             $(obj).attr({
                 type : 2
@@ -532,7 +478,7 @@ function set_down_status(str){
             break;
         case 'shut_network':
             clearInterval(down_timer);
-            //clearTimeout(down_setTimeout);
+            clearTimeout(down_setTimeout);
             is_count = false;
             $(obj).attr({
                 type : 2
@@ -547,7 +493,7 @@ function set_down_status(str){
             break;
         case 'wait':
             clearInterval(down_timer);
-            //clearTimeout(down_setTimeout);
+            clearTimeout(down_setTimeout);
             is_count = false;
             $(obj).attr({
                 'type' : 2
@@ -556,7 +502,7 @@ function set_down_status(str){
         case '1':
         case 1:
             clearInterval(down_timer);
-            //clearTimeout(down_setTimeout);
+            clearTimeout(down_setTimeout);
             is_count = false;
             //下载中->暂停
             // $('.down-progress[type="1"]').attr({
@@ -661,7 +607,7 @@ function set_down_status(str){
             break;
         case 'end':
             clearInterval(down_timer);
-            //clearTimeout(down_setTimeout);
+            clearTimeout(down_setTimeout);
             is_count = false;
             $(obj).attr({
                 type : 4
