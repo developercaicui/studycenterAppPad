@@ -137,7 +137,11 @@
           var param = {};
           param.courseId = api.pageParam.courseId;
           param.token = $api.getStorage('token');
-          param.isU = api.pageParam.isU;
+          if(api.pageParam.isU == "2"){
+            param.isU = true;
+          }else{
+            param.isU = false;
+          }
           param.orderItemId = data.orderID_item_id;
           param.examTime = $('select[name=setTime]').val();
           api.showProgress({
@@ -145,7 +149,7 @@
               title: '激活中',
               modal: false
           });
-          ajaxRequest('api/v2/course/active', 'get', param, function (ret, err) {//008.002激活课程
+          ajaxRequest('api/business/order/courseActive/v1.0', 'get', param, function (ret, err) {//008.002激活课程
               api.hideProgress();
               if (err) {
                   api.toast({
