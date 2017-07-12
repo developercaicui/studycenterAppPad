@@ -247,7 +247,10 @@
           });
           api.sendEvent({
             name: 'flush_catalog'
-        });
+          });
+          api.sendEvent({
+            name: 'reloadPage'
+          });
       }
       function isSolidcircle(type, chap_id, task_id, course_id, from) {
           if (isEmpty(course_id)) {

@@ -478,15 +478,16 @@ var debug = false;
 var show_pro = true;
 var common_url, static_url;
 if (debug) {
-	//测试地址
-	common_url = 'http://demo.caicui.com';
-	// common_url = 'https://demoapi.caicui.com';
-	static_url = 'http://demo.caicui.com';
+    //测试地址
+    common_url = 'http://demo.caicui.com';
+    //common_url = 'https://demoapi.caicui.com';
+    static_url = 'http://demo.caicui.com';
 } else {
-	//正式地址
-	common_url = 'http://api.caicui.com';
-	// common_url = 'https://apis.caicui.com';
-	static_url = 'http://static.caicui.com';
+    //正式地址
+    common_url = 'http://api.caicui.com';
+    //common_url = 'https://apis.caicui.com';
+    //static_url = 'http://static.caicui.com'
+    static_url = 'http://cdnimg.caicui.com';
 }
 var default_img = static_url + '/upload/201501/titletit.png';
 //ajax重写
@@ -1082,6 +1083,7 @@ function video_cache(method, title, ccid, UserId, apiKey, callback) {
 		   //      			return;
 		   //      		}
 					// callback(ret, err);
+					
 					if (api.systemType == "ios" && parseInt(ret.status) == 2) {
                         return false;
                     }
@@ -1410,7 +1412,7 @@ function mydown(result) {
 	            "courseId" : param.courseId,
 	            "courseJson" : JSON.stringify(param.courseJson)
 	        },function(ret,err){
-	//			alert(JSON.stringify(ret))
+				// alert(JSON.stringify(ret))
 	        })
         }else{
         	cache_model.inserCourseDetailJson({
