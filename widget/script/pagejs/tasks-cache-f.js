@@ -96,9 +96,11 @@ var is_debug = false;
 	      var content = doT.template(task_tpl);
 	      // getVersionId(ret_data[0])
 	      $('#chaTask').html(content(course_detail)).show();
-	      api.parseTapmode();
+	      
 	      initDomDownStatus();
 	      init_check();
+
+	      api.parseTapmode();
 	      task_arr = save_tasks(course_detail);
 	      
       	  courseId = course_detail.courseId; //课程id
@@ -160,7 +162,6 @@ var is_debug = false;
 	   })
 	}
     apiready = function(){
-      
       
       //1:获取所有下载记录并解析
       getdownrecord();
@@ -428,6 +429,9 @@ function judge_task(task_info, lastProgress) {
   });
 }  
 
+/*================================================================*/
+
+
 function set_down_status(str){
     //var data=JSON.parse(str);
     var data=str;
@@ -445,7 +449,7 @@ function set_down_status(str){
     if(!isEmpty(chapterIdC) && !isEmpty(chapterIdA) && !isEmpty(chapterIdB)) id=chapterIdC;
     // var obj = $('#' + id);
     var obj = $('.task' + item);
-   
+
     switch (type) {
         case 'error':
             $('.down-progress[type="1"]').attr({
@@ -570,10 +574,11 @@ function set_down_status(str){
         case '2':
         case 2:
             //暂停->下载中
-            // $('.down-progress[type="1"]').attr({
-            //     type : 2
-            // });
-            // $('.down_speed').html('').addClass('none');
+            $('.down-progress[type="1"]').parent().prev().find(".v-name").find("span").eq(1).text("等待中");
+            $('.down-progress[type="1"]').attr({
+                type : 2
+            });
+            
             $(obj).attr({
                 type : 2
             });

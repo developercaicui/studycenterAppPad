@@ -1314,7 +1314,7 @@ function down(_this) {
 
 function set_down(data) {
 	var res = JSON.stringify(data);
-	var jsfun = "if(typeof(eval('set_down_status')=='function')){set_down_status(" + res + ");}";
+	var jsfun = "set_down_status(" + res + ")";
 	api.hideProgress();
 	api.execScript({
 		name : 'course',
@@ -1332,7 +1332,11 @@ function set_down(data) {
 		script : jsfun
 	});
 	api.execScript({
-        name: 'tasks-cache',
+        frameName: 'tasks-cache-f',
+        script: jsfun
+    });
+    api.execScript({
+    	name : 'course',
         frameName: 'tasks-cache-f',
         script: jsfun
     });
