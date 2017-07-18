@@ -1275,7 +1275,7 @@ function down(_this) {
     param.expirationTime = coursestatus.expirationTime;                
     param.isbuy = coursestatus.isbuy;  
 
-    if(type == 3){
+    if(type == 3 && api.systemType != "ios"){
     	var data = {};
     	data.format = "json";
     	data.userid = $(_this).attr("videositeid");
@@ -1392,8 +1392,10 @@ function mydown(result) {
             isbuy : param.isbuy,
             islock : param.islock,
             activestate : param.activestate,
-            videoNum : 10,
-            totalSize : param.totalSize
+            videoNum : 10
+        }
+        if(api.systemType != "ios"){
+            downObj.totalSize = param.totalSize;
         }
 
  		var UserId = result.tasks.videoSiteId;       
@@ -1599,7 +1601,7 @@ function mydown(result) {
                             return false;
                             
                         }
-                 
+                 		stop_down(function(r) {});
                         video_cache('download', title, videoCcid, videoSiteId, apiKey, autoDownCallback);
                         //下载中ui监听
                         // data.type = 'ing';
