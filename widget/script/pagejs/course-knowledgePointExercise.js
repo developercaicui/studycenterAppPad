@@ -8,7 +8,24 @@ var chapter_info;//当前章节详情信息
 var task_info = '';//当前任务信息
 var task_info_detail;
 var task_arr;//所有的任务信息
+
+var knowledgePointExercise;
+var exerciseList;
+var knowledgeList;
+var subjectId;//科目id
+var categoryId;//证书id
+var chapterId;//章节id
+var cacheKnowledgeLevel1Id;
+var cacheKnowledgeLevel2Id;
 var selectClick = false;//是否选择
+var errorNum = 0;//错题数量
+var totalTime = 0;//做题时间
+var examTime = null;
+var last_exercise_nid = 0;
+
+var exam_info = '';//测试题信息
+var user_exam = [];//用户答案
+
 var exam_info = '';//测试题信息
 var user_exam = [];//用户答案
 
@@ -17,6 +34,123 @@ var uncomplate_num = [];//未完成题总数
 var start_time = 0;//开始做题的时间
 var is_all_over = false;//页面是否已经加载出来
 var swiper;
+
+
+//测试
+
+// var result = "8a22ecb55b7a030e015b7b2b75d80092,ff8080814f1c162a014f200e6b482543,ff8080814f1c162a014f200e6d542621,ff8080814f1c162a014f200dc58c208c,ff8080814f1c162a014f200e6ccf25f0,ff8080814f1c162a014f200e69d22486,ff8080814f1c162a014f200e6a0524ac,ff8080814f1c162a014f200e6d632626,ff8080814f1c162a014f200e6a4824d8,ff8080814f1c162a014f200dc20a1fab,ff8080814f1c162a014f200dc2031fa9,ff8080814f1c162a014f200dc1f61fa5,ff8080814f1c162a014f200dc1f31fa4,ff8080814f1c162a014f200dc1ef1fa3,ff8080814f1c162a014f200dc1cd1f9a,ff8080814f1c162a014f200dc1c91f99,ff8080814f1c162a014f200dc1c61f98,ff8080814f1c162a014f200dc04e1f1f,ff8080814f1c162a014f200dbf891ed9,ff8080814f73b419014f870049b51bbc,ff8080814f73b419014f870049b81bbe,ff8080814f73b419014f870049ba1bbf,ff8080814f73b419014f870049bb1bc0,ff8080814f73b419014f870049be1bc2,ff8080814f73b419014f870049c21bc4,ff8080814f73b419014f870049c71bc7,ff8080814f73b419014f870049cf1bcc,8a22ecb55b7a030e015b7b2c4ec00094,8a22ecb55b7a030e015b7b3f0f2b009e,8a22ecb55b7a030e015b7b408fad00a0"
+// exerciseList = result.split(",");
+// var exam_info = [{"id":"ff8080814f73b419014f870049c71bc7","createDate":1441078987000,"modifyDate":1491363470000,"accuracy":0,"answerResolution":"组织战略分析企业行业定位，确定业务组合和识别企业在哪个市场进行竞争","background":null,"context":"[{\"title\":\"描述企业如何实现优异的投资回报的具体计划\",\"isChecked\":false},{\"title\":\"根据五大威胁来分析行业的吸引度：买家力量、供应商力量、竞争者、替代品威胁和新进入者\",\"isChecked\":false},{\"title\":\"企业价值链中的每个活动如何影响成本和差异化的要点\",\"isChecked\":false},{\"title\":\"企业行业定位分析，必要的利弊权衡，组织活动的配称\",\"isChecked\":true}]","exerciseState":"publish","questionTypes":"radio","sn":15105,"title":"企业战略最好地描述为","difficultyId":"ff8080814a7a4010014a7a715a7d00b8","sourceId":"ff8080814f1c162a014f20059e7a16bc","versionId":"ff8080814f73b419014f870049c71bc7","fileName":null,"sheetName":null,"nid":15271}];
+// var exam_tpl = $('#exam_tpl').html();
+// var content = doT.template(exam_tpl);
+// $('#exam_content').html(content(exam_info));
+// swiper = new Swiper('.swiper-container', {
+//     nextButton : '.swiper-button-next',
+//     prevButton : '.swiper-button-prev',
+//     spaceBetween : 0,
+//     speed:100,
+//     // onlyExternal : true,
+//     pagination : '.swiper-pagination',
+//     paginationClickable : true,
+//     paginationBulletRender : function(index, className) {
+//         return '<span class="' + className + '" data-exerciseid="'+exerciseList[index]+'">' + (index + 1) + '</span>';
+//     },
+//     onInit : function(swiper) {
+//         $.each($('.course-test-title'), function (k, v) {
+//             $(v).find('img').attr('src',static_url+$(v).find('img').attr('src'));
+//         });
+//         for(var i in knowledgeList){
+//         	if(knowledgeList[i].status == "1"){
+//         		$('.swiper-pagination-bullet[data-exerciseid='+knowledgeList[i].exercise_id+']').addClass("success");
+//         	}else if(knowledgeList[i].status == "2"){
+//         		$('.swiper-pagination-bullet[data-exerciseid='+knowledgeList[i].exercise_id+']').addClass("danger");
+//         		errorNum++;
+//         	}                    	
+//         }                    
+//         // console.log(JSON.stringify(knowledgeList))
+//         $('.swiper-pagination-bullet').eq(15).nextAll().hide();
+
+//         examTime = setInterval(function(){
+//         	totalTime++;
+//         },1000)
+//     },
+//     onSlideChangeEnd : function(swiper) {
+// 		//保存答题记录
+// 		var num = parseInt($('.swiper-pagination-bullet-active').text());
+//     	if(selectClick){
+//     		saveQuestionRecord(swiper.previousIndex)
+//     	}
+//         getNidExerciseDetail(exerciseList[swiper.activeIndex]);
+//         if(swiper.slides.length>15){
+//             if (num > 8) {
+//                 $('.swiper-pagination-bullet').show().eq(num - 7).prevAll().hide();
+//                 $('.swiper-pagination-bullet').eq(num + 7).nextAll().hide();
+//             }else{
+//                 $('.swiper-pagination-bullet').show().eq(15).nextAll().hide();
+//             }
+//         }    
+//         //切换测试题时保存学习进度
+//         var now_progress = parseInt(swiper.activeIndex) + 1;
+//         var total = swiper.slides.length;
+//         if (now_progress == total) {
+//             var state = 'complate';
+//             //任务已完成
+//         } else {
+//             var state = 'init';
+//             //任务未完成
+//         }
+//         // saveTaskProgress(now_progress, total, state);
+//     }
+
+// });
+
+function getNidExerciseDetail(exerciseId){
+	var exam_tpl = $('#exam_tpl').html();
+	var content = doT.template(exam_tpl);
+	$('#exam_content').empty();
+	selectClick = false;
+	api.showProgress({
+		title : '加载中',
+		modal : false
+	});
+    ajaxRequest('api/teachsource/examen/getNidExerciseDetail', 'get', {exerciseId:exerciseId}, function(rets, errs) {
+        if (rets && rets.state == 'success' && rets.data.length>0) {
+        	
+        	var exam_infoArr = [];
+        	exam_info = rets.data[0];
+        	var htmlData = $("<div>");
+        	for(var i in knowledgeList){
+        		if(knowledgeList[i].exercise_id == exerciseId){
+        			htmlData.html(knowledgeList[i].context);
+        			rets.data[0].context = htmlData.html().replace(/'/g,'');
+        			var contextArr = JSON.parse(rets.data[0].context);
+        			for(var i in contextArr){
+        				if(typeof(contextArr[i]) == "string"){
+	        				contextArr[i] = JSON.parse(contextArr[i]);
+	        			}
+        				if(contextArr[i].title.indexOf("点击这里编辑")>0){
+        					delete  contextArr[i];
+        				}
+        			}
+        			rets.data[0].context = JSON.stringify(contextArr);
+        			
+        		}
+        	}
+        	          	
+			for(var i in exerciseList){	                
+                exam_infoArr.push(rets.data[0]); 	                                           
+            }
+            $('#exam_content').html(content(exam_infoArr));
+            
+            api.hideProgress(); 
+    	}else{
+    		api.toast({
+                  msg: rets.msg
+            });
+    	}
+    });
+    
+}
 
 apiready = function() {
 	//获取参数
@@ -32,139 +166,287 @@ apiready = function() {
 	//chapter_info = api.pageParam.chapter_info;//章节信息
     task_arr = save_tasks(course_detail);
     task_info_detail = api.pageParam.task_info_detail;
-	var examenId = task_info.id;
 
+	var examenId = task_info.id;
+    knowledgePointExercise = api.pageParam.knowledgePointExercise;
+
+    subjectId = course_detail.subjectId;//科目id
+    categoryId = course_detail.categoryId;//证书id
+    chapterId = task_info_detail.chapterId;//章节id
+    cacheKnowledgeLevel1Id = knowledgePointExercise.knowledge_path_level_one_id;//测试知识点1级id
+	cacheKnowledgeLevel2Id = knowledgePointExercise.knowledge_path_level_two_id;//测试知识点2级id
 
 	api.showProgress({
 		title : '加载中',
 		modal : true
 	});
-	ajaxRequest('api/v2.1/testcenter/testexamination', 'get', {
-		examenId : examenId
-	}, function(ret, err) {//004.006获取课程的详细信息
-		if (err) {
-			api.hideProgress();
-			api.toast({
-				msg : err.msg,
-				location : 'middle'
-			});
-			return false;
-		}
-		if (ret && ret.state == 'success') {
+	var params = {
+    	knowledge_point_id : knowledgePointExercise.knowledge_point_id,
+    	member_id : getstor('memberId')
+    }
+    ajaxRequest('api/userAction/examen/get_exercise_knowledge_member_status', 'POST',{
+    	knowledge_points : knowledgePointExercise.knowledge_point_id,
+    	type : "4",
+    	member_id : getstor('memberId')
+    }, function(data, error) {
+    	
+        if (data && data.state == 'success') {
+        	if(data.data.length>0){
+        		last_exercise_nid = data.data[0].last_exercise_nid;
+        	}
+        	ajaxRequest('api/userAction/examen/get_user_knowledge_point_exercise_list', 'get', params, function(rets, errs) {
+		        if (rets && rets.state == 'success') {
+		        	knowledgeList = rets.data;
+		        	
+				    var iframeSite = "http://www.caicui.com/upload/caicui_cache/exercise/"+knowledgePointExercise.exercise_filename;
+				    $.get(iframeSite, function(result){
 
-			exam_info = ret.data;
-			var exam_tpl = $('#exam_tpl').html();
-			var content = doT.template(exam_tpl);
-			$('#exam_content').html(content(exam_info));
-			start_time = get_now_dates();
-			//开始做题的时间
-			$('#result_question').html('本次测试共' + exam_info.totalCount + '道题，<span>' + exam_info.totalCount + '</span>题错误');
-			$.each(exam_info.items, function(k, v) {
-				if (v.questionTypes == 'radio' || v.questionTypes == 'checkbox') {
-					var correct_res = '';
-					var context = JSON.parse(v.context);
-					$.each(context, function(kk, vv) {
-						if (vv.isChecked == true) {
-							correct_res += numToAbc(kk);
-						}
-					});
-				} else if (v.questionTypes == 'matrixRadio' || v.questionTypes == 'matrixCheckbox') {
-					var context = JSON.parse(v.context)[0].items;
-					var correct_res = [];
-					$.each(context, function(kk, vv) {
-						if (vv.isLable == false && vv.isChecked == true) {
-							correct_res[vv.x + vv.y] = true;
-						} else {
-							correct_res[vv.x + vv.y] = false;
-						}
-					});
-				} else {
-					var correct_res = '';
+				        exerciseList = result.replace(/\n/g,"").split(",");
+				        getNidExerciseDetail(exerciseList[last_exercise_nid]);
+
+				        api.parseTapmode();
+				        api.hideProgress();   
+				        setTimeout(function(){
+				            swiper = new Swiper('.swiper-container', {
+				                nextButton : '.swiper-button-next',
+				                prevButton : '.swiper-button-prev',
+				                spaceBetween : 0,
+				                speed:100,
+				                initialSlide : last_exercise_nid,
+				                // onlyExternal : true,
+				                pagination : '.swiper-pagination',
+				                paginationClickable : true,
+				                paginationBulletRender : function(index, className) {
+				                    return '<span class="' + className + '" data-exerciseid="'+exerciseList[index]+'">' + (index + 1) + '</span>';
+				                },
+				                onInit : function(swiper) {
+				                    $.each($('.course-test-title'), function (k, v) {
+				                        $(v).find('img').attr('src',static_url+$(v).find('img').attr('src'));
+				                    });
+				                    for(var i in knowledgeList){
+				                    	if(knowledgeList[i].status == "1"){
+				                    		$('.swiper-pagination-bullet[data-exerciseid='+knowledgeList[i].exercise_id+']').addClass("success");
+				                    	}else if(knowledgeList[i].status == "2"){
+				                    		$('.swiper-pagination-bullet[data-exerciseid='+knowledgeList[i].exercise_id+']').addClass("danger");
+				                    	}                    	
+				                    }                    
+				                    // console.log(JSON.stringify(knowledgeList))
+				                    $('.swiper-pagination-bullet').eq(15).nextAll().hide();
+
+				                    examTime = setInterval(function(){
+				                    	totalTime++;
+				                    },1000)
+				                },
+				                onSlideChangeEnd : function(swiper) {
+									//保存答题记录
+									var num = parseInt($('.swiper-pagination-bullet-active').text());
+				                	if(selectClick){
+				                		saveQuestionRecord(swiper.previousIndex)
+				                	}
+
+				                    getNidExerciseDetail(exerciseList[swiper.activeIndex]);
+				                   
+				                    if(swiper.slides.length>15){
+				                        if (num > 8) {
+				                            $('.swiper-pagination-bullet').show().eq(num - 7).prevAll().hide();
+				                            $('.swiper-pagination-bullet').eq(num + 7).nextAll().hide();
+				                        }else{
+				                            $('.swiper-pagination-bullet').show().eq(15).nextAll().hide();
+				                        }
+				                    }
+				                    //切换测试题时保存学习进度
+				                    var now_progress = parseInt(swiper.activeIndex) + 1;
+				                    var total = swiper.slides.length;
+				                    if (now_progress == total) {
+				                        var state = 'complate';
+				                        //任务已完成
+				                    } else {
+				                        var state = 'init';
+				                        //任务未完成
+				                    }
+				                    // saveTaskProgress(now_progress, total, state);
+				                }
+
+				            });
+				            //根据任务进度，判断默认从第几页开始
+				            if (!isEmpty(last_progress) && last_progress > 1) {
+				                var tmpSlide = last_progress;
+				                if (tmpSlide > 1) {
+				                    swiper.slideTo(tmpSlide - 1, 1000, false);
+				                }
+				            }
+				            is_all_over = true;
+				            //保存任务进度
+				            var now_progress = parseInt(swiper.activeIndex) + 1;
+				            var total = swiper.slides.length;
+				            if (now_progress == total) {
+				                var state = 'complate';
+				                //任务已完成
+				            } else {
+				                var state = 'init';
+				                //任务未完成
+				            }
+				            // saveTaskProgress(now_progress, total, state);
+				        },1000)
+				    });
 				}
-				user_exam[k] = {
-					'user_res' : '',
-					'correct_res' : correct_res
-				};
-			});
-			api.parseTapmode();
-			api.hideProgress();
+		    });
 
-			swiper = new Swiper('.swiper-container', {
-				nextButton : '.swiper-button-next',
-				prevButton : '.swiper-button-prev',
-				spaceBetween : 30,
-				pagination : '.swiper-pagination',
-				paginationClickable : true,
-				paginationBulletRender : function(index, className) {
-					return '<span class="' + className + '">' + (index + 1) + '</span>';
-				},
-				onInit : function(swiper) {
-					$.each($('.course-test-title'), function (k, v) {
-						$(v).find('img').attr('src',static_url+$(v).find('img').attr('src'));
-					});
-					if (swiper.slides.length > 15) {
-						$('.swiper-pagination-bullet').eq(15).nextAll().hide();
-					}
-				},
-				onSlideChangeEnd : function(swiper) {
-					selectClick = false;
-					var num = parseInt($('.swiper-pagination-bullet-active').text());
-					/*
-					if (num > 10) {
-						$('.swiper-pagination-bullet').show().eq(num - 9).prevAll().hide();
-						$('.swiper-pagination-bullet').eq(num + 5).nextAll().hide();
-					}else{
-						$('.swiper-pagination-bullet').show().eq(num - 9).prevAll().show();
-						$('.swiper-pagination-bullet').show().eq(num + 5).nextAll().hide();
-					}
-					*/
-					if(swiper.slides.length>15){
-						if (num > 8) {
-							$('.swiper-pagination-bullet').show().eq(num - 7).prevAll().hide();
-							$('.swiper-pagination-bullet').eq(num + 7).nextAll().hide();
-						}else{
-							$('.swiper-pagination-bullet').show().eq(15).nextAll().hide();
-						}
-					}
+    	}else{
+    		api.toast({
+                  msg: "加载失败，请返回重试！"
+            });
+    	}
+    });
+    
 
-					//切换测试题时保存学习进度
-					var now_progress = parseInt(swiper.activeIndex) + 1;
-					var total = swiper.slides.length;
-					if (now_progress == total) {
-						var state = 'complate';
-						//任务已完成
-					} else {
-						var state = 'init';
-						//任务未完成
-					}
-					saveTaskProgress(now_progress, total, state);
-				}
-			});
 
-			//根据任务进度，判断默认从第几页开始
-			if (!isEmpty(last_progress) && last_progress > 1) {
-				var tmpSlide = last_progress;
-				if (tmpSlide > 1) {
-					swiper.slideTo(tmpSlide - 1, 1000, false);
-				}
-			}
-
-			is_all_over = true;
-			//保存任务进度
-			var now_progress = parseInt(swiper.activeIndex) + 1;
-			var total = swiper.slides.length;
-			if (now_progress == total) {
-				var state = 'complate';
-				//任务已完成
-			} else {
-				var state = 'init';
-				//任务未完成
-			}
-			saveTaskProgress(now_progress, total, state);
-		}
-	});
+	api.addEventListener({
+	      name: 'close-correction2'
+	  }, function(ret) {
+	  	setTimeout(function(){
+	  		for(var i in knowledgeList){
+	        	if(knowledgeList[i].status == "1"){
+	        		$('.swiper-pagination-bullet[data-exerciseid='+knowledgeList[i].exercise_id+']').addClass("success");
+	        	}else if(knowledgeList[i].status == "2"){
+	        		$('.swiper-pagination-bullet[data-exerciseid='+knowledgeList[i].exercise_id+']').addClass("danger");
+	        	}                    	
+	        }                    
+	        // console.log(JSON.stringify(knowledgeList))
+	        $('.swiper-pagination-bullet').eq(15).nextAll().hide();
+	  	},200)
+	  })
 };
 
+//保存答题记录
+function saveQuestionRecord(num){
+	var context = [],status = 2,examenTotalNum = knowledgePointExercise.exercise_count;
+	$(".swiper-slide").eq(num).find(".selector-detail").each(function(key,val){
+		var selectDetail = {
+			"title": $(this).find("p").text(),
+			"isChecked":($(this).attr("data-check") == "true" ? true : false)
+		}
+		if($(this).hasClass("question-selected")){
+			selectDetail.myChecked = true;
+			if($(this).attr("data-check") == "true"){
+				status = 1;
+			}
+		}else{
+			selectDetail.myChecked = false;	
+		}
+		context.push(selectDetail)
+	})
+	if(status == "1" || status == 1){
+		$('.swiper-pagination-bullet').eq(num).removeClass("danger").addClass("success");
+	}else if(status == "2" || status == 2){
+		$('.swiper-pagination-bullet').eq(num).removeClass("success").addClass("danger");
+	} 
+	var errorNum = 0,correctNum = 0;
+	$('.swiper-pagination-bullet').each(function(){
+		if($(this).hasClass("danger")){
+			errorNum++;
+		}else if($(this).hasClass("success")){
+			correctNum++;
+		}
+	})
+	var params = {
+		knowledgePointId : knowledgePointExercise.knowledge_point_id,
+		exerciseId : exam_info.id,
+		memberId : getstor('memberId'),
+		context: "'"+JSON.stringify(context)+"'",
+		status: status,
+		subjectId : subjectId,
+		categoryId : categoryId,
+		courseId : courseId,
+		chapterId : chapterId,
+		cacheKnowledgeLevel1Id : cacheKnowledgeLevel1Id,
+		cacheKnowledgeLevel2Id : cacheKnowledgeLevel2Id,
+		cacheKnowledgePath : cacheKnowledgeLevel1Id+","+cacheKnowledgeLevel2Id,
+		progress : knowledgeList.length,
+		lastExerciseNid : num,
+		errorNum : errorNum,
+		totalTime : totalTime,
+		examenNum : 0,
+		examenName : task_info.title,
+		examenTotalNum : examenTotalNum,
+		examenType : "knowledge",
+		isFinish : 0,
+		taskId : task_info.taskId,
+		currentProgress : swiper.previousIndex,
+		exerciseTitle : exam_info.title,
+		correctNum : correctNum
+	}
+	// console.log(errorNum) 
+	// console.log(JSON.stringify(params.context)) 
+	// var isPush = true;
+	for(var i in knowledgeList){
+		if(knowledgeList[i].exercise_id == params.exerciseId){
+			// isPush = false;
+			knowledgeList[i].context= params.context;
+			knowledgeList[i].status= params.status;
+			break;
+		}else{
+			knowledgeList.push({
+				"exercise_id":params.exerciseId,
+				"context":params.context,
+				"status":params.status
+			});
+		}
+	}	
+	if(knowledgeList.length<1){
+		knowledgeList.push({
+			"exercise_id":params.exerciseId,
+			"context":params.context,
+			"status":params.status
+		});
+	}
+	// if(isPush){
+	// 	knowledgeList.push({"exercise_id":params.exerciseId,"context":params.context});
+	// }
+	ajaxRequest('api/userAction/examen/setMemberExerciseState', 'POST', params, function(rets, errs) {
+        if (rets && rets.state == 'success') {
+        	
+    	}else{
+    		// api.toast({
+      //             msg: rets.msg
+      //         });
+    	}
+    });
+
+
+    var tmp_progress = errorNum+correctNum;
+    
+    var total = examenTotalNum;
+    if (total <= tmp_progress) {
+        var state = 'complate';
+    } else {
+        var state = 'init';
+    }
+    saveTaskProgress(tmp_progress, total, state);
+}
+
+function saveTaskProgress(now_progress, total, state) {
+  
+    var videoData = {
+        now_progress: now_progress,
+        total: total,
+        state: state,
+        task_info: task_info,
+        task_info_detail: task_info_detail,
+        course_detail: course_detail
+    };
+   
+    $api.setStorage('saveTaskProgress', videoData);
+   
+    var jsfun = "DosaveTaskProgress();";
+    api.execScript({
+        name: 'root',
+        script: jsfun
+    });
+
+    //数据库与服务器之间的同步
+
+}
 //数字转成ABC，用于选择题的选项编号
 function numToAbc(num) {
 	var Abc = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'];
@@ -174,7 +456,7 @@ function numToAbc(num) {
 //点击查看试题解析
 function showAnalysis(obj, num) {
 	//选择题要判断用户的答案是否正确，其他题只要做了就算正确
-	var questionInfo = exam_info.items[num];
+	var questionInfo = exam_info;
 	//当前这道题的信息
 	var examType = questionInfo['questionTypes'];
 	//测试题类型
@@ -256,22 +538,9 @@ function select_radio(obj, num, res) {
 	$(obj).addClass('question-selected');
 	$(obj).siblings().removeClass('question-selected');
 	selectClick = true;
-    if($(obj).attr("data-check") == "true"){
-        $('.swiper-pagination-bullet').eq(swiper.activeIndex).removeClass("danger").addClass("success");
-    }else{
-        $('.swiper-pagination-bullet').eq(swiper.activeIndex).removeClass("success").addClass("danger");
-    }
-    var errorNum = $(".danger").length;
-    var correctNum = $(".success").length;
-    var tmp_progress = errorNum+correctNum;
-    
-    var total = $('.swiper-pagination-bullet').length;
-    if (total <= tmp_progress) {
-        var state = 'complate';
-    } else {
-        var state = 'init';
-    }
-    saveTaskProgress(tmp_progress, total, state);
+	if((knowledgePointExercise.exercise_count-1) == swiper.activeIndex){
+		saveQuestionRecord(swiper.activeIndex)
+	}
 }
 
 //用户选择多选试题选项
@@ -282,23 +551,9 @@ function select_checkbox(obj, num, res) {
 		$(obj).addClass('question-selected');
 	}
 	selectClick = true;
-     if($(obj).attr("data-check") == "true"){
-        $('.swiper-pagination-bullet').eq(swiper.activeIndex).removeClass("danger").addClass("success");
-    }else{
-        $('.swiper-pagination-bullet').eq(swiper.activeIndex).removeClass("success").addClass("danger");
-    }
-
-    var errorNum = $(".danger").length;
-    var correctNum = $(".success").length;
-    var tmp_progress = errorNum+correctNum;
-    
-    var total = $('.swiper-pagination-bullet').length;
-    if (total <= tmp_progress) {
-        var state = 'complate';
-    } else {
-        var state = 'init';
-    }
-    saveTaskProgress(tmp_progress, total, state);
+	if((knowledgePointExercise.exercise_count-1) == swiper.activeIndex){
+		saveQuestionRecord(swiper.activeIndex)
+	}
 }
 
 //矩阵选择题，点击小圆圈选中和取消
@@ -310,31 +565,6 @@ function select_matrix(obj) {
 	}
 }
 
-//保存任务进度
-function saveTaskProgress(now_progress, total, state) {
-
-    var videoData = {
-        now_progress: now_progress,
-        total: total,
-        state: state,
-        task_info: task_info,
-        task_info_detail: task_info_detail,
-        course_detail: course_detail
-    };
-
-    $api.setStorage('saveTaskProgress', videoData);
-
-    var jsfun = "DosaveTaskProgress();";
-    api.execScript({
-        name: 'root',
-        script: jsfun
-    });
-
-    //数据库与服务器之间的同步
-
-}
-
-//交卷
 function jiaojuan() {
 	if (is_all_over == false) {
 		api.toast({
@@ -918,19 +1148,19 @@ function createQuestion() {
 
 //纠错
 function jiucuo() {
-    
-   var exam_id = exam_info.items[swiper.activeIndex];     
+        
    var param = {
-	    //下个页面要用到的一些参数
-	    courseId: courseId, //课程id
-	    course_detail: course_detail, //课程详情
-	    progress: parseInt(swiper.activeIndex) + 1, //观看时间进度
-	    //study_progress : study_progress,//任务学习的进度
-	    task_info: task_info,
-	    task_info_detail: task_info_detail,
-	    exam_id : exam_id
-	        //chapter_info : chapter_info
-	}
+            //下个页面要用到的一些参数
+            courseId: courseId, //课程id
+            course_detail: course_detail, //课程详情
+            progress: parseInt(swiper.activeIndex) + 1, //观看时间进度
+            //study_progress : study_progress,//任务学习的进度
+            task_info: task_info,
+            task_info_detail: task_info_detail,
+            data_exercise_id : exam_info.id,
+            exam_info : exam_info
+                //chapter_info : chapter_info
+        }
    myFrame('correction-exam','full',false,this,'',param);
     
     
@@ -985,4 +1215,13 @@ function get_now_dates() {
 	var minute = date_obj.getMinutes();
 	var second = date_obj.getSeconds();
 	return Year + '-' + Month + '-' + Day + ' ' + hour + ':' + minute + ':' + second;
+}
+
+//设置用户选择的记录
+function get_mySelect(data){
+	if(data == 'undefined' || data == 'false'){
+		return ""
+	}else{
+		return "question-selected"
+	}
 }

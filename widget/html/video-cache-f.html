@@ -245,9 +245,18 @@
           api.closeFrame({
             name: 'video-cache-f'
           });
+          var courseId;
+
+          if(api.pageParam.courseId){
+              courseId = api.pageParam.courseId;
+          }
           api.sendEvent({
-            name: 'flush_catalog'
+            name: 'flush_catalog',
+            extra: {
+                courseId:courseId
+            }
           });
+ 
           api.sendEvent({
             name: 'reloadPage'
           });

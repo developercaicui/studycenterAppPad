@@ -711,23 +711,41 @@ function sub() {
 					return false;
 				}
 
+				// param = {
+				// 	token : $api.getStorage('token'),
+				// 	id : param_data.id, //笔记id，如果为空，则为添加，否则为修改
+				// 	content : $('.textarea').val(), //提问内容
+				// 	imgPath : isEmpty(aa) ? '' : aa, //图片数组，图片路径（以’，’分隔）
+				// 	replaytype : 0,
+				// 	//courseId: api.pageParam.courseId,//回答/补充问题时候的课程id
+				// 	//taskId: api.pageParam.taskId,//回答/补充问题时候的任务id
+				// 	soundlen : isEmpty(lx_duration) ? '' : lx_duration, //声音文件的长度
+				// 	soundPath : isEmpty(soundPath) ? '' : soundPath
+				// };
+				var aarr,imges="";
+	            if(!isEmpty(aa)){
+	               aarr = aa.split(",");
+	                for(var i in aarr){
+	                    imges += '<img src="http://cdnstatic.caicui.com/'+aarr[i]+'"><br>'
+	                } 
+	            }
 				param = {
-					token : $api.getStorage('token'),
-					id : param_data.id, //笔记id，如果为空，则为添加，否则为修改
-					content : $('.textarea').val(), //提问内容
-					imgPath : isEmpty(aa) ? '' : aa, //图片数组，图片路径（以’，’分隔）
-					replaytype : 0,
-					//courseId: api.pageParam.courseId,//回答/补充问题时候的课程id
-					//taskId: api.pageParam.taskId,//回答/补充问题时候的任务id
-					soundlen : isEmpty(lx_duration) ? '' : lx_duration, //声音文件的长度
-					soundPath : isEmpty(soundPath) ? '' : soundPath
+	                token : $api.getStorage('token'),
+	                id : pageParam.id, //讨论主题id
+	                pageNo : 1, //(必)
+	                pageSize : 20, //(必)
+	                content : '<p>'+$('.textarea').val()+'</p><br>'+imges, //(必)
+	                replaytype : 0 //(必)
 				};
+				
 				is_define = false;
 				api.showProgress({
 					title : '处理中',
 					modal : true
 				});
-                ajaxRequest('api/studytools/questionreply/v2.1', 'post', param, function(ret, err) {//003.212  问题回答
+
+                // ajaxRequest('api/studytools/questionreply/v2.1', 'post', param, function(ret, err) {//003.212  问题回答
+                ajaxRequest('api/studytools/bbsreply/v1.0', 'post', param, function(ret, err) {//003.212  问题回答
 					api.hideProgress();
 					if (err) {
                         is_define = true;

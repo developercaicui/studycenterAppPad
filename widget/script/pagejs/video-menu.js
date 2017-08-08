@@ -4508,7 +4508,7 @@ function find_extend_file(courseDetail, type) {
 }
 
 //点击本章任务
-function task_event(obj, num, task_id,chapter_id) {
+function task_event(obj, num, task_id,chapter_id,knowledgePointId) {
     $api.setStorage("setchapterId",chapter_id);
     task_info = task_arr[task_id].taskInfo; //任务信息
     clearInterval(getStatusTime);
@@ -4536,10 +4536,62 @@ function task_event(obj, num, task_id,chapter_id) {
         } else {
             var winName = 'course-test';
             var winUrl = 'course-test.html';
-            api.sendEvent({
-                name: 'close_video_demo'
-            });
+            // api.sendEvent({
+            //     name: 'close_video_demo'
+            // });
         }
+
+        if(task_info.taskType == 'knowledgePointExercise'){
+            if (api.connectionType == 'unknown' || api.connectionType == 'none') {
+                  api.alert({
+                      msg: '网络已断开，请检查网络状态'
+                  });
+                  return false;
+              }
+              api.sendEvent({
+                 name: 'close_video_demo'
+              });
+              ajaxRequest('api/extendapi/examen/get_exercise_point_count_cache', 'post',{knowledge_points:knowledgePointId,type:4}, function (ret, err) {//008.005
+                  
+                  if (err) {
+                      api.toast({
+                          msg: err.msg,
+                          location: 'middle'
+                      });
+                  }
+                  if (ret && ret.state == 'success') {
+                      page_param.knowledgePointExercise = ret.data[0];
+                      //跳转到知识点练习页面
+                      api.openWin({
+                          name: winName,
+                          url: winUrl,
+                          delay: 200,
+                          slidBackEnabled: false,//iOS7.0及以上系统中，禁止通过左右滑动返回上一个页面
+                          pageParam: page_param
+                      });
+                      api.closeWin({
+                            animation: {
+                                type: 'flip',
+                                subType: 'from_left',
+                                duration: 500
+                            }
+                        });
+                  } else {
+                      /*api.toast({
+                          msg: ret.msg,
+                          location: 'middle'
+                      });*/
+                  }
+              });
+              return false;
+          }
+
+        if(task_info.taskType != "video"){
+                api.sendEvent({
+                    name: 'close_video_demo'
+                });
+          }
+          
         api.openWin({
             name: winName,
             url: winUrl,

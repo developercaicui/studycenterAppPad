@@ -11,13 +11,30 @@
     <script type="text/javascript" src="../script/zepto.js"></script>
     <title>宽左侧框架</title>
     <link rel="stylesheet" href="../css/swiper.min.css">
+    <style>
+        .header .right{
+            top: 0.9rem;
+        }
+        .version{
+            float:right;
+            width: 1.85rem;
+            height: 0.5rem;
+            text-align:center;
+            line-height: 0.4rem;
+            color:#00a185;
+            background: #fff;
+            border-radius:5px;
+            border: 2px solid #49a2ac;
+        }
+    </style>
   </head>
   <body>
-    <div id="header" tapmode onclick="get_back()" class="header header-white">
+    <div id="header" class="header header-white">
       <!--.left(tapmode, onclick="api.closeWin()")-->
-      <div class="left"><i class="icon-arrow-left"></i></div>
-      <div class="left-txt">返回</div>
+      <div tapmode onclick="get_back()"><div class="left"><i class="icon-arrow-left"></i></div>
+      <div class="left-txt">返回</div></div>
       <div class="center"></div>
+      <div class="right"><p class="version" tapmode onclick="openVersion()">课程版本</p></div>
     </div>
     <div id="slider" class="course-slider">
       <div class="data1 none"></div>
@@ -41,6 +58,7 @@
         </dl>
       </div>
       <div tapmode onclick="play()" class="s-title"><span>开始学习</span><i class="icon-play2-o"></i></div>
+      <div tapmode onclick="openMessage(this)" class="courseMessage" style="width: 100%;padding: 0.18rem 0 0.18rem 0.2rem;font-size:0.24rem;color:#999999;background: #fff;border-bottom:1px solid #dfdfdf;"><img src="../image/voice.png" style="width: 0.3rem;height: 0.28rem;vertical-align: middle;"><span style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;width: 88%;display: inline-block;vertical-align: middle;padding-left: 0.1rem;">暂无课程通知</span></div>
       <div class="s-course-data">
         <p>课程到期：</p>&nbsp;&nbsp;
         <p>考试时间：</p>
@@ -76,7 +94,38 @@
       var course_detail;
       var study_progress;
       var my_task_info;
+      var versionInfo; 
+      var availability;
+
+      //打开课程版本
+      function openVersion(){
+          var param={};
+          param.versionInfo = versionInfo;
+          param.versionId = api.pageParam.versionId;
+          param.courseId = api.pageParam.courseId;
+
+          myFrame('course-version','full',false,this,'',param);
+          
+      }
+      //打开课程通知
+      function openMessage(obj){
+          if($(obj).hasClass("active")){
+              var pageParams = {};
+              pageParams.sender = "课程通知";
+              pageParams.title = ""
+              pageParams.content = availability;
+
+              myFrame('course-msg','full',false,this,'',pageParams);
+              
+          }
+      }
+
       apiready = function () {
+          //解决安卓位置偏移问题
+          if(api.systemType != 'ios'){
+              $(".header").find(".right").css({"top":"0.4rem"})
+          }
+
           saveTasksProgress.getCourseTaskProgress([api.pageParam.courseId]);
           //alert(headLh + ' - ' + headSh + ' - ' + footSh + ' - ' + leftLw + ' - ' + leftSw + ' - ' + svgDown + ' - ' + svgAudio);
           //window.localStorage.frameSize = '';//避免在播放视频提问等页面直接退出程序时记忆窗口
@@ -111,9 +160,42 @@
           }, function () {
               $('ul.list-group li').removeClass();
           });
+
+          api.addEventListener({
+            name : 'flush_catalog'
+          }, function(ret) {
+
+            // init();
+            api.pageParam.courseId = ret.value.courseId;
+            //设置课程名称
+            if(ret.value.courseName){
+              $('.center').html(ret.value.courseName);
+            }    
+            get_tasks();        
+          });
+
           window.localStorage.caicui_headLh = headLh = $api.offset(header).h;
 
           window.localStorage.caicui_leftLw = leftLw = $('#slider').width();
+
+          var versionId = api.pageParam.versionId;
+          //课程状态
+          getVersionId({"versionId":versionId});
+
+          //获取全部课程版本
+          ajaxRequest('api/teachsource/course/coursesversionlist',"get", {"versionId":versionId}, function (ret, error) {
+              if(ret && ret.state=="success"){
+                versionInfo = ret.data;
+              }else{
+                  // api.toast({
+                  //   msg : ret.msg,
+                  //   location : 'middle'
+                  // });
+              }
+                           
+          })
+
+
       };
       //返回
       function get_back(){
@@ -125,7 +207,7 @@
       }
       function get_tasks() {
           var param = {};
-          param.courseId =courseId;
+          param.courseId = courseId;
           param.token = $api.getStorage('token');
           ajaxRequest({ 'origin': 'http://action.caicui.com/', 'pathname': 'api/userAction/course/getCourseProgress/v1.0/' }, 'get', {'token':getstor('token'),'memberId':getstor('memberId'),'courseId':api.pageParam.courseId}, function(ret, err) {
           //ajaxRequest('api/v2.1/study/getFinish', 'get', param, function (ret, err) {//008.021.1
@@ -136,9 +218,10 @@
                   });
                   return false;
               }
+
               if (ret && ret.state == 'success') {
                   var uid = getstor('memberId');
-                  var cid =courseId;
+                  var cid =api.pageParam.courseId;
                   var time1 = Date.now();
                   var data = isEmpty($api.getStorage(cid + '-' + uid)) ? '' : $api.getStorage(cid + '-' + uid);
                   if (data && time1 - data['time'] < course_detail_expire && !isEmpty(data['data'])) {
@@ -148,7 +231,7 @@
                       circleProgress();
                   }else{
                       var param = {};
-                      param.courseId =courseId;
+                      param.courseId =api.pageParam.courseId;
                       param.token = $api.getStorage('token');
                       // ajaxRequest('api/v2.1/course/courseDetail', 'get', param, function (rets, errs) {
                       ajaxRequest('api/teachsource/course/courseDetail', 'get', param, function (rets, errs) {
@@ -174,6 +257,7 @@
       }
       function top_task(res1,res2){
           var m1, m2, n1, n2, progress;
+
           if (isEmpty(res1)) {
               m1 = 0;
               m2 = 0;
@@ -191,10 +275,23 @@
               n1 = 0;
               n2 = 0;
               $('#progressVal').html(0);
+
+              $(".courseMessage").find("span").html("暂无课程通知");
+              $(".courseMessage").removeClass("active");
+
           } else {
               var data2 = res2;
               n1 = data2.chapterNum;
               n2 = data2.taskNum;
+
+              availability = data2.availability.replace(/\n|\r|\t|<[^<]*>/g,'');
+              if($api.trimAll(availability) == ""){
+                $(".courseMessage").find("span").html("暂无课程通知");
+                $(".courseMessage").removeClass("active");
+              }else{
+                $(".courseMessage").find("span").html(availability);
+                $(".courseMessage").addClass("active");
+              }
           }
           var htm1 = m1 + '/' + n1;
           var htm2 = m2 + '/' + n2;

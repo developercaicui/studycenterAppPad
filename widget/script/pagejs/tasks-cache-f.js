@@ -27,14 +27,17 @@ var is_debug = false;
     //tasksCache()
    function initDomDownStatus(){
 
-    if(isEmpty($api.getStorage("videochangelist"))){
+    if(isEmpty(videochangelist)){
         return false;
     }       
 
-    var strs = $api.getStorage("videochangelist").split(","); //字符分割
+    var strs = videochangelist.split(","); //字符分割
     var pathlen = strs.length;
     //从1开始，因为拼接videochangelist的时候用,开始的
     $(".chapt"+api.pageParam.chapterId).show();
+
+    $(".video-catego").hide();
+
     for (j=1; j<pathlen;j++ ){
         var domInfo = videoDownInfo[strs[j]];
 		var domid = strs[j];
@@ -47,11 +50,14 @@ var is_debug = false;
             var downloadSize = videoDownInfo[strs[j]].downloadSize;
             // ------------------设置界面对应id节点dom下载状态，并设置为可见--------------------------
 			//          alert(domid+"==="+api.pageParam.chapterId);
+			
             if($(".task"+domid).attr("id") == api.pageParam.chapterId){
+
                 $(".task"+domid).parents("li").show();
                 $(".task"+domid).attr("type",domstatus);
 	            $(".task"+domid).find(".val").html(domprogress);
 	            $(".task"+domid).parent().prev().find(".v-progress").find("span").css("width",domprogress+"%");
+
 	            if(totalSize == -1){
 	            	$(".task"+domid).parent().prev().find(".v-name").find(".span11 b").text(getVideoSize(downloadSize));
 	            }else if(totalSize == "未知"){
@@ -77,27 +83,33 @@ var is_debug = false;
 // $('#chaTask').html(content(course_detail)).show();
 
     // tasksCache();
+    
     function initDom(){
 	     setTimeout(function() {
 	         api.hideProgress();
 	         api.refreshHeaderLoadDone();
 	     }, 100);
 	     $('body').removeClass('checking');
-	   
+	   cache_model = api.require('lbbVideo');
 	   courseId = api.pageParam.courseId;
 	   cache_model.getCourseJsonWithCourseId({"userId":getstor('memberId'),"courseId":courseId},function(ret,err){
 	   		
 	   		var ret_data = JSON.parse(JSON.parse(ret.data)[0].courseJson);
 	   		var task_tpl = $('#task_tpl').html();
 	   		
+
+	   		
 	      course_detail = ret_data[0];
 	      var content = doT.template(task_tpl);
+
 	      // getVersionId(ret_data[0])
 	      $('#chaTask').html(content(course_detail)).show();
 	      
 	      initDomDownStatus();
 	      init_check();
 
+	     
+	      
 	      api.parseTapmode();
 	      task_arr = save_tasks(course_detail);
 	      
@@ -170,7 +182,7 @@ var is_debug = false;
           getdownrecord();
           setSpeed();
       },2000)
-      
+       
 //    api.setRefreshHeaderInfo({
 //      visible: true,
 //      loadingImg: 'widget://image/arrow-down-o.png',

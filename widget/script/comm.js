@@ -1085,6 +1085,10 @@ function video_cache(method, title, ccid, UserId, apiKey, callback) {
 					// callback(ret, err);
 					
 					if (api.systemType == "ios" && parseInt(ret.status) == 2) {
+						api.toast({
+							msg : ret.result,
+							location : 'middle'
+						})
                         return false;
                     }
 //                  alert(JSON.stringify(ret))
@@ -1275,6 +1279,7 @@ function down(_this) {
     param.expirationTime = coursestatus.expirationTime;                
     param.isbuy = coursestatus.isbuy;  
 
+    //请求cc获取视频文件大小
     if(type == 3 && api.systemType != "ios"){
     	var data = {};
     	data.format = "json";
@@ -1407,7 +1412,6 @@ function mydown(result) {
         });
  		 //保存任务数据库 		
         cache_model.insertDowndCourseState(downObj,function(ret,err){
-            
               $api.setStorage('isDownding',ret.isDownding);
 //            alert($api.getStorage('isDownding'))
         })
@@ -2291,7 +2295,7 @@ function getdownrecord(){
     cache_model.getTaskData(param,function(ret,err){
         //------------------结束获取--------------------------
         var saverecordObj = JSON.parse(ret.data);
-        // alert(JSON.stringify(ret))
+        // console.log(JSON.stringify(ret))
         ///设置下一次读取下载的某个时间之后变化的所有记录
         lastgettime = saverecordObj.readTime;
         //循环处理每一条返回的下载记录，并统计分析最后变化值
@@ -2299,7 +2303,6 @@ function getdownrecord(){
         	saverecordObj.data[i].progress = Number(saverecordObj.data[i].progress)
             procRecord(saverecordObj.data[i]);
         }
-        initDomDownStatus();
     })
     
 }
@@ -2371,6 +2374,7 @@ function procRecord(videorecord){
 
     }
     $api.setStorage("videochangelist",videochangelist);
+    initDomDownStatus();
     
 }
 
@@ -2470,6 +2474,7 @@ function getVersionId(data){
             coursestatus.islock = ret.data[lockStatusNum].lockStatus;
             coursestatus.activestate = ret.data[lockStatusNum].activeState;
             coursestatus.expirationTime = ret.data[lockStatusNum].expirationTime;
+            coursestatus.activeTime = ret.data[lockStatusNum].activeTime;
             if(ret.data[lockStatusNum].activeState == "acitve"){
                 coursestatus.isbuy = 1;
             }                   
@@ -2535,4 +2540,18 @@ function getImgPath(imgPath){
 	 }else{
 	 	return imgPath;
 	 }
+}
+
+function getreolyImg(html){
+   var divHtml = $("<div>");
+   divHtml.html(html);
+   var divHtmlimg = divHtml.find("img");
+   if(divHtmlimg.length<1){
+        return '';
+   }
+   var divHtmlimgArr = [];
+   $.each(divHtmlimg,function(k,v){
+        divHtmlimgArr.push($(this).attr("src"));
+   })
+   return divHtmlimgArr;
 }

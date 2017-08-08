@@ -29,9 +29,11 @@ function newMyNote() {
 function bind_push() {
     var push = api.require('push');
     var username = get_loc_val('mine', 'nickName');
+    var memberId = getstor('memberId');
+
     push.bind({
         userName: username,
-        userId: api.deviceId
+        userId: memberId
     }, function (ret, err) {
     });
 }
@@ -808,6 +810,7 @@ apiready = function () {
     memberId = getstor('memberId');
     var data = $api.getStorage(memberId + 'video-buffer');
 
+    //解决老数据迁移
     if (typeof(data) != "undefined" || !isEmpty(data)) { //有下载列表
         mydata = [];
         set_data(0);
@@ -1017,6 +1020,9 @@ function gets_tasks(courseDetail) {
         is_resume = true;
         var memberId = getstor('memberId');
         if (memberId && api.systemType == 'ios') {
+            // cache_model.downloadStop({
+            //     "userId":getstor('memberId')
+            // })
             // var downed = isEmpty($api.getStorage(memberId + 'downed')) ? '' : $api.getStorage(memberId + 'downed');
             // if (downed) {
             //     $api.setStorage(memberId + 'backendDowned', downed);
@@ -1622,27 +1628,15 @@ function checkDownlond(e) {
 
 //中心消息数量
 function center_num() {
-    if (!isEmpty($api.getStorage('center_num'))) {
-        var num = $api.getStorage('center_num');
-        if (num < 1) {
-            $('.center_num1').addClass('none');
-            $('.center_num2').addClass('none');
-        } else if (num > 99) {
-            $('.center_num1').html('99+');
-            $('.center_num2').html('99+');
-        } else {
-            $('.center_num1').html(num);
-            $('.center_num2').html(num);
-        }
-    } else {
+    
         var param = {};
-        param.typeId = '';
+        // param.typeId = '';
         param.pageNo = 1;
         param.type = 1;
         param.isRead = 0;
         param.pageSize = 1;
         param.token = $api.getStorage('token');
-        ajaxRequest('api/v2/message/list', 'get', param, function (ret, err) {
+        ajaxRequest('api/study/message/list/v1.0', 'get', param, function (ret, err) {
             if (err) {
                 api.toast({
                     msg: err.msg,
@@ -1672,5 +1666,5 @@ function center_num() {
                 //});
             }
         });
-    }
+    
 }

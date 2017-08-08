@@ -12,6 +12,7 @@ var last_progress = 0;
 var task_type;//任务类别
 var link_title;//外链标题
 var link_url;//外链地址
+var knowledgePointExercise;//知识点练习信息
 
 var exe_task = true;
 //用于执行章节任务还是外链
@@ -52,6 +53,7 @@ apiready = function() {
     courseName = course_detail.courseName;//课程名字
     //study_progress = api.pageParam.study_progress;//当前的进度
 
+    knowledgePointExercise = api.pageParam.knowledgePointExercise;
 
 	task_info = api.pageParam.task_info;//任务信息
     if(!isEmpty(api.pageParam.last_progress)){
@@ -139,7 +141,13 @@ function frameContent() {
 			} else {
 				return false;
 			}
-		} else if (task_info.taskType == 'pdfread') {
+		}else if (task_info.taskType == 'knowledgePointExercise') {
+			//知识点联系类型
+			
+			 frame_name = 'course-knowledgePointExercise';
+			 frame_url = 'course-knowledgePointExercise.html';
+
+		}  else if (task_info.taskType == 'pdfread') {
 			//文档类型,使用图片查看pdf
 			var frame_name = 'course-test-pdf';
 			var frame_url = 'course-test-pdf.html';
@@ -163,6 +171,11 @@ function frameContent() {
 		var frame_url = link_url;
 		var params = {};
 	}
+
+	if(task_info.taskType == 'knowledgePointExercise'){
+		params.knowledgePointExercise = knowledgePointExercise;
+	}
+	
 	api.openFrame({
         delay:200,
 		name : frame_name,
@@ -208,6 +221,7 @@ function my_close() {
 
 //打开横屏的章节页面
 function openCharpterMenu() {
+	$api.setStorage("currentPlayVideoId",task_info.taskId);
 	api.openFrame({
 		name : 'video-menu',
 		url : 'video-menu.html',

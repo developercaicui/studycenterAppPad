@@ -228,6 +228,21 @@
                     </dd>
                 </dl>
             </div>
+          </li>{{ }else if(val4.taskType=='knowledgePointExercise'){ }}
+            <li class="note-catego" style="display: none;" id="{{=val4.taskId}}"><span class="taskExam"></span>
+            <div>
+              <dl class="taskList task{{=val4.taskId}}" style="display: table;">
+                  <dt onclick="task_event(this,'{{=key4}}','{{=val4.taskId}}','{{=val3.chapterId}}','{{=val3.knowledgePointId}}')" tapmode >
+                    <p style="color:#fff;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;width:5.5rem;line-height: 0.7rem;">{{=val4.title}}</p>
+                  </dt>
+                  <dd>               
+                      <div id="{{=val3.chapterId}}" class="down-progress task{{=val4.videoCcid}}">
+                      <span></span>
+                    </div>
+                      <div class="down_data none">{{=JSON.stringify(val4)}}</div>
+                    </dd>
+                </dl>
+            </div>
           </li>
             {{ } }}
             {{~}}
@@ -266,6 +281,22 @@
  
                       <div id="{{=val2.chapterId}}" class="down-progress task{{=val4.videoCcid}}">
                       <span>{{=val4.totalCount}}题</span>
+                    </div>
+                      <div class="down_data none">{{=JSON.stringify(val4)}}</div>
+                    </dd>
+                </dl>
+            </div>
+          </li>{{ }else if(val4.taskType=='knowledgePointExercise'){ }}
+            <li class="note-catego" style="display: none;" id="{{=val4.taskId}}"><span class="taskExam"></span>
+            <div>
+              <dl class="taskList task{{=val4.taskId}}" style="display: table;">
+                  <dt onclick="task_event(this,'{{=key4}}','{{=val4.taskId}}','{{=val2.chapterId}}','{{=val2.knowledgePointId}}')" tapmode >
+                    <p style="color:#fff;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;width:5.5rem;line-height: 0.7rem;">{{=val4.title}}</p>
+                  </dt>
+                  <dd>
+ 
+                      <div id="{{=val2.chapterId}}" class="down-progress task{{=val4.videoCcid}}">
+                      <span></span>
                     </div>
                       <div class="down_data none">{{=JSON.stringify(val4)}}</div>
                     </dd>
@@ -310,6 +341,22 @@
  
                       <div id="{{=val.chapterId}}" class="down-progress task{{=val4.videoCcid}}">
                       <span>{{=val4.totalCount}}题</span>
+                    </div>
+                      <div class="down_data none">{{=JSON.stringify(val4)}}</div>
+                    </dd>
+                </dl>
+            </div>
+          </li>{{ }else if(val4.taskType=='knowledgePointExercise'){ }}
+            <li class="note-catego" style="display: none;"><span class="taskExam"></span>
+            <div>
+              <dl class="taskList task{{=val4.taskId}}" style="display: table;">
+                  <dt onclick="task_event(this,'{{=key4}}','{{=val4.taskId}}','{{=val.chapterId}}','{{=val.knowledgePointId}}')" tapmode >
+                    <p style="color:#fff;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;width:5.5rem;line-height: 0.7rem;">{{=val4.title}}</p>
+                  </dt>
+                  <dd>
+ 
+                      <div id="{{=val.chapterId}}" class="down-progress task{{=val4.videoCcid}}">
+                      <span></span>
                     </div>
                       <div class="down_data none">{{=JSON.stringify(val4)}}</div>
                     </dd>

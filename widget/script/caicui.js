@@ -257,7 +257,7 @@ function openVideo(){
 }
 
 // 打开自定义Frame(打开,尺寸,弹动,点击的当前对象,来自)
-function myFrame(e,s,b,obj,f){
+function myFrame(e,s,b,obj,f,p){
     var param={};
     window.localStorage.frameSize = s;//在下个窗口取当前尺寸
     var reload=false;
@@ -371,7 +371,7 @@ function myFrame(e,s,b,obj,f){
         }
 
     }
-    if(e=='set-info' || e=='course-chapter'){
+    if(e=='set-info' || e=='course-chapter' || e=='correction-exam' || e=='correction-video'){
         //param.courseId = 1231
         reload=true;
         if(e=='course-chapter'){
@@ -379,8 +379,11 @@ function myFrame(e,s,b,obj,f){
         }
     }
     var bgCor = '#f3f3f3';
-    if(e == 'set-info' || e == 'pop-msg'){
+    if(e == 'set-info' || e == 'pop-msg' || e=='correction-exam' || e=='correction-video' || e=='course-version' || e=='course-msg'){
         bgCor = 'rgba(0,0,0,0)'
+    }
+    if(p){
+       param = p;
     }
     api.openFrame({
         name: e,

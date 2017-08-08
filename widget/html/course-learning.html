@@ -30,7 +30,7 @@
       
       <h2>{{=v.subjectName}}</h2>
       {{~v.courseLists:val:key}}
-      <li class="learnLi" tapmode data-coursename="{{=val.courseName}}" data-chapterName="{{=val.chapterName}}" onclick="openCourse(this,'{{=val.courseId}}','{{=val.chapterId}}','{{=val.subjectID}}','{{=val.categoryId}}','{{=val.subjectName}}','{{=val.categoryName}}')">
+      <li class="learnLi" tapmode data-coursename="{{=val.courseName}}" data-chapterName="{{=val.chapterName}}" onclick="openCourse(this,'{{=val.courseId}}','{{=val.chapterId}}','{{=val.subjectID}}','{{=val.categoryId}}','{{=val.subjectName}}','{{=val.categoryName}}','{{=val.versionId}}')">
       <div style="background-image:url({{=static_url+val.courseBkImage}})" class="cpl-head">
       <!--h4 {{=formatDate(val.expirationTime,'Y')+'-'+formatDate(val.expirationTime,'M')+'-'+formatDate(val.expirationTime,'D')}}  {{=formatDate(val.expirationTime,'h')+':'+formatDate(val.expirationTime,'m')}}-->
       <h4 class="exam_time none"></h4>
@@ -422,7 +422,7 @@
 // var content = doT.template(tpl);
 // $('#content').html(content(learningData));
       // 打开课程列表页面
-      function openCourse(_this,co, ch, su, ca,subjectName,categoryName) {
+      function openCourse(_this,co, ch, su, ca,subjectName,categoryName,versionId) {
         var cn = $(_this).data('coursename');
         var chapterName = $(_this).data('chaptername');
         var course_detail = {};
@@ -434,6 +434,9 @@
         course_detail.subjectName = subjectName;
         course_detail.categoryId = ca;
         course_detail.categoryName = categoryName;
+
+        course_detail.versionId = versionId;//用于课程版本切换
+
         $api.setStorage('Course_info', course_detail);
         //                detail.course_id = co;//课程id
         //                detail.charpterid = ch;//章节id

@@ -1,5 +1,5 @@
 var is_debug = false;
-function CourseDetail(co, ch, su, ca, cn,chapterName,subjectName,categoryName,obj) {
+function CourseDetail(co, ch, su, ca, cn,chapterName,subjectName,categoryName,obj,versionId) {
 	var course_detail = {};
 	course_detail.chapterId = ch;
 	course_detail.courseId = co;
@@ -13,6 +13,8 @@ function CourseDetail(co, ch, su, ca, cn,chapterName,subjectName,categoryName,ob
     course_detail.examTime = $(obj).find(".exam_time").text();
     course_detail.courseDue = $(obj).find(".course_due").text();
     
+    course_detail.versionId = versionId;//用于切换课程版本
+
 	//var detail = {};
 	//detail.course_id = co;
 	////课程id
@@ -162,7 +164,7 @@ function get_study() {//顶部学习
         					});
         					return false;
         			}
-        			ajaxRequest('api/v2.1/study/getExamDate', 'get', {// 003.2 在学的课程列表（new）
+        			ajaxRequest('api/business/coursestudy/getExamDate', 'get', {// 003.2 在学的课程列表（new）
 						memberId : getstor('memberId')
 					}, function(res, error) {
 					
