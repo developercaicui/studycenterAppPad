@@ -411,7 +411,7 @@ function play_video() {
                     }
                     return false;
                 }
-                console.log(JSON.stringify(ret))
+               
                 
                 // if(task_info.taskType == "openCourse"){
                 //     demo.hiddedenButttonControl();
