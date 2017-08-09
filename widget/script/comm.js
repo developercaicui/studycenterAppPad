@@ -1383,6 +1383,7 @@ function mydown(result) {
         set_down(data);
         return false;
     }
+
     if(data.type != 4){
         var param = $api.getStorage('my_to_down');
         var memberId = getstor('memberId');
