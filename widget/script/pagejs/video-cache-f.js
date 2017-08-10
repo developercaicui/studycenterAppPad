@@ -92,12 +92,15 @@ function init_check(){
               delay:200,
               name : "tasks-cache",
               url : 'tasks-cache.html',
+              reload: true,
+              opaque: true,
+              vScrollBarEnabled: false,
               bgColor: '#fff',
               rect: {
                   x: leftLw,
                   y: to_cacheHeight,
                   w: api.winWidth - leftLw,
-                  h: api.winHeight - headLh
+                  h: api.winWidth
                 },
               pageParam:{chapterId:chapterId,courseId:courseId,to_cacheState:to_cacheState},
               bounces: false

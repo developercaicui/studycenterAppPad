@@ -84,8 +84,8 @@
         display: inline-block;
         background: url(../image/live.png) no-repeat;
         background-size: 100% 100%;
-        width: 0.4rem;
-        height: 0.46rem;
+        width: 0.38rem;
+        height: 0.44rem;
         position: absolute;
         left: .1rem;
     }
@@ -113,8 +113,8 @@
       display: inline-block;
         background: url(../image/live.png) no-repeat;
         background-size: 100% 100%;
-        width: 0.4rem;
-        height: 0.46rem;
+        width: 0.38rem;
+        height: 0.42rem;
         margin-left: .5rem;
         margin-top: .05rem;
         vertical-align: middle;
@@ -233,7 +233,7 @@
                   <div id="" class="" style="text-align: center;">
                     <span></span>
                   </div>
-                  <div class="down_data none">{{=JSON.stringify(val4)}}</div>
+                  <div class="down_data none">{{=JSON.stringify(changeJson(val4))}}</div>
                 </dd>
               </dl>
             </div>
@@ -312,7 +312,7 @@
                   <div id="" class="" style="text-align: center;">
                     <span></span>
                   </div>
-                  <div class="down_data none">{{=JSON.stringify(val4)}}</div>
+                  <div class="down_data none">{{=JSON.stringify(changeJson(val4))}}</div>
                 </dd>
               </dl>
             </div>
@@ -375,7 +375,7 @@
                   <div class="down_data none">{{=JSON.stringify(val4)}}</div>
                 </dd>
               </dl>
-            </div>{{ }else if(val4.taskType=='knowledgePointExercise'){ }}
+            </div>{{ }else if(val4.taskType=='openCourse'){ }}
             <div class="taskList">
               <dl>
                 <dt tapmode onclick="openlive('{{=val4.openCourseLiveManageId}}','{{=val4.openCourseLiveRoomId}}','{{=val4.openCourseLiveRoomPassword}}',this,'{{=val.chapterTitle}}')"><i type="1" style="left: 0.3rem;" data-chapId="{{=val.chapterId}}" data-taskid="{{=val4.taskId}}" class="dot-status"></i><span class="taskLive" style="margin-left: .6rem;"></span>
@@ -385,7 +385,7 @@
                   <div id="" class="" style="text-align: center;">
                     <span></span>
                   </div>
-                  <div class="down_data none">{{=JSON.stringify(val4)}}</div>
+                  <div class="down_data none">{{=JSON.stringify(changeJson(val4))}}</div>
                 </dd>
               </dl>
             </div>
@@ -434,6 +434,21 @@
             pageParam: pageParams
         });        
         
+    }
+
+    function changeJson(data){
+        if(data){
+            data.openCourseContent = stringToEntity(data.openCourseContent);
+           return data; 
+        }
+        
+    }
+
+    function stringToEntity(str){
+      var newStr = '';
+      var arrEntities={'lt':'<','gt':'>','nbsp':' ','amp':'&','quot':'"','#39':"'"};
+      newStr = str.replace(/&(lt|gt|nbsp|amp|quot|#39);/ig,function(all,t){return arrEntities[t];});
+      return newStr;
     }
 
       function next(leave, num1, num2, num3,obj,cid,knowledgePointId) {
