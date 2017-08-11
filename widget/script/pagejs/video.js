@@ -25,22 +25,19 @@ apiready = function() {
     api.addEventListener({
         name: 'pause'
     }, function(ret, err) {
-           
+        
         //判断在线还是离线
-       last_progress = getVideoProgress(videoid);
-        last_progress = DB.getTaskProgressSync(task_info.taskId).progress;
-        if(api.systemType == "android"){
-            if($api.getStorage(videoid) != 'YES'){
-                demo.stop();
-                demo.close();
-                play_video();
-            }
-        }
+       // last_progress = getVideoProgress(videoid);
+       //  last_progress = DB.getTaskProgressSync(task_info.taskId).progress;
+       //  if(api.systemType == "android"){
+       //      if($api.getStorage(videoid) != 'YES'){
+       //          demo.stop();
+       //          demo.close();
+       //          play_video();
+       //      }
+       //  }
         
-        
-        //在线 保存进度-服务器/数据库
-
-        //离线 保存进度-数据库
+ 
     });
     //应用从后台回到前台事件
     api.addEventListener({
@@ -619,6 +616,7 @@ function play_video() {
                                     from : 'video_page'
                                 })
                             });
+
                         }
                     });
                 } else if (ret.btnType == 8) {

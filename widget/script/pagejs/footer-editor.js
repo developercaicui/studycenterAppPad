@@ -320,6 +320,7 @@ function getPic(type, w, h) {
                     });
                     return false;
                 }
+                
 				upload(ret.data);
 			}
 		});
