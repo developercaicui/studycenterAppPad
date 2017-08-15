@@ -1126,7 +1126,7 @@ function DosaveTaskProgress() {
                 courseId: course_detail.courseId, //必须，课程id    ff808081486933e6014889882d9c0590
                 courseName: course_detail.courseName, //必须，课程名称    courseName
                 chapterId: task_info_detail.chapterId, //必须，章节id   chapterId
-                chapterName: task_info_detail.chapterName, //必须，章节名称   chapterName
+                chapterName: task_info_detail.chapterName.replace(/\&/," "), //必须，章节名称   chapterName
                 taskId: task_info.taskId, //必须，任务id    1
                 taskName: task_info.title, //任务名称
                 progress: now_progress, //必须，当前进度值，视频为秒，试卷为题数量，文档为页码   5
