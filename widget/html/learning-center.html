@@ -67,7 +67,7 @@
       <h4>在学课程</h4>
       {{var data=it.courselist;}}
       {{ for(var p in data) { }}
-            <li tapmode onclick="CourseDetail('{{=data[p].courseId}}','{{=data[p].chapterId}}','{{=data[p].subjectID}}','{{=data[p].categoryId}}','{{=data[p].courseName}}','{{=data[p].chapterName}}','{{=data[p].subjectName}}','{{=data[p].categoryName}}',this,'{{=data[p].versionId}}')">
+            <li tapmode onclick="CourseDetail('{{=data[p].courseId}}','{{=data[p].chapterId}}','{{=data[p].subjectID}}','{{=data[p].categoryId}}','{{=data[p].courseName}}','{{=data[p].chapterName}}','{{=data[p].subjectName}}','{{=data[p].categoryName}}',this,'{{=data[p].versionId}}','{{=data[p].lock_status}}')">
               <!-- <h1 style=" width: 100%;overflow:hidden;text-overflow :ellipsis;font-size: 0.28rem;padding-right:0.2rem;">
                 {{  if(!isEmpty(data[p].categoryName)) { }}
                 {{=data[p].categoryName}}

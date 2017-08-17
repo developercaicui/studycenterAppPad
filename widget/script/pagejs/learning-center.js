@@ -1,5 +1,9 @@
 var is_debug = false;
-function CourseDetail(co, ch, su, ca, cn,chapterName,subjectName,categoryName,obj,versionId) {
+function CourseDetail(co, ch, su, ca, cn,chapterName,subjectName,categoryName,obj,versionId,lock) {
+	if(lock != 0){
+        api.toast({msg:'当前的课程已锁定,续费后即可解锁！',location:'middle'})
+        return false;
+    }
 	var course_detail = {};
 	course_detail.chapterId = ch;
 	course_detail.courseId = co;
@@ -195,20 +199,20 @@ function get_study() {//顶部学习
 	        				for(var j=0;j<result.data.length;j++){
 	        					if(learningcourse[i].courseId == result.data[j].courseId){
 	        						learningcourse[i].showProgress = result.data[j].courseProgress;
-	                    learningcourse[i].createDate = result.data[j].createDate;
+				                    learningcourse[i].createDate = result.data[j].createDate;
 
-	                    learningcourse[i].chapterId = result.data[j].chapterId;
-	                    learningcourse[i].chapterName = result.data[j].chapterName;
-	                    learningcourse[i].progress = result.data[j].progress;
-	                    learningcourse[i].taskId = result.data[j].taskId;
-	                    learningcourse[i].taskName = result.data[j].taskName;
-	                    for(var k=0;k<res.data.length;k++){
-	                    	if(learningcourse[i].subjectID == res.data[k].categoryId){
-		        				learningcourse[i].examinationDate = res.data[k].examinationDate
-		        			}
-	                    }
-	                    
-	                    newLastProgress.RecentCourse.push(learningcourse[i])
+				                    learningcourse[i].chapterId = result.data[j].chapterId;
+				                    learningcourse[i].chapterName = result.data[j].chapterName;
+				                    learningcourse[i].progress = result.data[j].progress;
+				                    learningcourse[i].taskId = result.data[j].taskId;
+				                    learningcourse[i].taskName = result.data[j].taskName;
+				                    for(var k=0;k<res.data.length;k++){
+				                    	if(learningcourse[i].subjectID == res.data[k].categoryId){
+					        				learningcourse[i].examinationDate = res.data[k].examinationDate
+					        			}
+				                    }
+				                    
+				                    newLastProgress.RecentCourse.push(learningcourse[i])
 	        					}
 
 	        				}

@@ -30,7 +30,7 @@
       
       <h2>{{=v.subjectName}}</h2>
       {{~v.courseLists:val:key}}
-      <li class="learnLi" tapmode data-coursename="{{=val.courseName}}" data-chapterName="{{=val.chapterName}}" onclick="openCourse(this,'{{=val.courseId}}','{{=val.chapterId}}','{{=val.subjectID}}','{{=val.categoryId}}','{{=val.subjectName}}','{{=val.categoryName}}','{{=val.versionId}}')">
+      <li class="learnLi" tapmode data-coursename="{{=val.courseName}}" data-chapterName="{{=val.chapterName}}" onclick="openCourse(this,'{{=val.courseId}}','{{=val.chapterId}}','{{=val.subjectID}}','{{=val.categoryId}}','{{=val.subjectName}}','{{=val.categoryName}}','{{=val.versionId}}','{{=val.lock_status}}')">
       <div style="background-image:url({{=static_url+val.courseBkImage}})" class="cpl-head">
       <!--h4 {{=formatDate(val.expirationTime,'Y')+'-'+formatDate(val.expirationTime,'M')+'-'+formatDate(val.expirationTime,'D')}}  {{=formatDate(val.expirationTime,'h')+':'+formatDate(val.expirationTime,'m')}}-->
       <h4 class="exam_time none"></h4>
@@ -422,7 +422,11 @@
 // var content = doT.template(tpl);
 // $('#content').html(content(learningData));
       // 打开课程列表页面
-      function openCourse(_this,co, ch, su, ca,subjectName,categoryName,versionId) {
+      function openCourse(_this,co, ch, su, ca,subjectName,categoryName,versionId,lock) {
+        if(lock != 0){
+          api.toast({msg:'当前的课程已锁定,续费后即可解锁！',location:'middle'})
+          return false;
+        }
         var cn = $(_this).data('coursename');
         var chapterName = $(_this).data('chaptername');
         var course_detail = {};
@@ -605,6 +609,7 @@ $.each(categoryIdArr, function(i, val) {
     }
     
 });
+
       no_loaded=false;
       total=ret.data.total;
       if (page == 1) {

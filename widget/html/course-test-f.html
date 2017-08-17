@@ -21,6 +21,10 @@
             background-size:100% 100%;
             vertical-align: middle; 
         }
+        .cont img{
+            width: 200px;
+            height: 200px;
+        }
     </style>
   </head>
   <body>
@@ -86,8 +90,8 @@
             <tr>
               {{ for(var j=0,lenth=JSON.parse(value.context)[0].cols;j<lenth;j++){ }}
               {{ if(i==0||j==0){ }}
-              <td data-x="{{=items[i*len+j].x}}" data-y="{{=items[i*len+j].y}}" data-islable="true">{{=items[i*len+j].title}}</td>{{ }else{ }}
-              <td data-x="{{=items[i*len+j].x}}" data-y="{{=items[i*len+j].y}}" data-islable="false">
+              <td data-x="{{=items[j+(i*lenth)].x}}" data-y="{{=items[j+(i*lenth)].y}}" data-islable="true">{{=items[j+(i*lenth)].title}}</td>{{ }else{ }}
+              <td data-x="{{=items[j+(i*lenth)].x}}" data-y="{{=items[j+(i*lenth)].y}}" data-islable="false">
                 <input placeholder="填空" class="fill_blank">
               </td>{{ } }}
               {{ } }}
@@ -99,13 +103,13 @@
           <table class="table_box table_box2 table_box3">{{ for(var i=0,len=JSON.parse(value.context)[0].rows,items=JSON.parse(value.context)[0].items;i<len;i++){ }}
             <tr>
               {{ for(var j=0,lenth=JSON.parse(value.context)[0].cols;j<lenth;j++){ }}
-              {{ if(items[i*len+j].isLable==true){ }}
-              <td data-x="{{=items[i*len+j].x}}" data-y="{{=items[i*len+j].y}}" data-islable="true" class="first_td">{{=items[i*len+j].title}}</td>{{ }else{ }}
-              <td data-x="{{=items[i*len+j].x}}" data-y="{{=items[i*len+j].y}}" data-islable="false">
+              {{ if(items[j+(i*lenth)].isLable==true){ }}
+              <td data-x="{{=items[j+(i*lenth)].x}}" data-y="{{=items[j+(i*lenth)].y}}" data-islable="true" class="first_td">{{=items[j+(i*lenth)].title}}</td>{{ }else{ }}
+              <td data-x="{{=items[j+(i*lenth)].x}}" data-y="{{=items[j+(i*lenth)].y}}" data-islable="false">
                 <div onclick="select_matrix(this)" tapmode class="circle_box">
-                  <div data-check="{{=items[i*len+j].isChecked}}" class="circle_green hide"></div>
+                  <div data-check="{{=items[j+(i*lenth)].isChecked}}" class="circle_green hide"></div>
                 </div>
-                <div class="itrem_con">{{=items[i*len+j].title}}</div>
+                <div class="itrem_con">{{=items[j+(i*lenth)].title}}</div>
               </td>{{ } }}
               {{ } }}
             </tr>{{ } }}
@@ -116,13 +120,13 @@
           <table class="table_box table_box2 table_box3 table_box6">{{ for(var i=0,len=JSON.parse(value.context)[0].rows,items=JSON.parse(value.context)[0].items;i<len;i++){ }}
             <tr>
               {{ for(var j=0,lenth=JSON.parse(value.context)[0].cols;j<lenth;j++){ }}
-              {{ if(items[i*len+j].isLable==true){ }}
-              <td data-x="{{=items[i*len+j].x}}" data-y="{{=items[i*len+j].y}}" data-islable="true" class="first_td">{{=items[i*len+j].title}}</td>{{ }else{ }}
-              <td data-x="{{=items[i*len+j].x}}" data-y="{{=items[i*len+j].y}}" data-islable="false">
+              {{ if(items[j+(i*lenth)].isLable==true){ }}
+              <td data-x="{{=items[j+(i*lenth)].x}}" data-y="{{=items[j+(i*lenth)].y}}" data-islable="true" class="first_td">{{=items[j+(i*lenth)].title}}</td>{{ }else{ }}
+              <td data-x="{{=items[j+(i*lenth)].x}}" data-y="{{=items[j+(i*lenth)].y}}" data-islable="false">
                 <div onclick="select_matrix(this)" tapmode class="circle_box">
-                  <div data-check="{{=items[i*len+j].isChecked}}" class="circle_green hide"></div>
+                  <div data-check="{{=items[j+(i*lenth)].isChecked}}" class="circle_green hide"></div>
                 </div>
-                <div class="itrem_con">{{=items[i*len+j].title}}</div>
+                <div class="itrem_con">{{=items[j+(i*lenth)].title}}</div>
               </td>{{ } }}
               {{ } }}
             </tr>{{ } }}
