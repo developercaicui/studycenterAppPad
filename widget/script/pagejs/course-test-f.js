@@ -100,8 +100,26 @@ apiready = function() {
 				},
 				onInit : function(swiper) {
 					$.each($('.course-test-title'), function (k, v) {
-						$(v).find('img').attr('src',static_url+$(v).find('img').attr('src'));
+						if($(v).find('img').length>0){
+                            var src = $(v).find('img').attr('src');
+                            var srcSubstr = src.substr(-3);
+                            if(srcSubstr == "jpg" || srcSubstr == "png" || srcSubstr == "gif" || srcSubstr == "svg"){
+                                $(v).find('img').attr('src',static_url+$(v).find('img').attr('src'));
+                            }  
+                        }
+                        
 					});
+
+					$.each($('.answer-analysis'), function (k, v) {
+                        if($(v).find('img').length>0){
+                           var src = $(v).find('img').attr('src');
+                            var srcSubstr = src.substr(-3);
+                            if(srcSubstr == "jpg" || srcSubstr == "png" || srcSubstr == "gif" || srcSubstr == "svg"){
+                                $(v).find('img').attr('src',static_url+$(v).find('img').attr('src'));
+                            }  
+                        }
+                    });
+                    
 					if (swiper.slides.length > 15) {
 						$('.swiper-pagination-bullet').eq(15).nextAll().hide();
 					}

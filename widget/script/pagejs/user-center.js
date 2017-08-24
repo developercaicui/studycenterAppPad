@@ -791,6 +791,11 @@ function relogin(ckeck) {
 var is_resume;
 
 apiready = function () {
+
+    if (api.systemType == 'ios') {
+        $("#scanner").hide();
+    }
+
     //初始话视频
     if (api.systemType == 'android') {
         if (cache_model == null) {
@@ -1668,3 +1673,348 @@ function center_num() {
         });
     
 }
+
+
+
+var courseId,course_detail,tasks;
+    var code;
+    function openScanner(){
+        api.removeEventListener({
+            name: 'pause'
+        });
+        
+        api.removeEventListener({
+            name: 'resume'
+        });
+        var FNScanner = api.require('FNScanner');
+        FNScanner.openScanner({
+            autorotation: true
+        }, function(ret, err) {
+            if(ret && ret.eventType == 'success'){
+                //扫码成功
+                
+                if(ret.content.indexOf("?code=")==-1){
+                    openApp(ret.content);
+                    return false;
+                }
+
+                code = ret.content.split("=")[1];
+                if(isEmpty(code)){
+                    api.toast({
+                        msg: "二维码定位信息有误，请核对后再试！！",
+                        location: 'middle'
+                    });
+                    return false;
+                }
+                
+                //获取二维码详细信息
+                getScannerInfo()
+
+            }else if(ret.eventType == 'fail'){
+                //扫码失败
+                api.toast({
+                    msg: '扫码失败，请重新尝试！',
+                    location: 'middle'
+                });
+
+            }
+            
+        });
+    }
+    function getScannerInfo(){
+        //调接口
+       
+                
+        ajaxRequest('api/teachsource/course/handoutqrcodeinfo', 'get', {
+            qrCodeNo:code
+        }, function (ret, err) {
+            
+            if (err) {
+                  api.hideProgress();
+                  api.toast({
+                      msg: err.msg,
+                      location: 'middle'
+                  });
+                  return false;
+              }
+              if(ret && ret.state == 'success'){
+                if(ret.data.length<1){
+                    api.toast({
+                        msg: "二维码定位信息有误，请核对后再试！",
+                        location: 'middle'
+                    });
+                    return false;
+                }
+                var data = ret.data[0];
+                courseId = data.courseId;
+                if (!CourseIsexpire(courseId)) {
+                    api.toast({
+                        msg: '二维码无法使用，请检查您的在学课程',
+                        location: 'middle'
+                    });
+                    return false;
+                }
+
+                api.showProgress({
+                  title:'加载中',
+                  modal:false
+                });
+                ajaxRequest('api/teachsource/course/courseDetail', 'get', {
+                      courseId: courseId
+                  }, function (ret, err) {//004.006获取课程的详细信息
+
+                      // console.log(JSON.stringify(ret))
+                      
+                      if (err) {
+                          api.hideProgress();
+                          api.toast({
+                              msg: err.msg,
+                              location: 'middle'
+                          });
+                          return false;
+                      }
+                      if (ret && ret.state == 'success') {
+                          if (!ret.data) {
+                            api.hideProgress();
+                              api.toast({
+                                  msg: '暂无任务',
+                                  location: 'middle'
+                              });
+                              return false;
+                          }
+
+                          course_detail = ret.data[0];
+                          tasks = gets_tasks(course_detail,data.qrCodeTaskList[0].taskId);
+
+                          if (isEmpty(tasks)) {
+                              api.hideProgress();
+                              api.toast({
+                                  msg: '暂无任务',
+                                  location: 'middle'
+                              });
+                              return false;
+                          }
+                          
+                          var theTime = translateSec(data.qrCodeTaskList[0].position);
+                          if(tasks.taskType == 'knowledgePointExercise'){
+                              judge_task(tasks, theTime,tasks.knowledgePointId);
+                          }else{
+                              judge_task(tasks, theTime);
+
+                          }
+                          
+                      }else{
+                          api.hideProgress();
+                          api.toast({
+                              msg: '加载失败，请重新尝试！',
+                              location: 'middle'
+                          });
+                          return false;
+                      }
+                  });
+              }else{
+                  getScannerInfo();
+              }
+            
+        })
+    }
+    function translateSec(value){
+        var timeArr = $.trim(value).split(":");
+        var theTime = 0;
+        if(timeArr.length == 3){
+            theTime += parseInt(timeArr[2]);
+            theTime += parseInt(timeArr[1])*60;
+            theTime += parseInt(timeArr[0])*60*60;
+        }else if(timeArr.length == 2){
+            theTime += parseInt(timeArr[1]);
+            theTime += parseInt(timeArr[0])*60;
+        }else{
+            theTime += parseInt(timeArr[0]);
+        }
+        return theTime;
+    }
+
+    function judge_task(task_info, lastProgress,knowledgePointId) {
+        
+          if (isEmpty(course_detail) || isEmpty(course_detail.chapters) || isEmpty(task_info)) {
+              api.toast({
+                  msg: '获取课程信息失败',
+                  location: 'middle'
+              });
+              return false;
+          }
+          if (isEmpty(task_info)) {
+              api.toast({
+                  msg: '暂无任务',
+                  location: 'middle'
+              });
+              return false;
+          }
+          //判断当前任务类型
+          if (task_info.taskType == 'video' || task_info.taskType == 'openCourse') {
+              //视频类型
+              var new_win_name = 'video';
+              var new_win_url = 'video.html';
+          } else if (task_info.taskType == 'entry' || task_info.taskType == 'pdfread' || task_info.taskType == 'exam' || task_info.taskType == 'knowledgePointExercise') {
+              //entry（外链类型）、pdfread（pdf类型）、exam（测试题类型）
+              var new_win_name = 'course-test';
+              var new_win_url = 'course-test.html';
+
+          } else {
+              api.toast({
+                  msg: '暂无任务，请稍后再试或联系客服',
+                  location: 'middle'
+              });
+              return false;
+          }
+          
+          //需要传递的参数
+          var pageParams = {
+              from: 'course-studying',
+              courseId: course_detail.courseId,//课程id
+              //study_progress: res_process,//学习进度
+              last_progress: lastProgress,//学习进度
+              course_detail: course_detail,//课程详情
+              task_info: task_info,//当前要学习的任务信息
+              type: 'task'
+          };
+      
+          
+
+          if(task_info.taskType == 'knowledgePointExercise'){
+              if (api.connectionType == 'unknown' || api.connectionType == 'none') {
+
+                  api.alert({
+                      msg: '网络已断开，请检查网络状态'
+                  });
+                  return false;
+              }
+              api.setScreenOrientation({
+                  orientation: 'landscape_right'
+              });
+              
+              ajaxRequest('api/extendapi/examen/get_exercise_point_count_cache', 'post',{knowledge_points:knowledgePointId,type:4}, function (ret, err) {//008.005
+                  if (err) {
+                      api.toast({
+                          msg: err.msg,
+                          location: 'middle'
+                      });
+                  }
+                  if (ret && ret.state == 'success') {
+                      pageParams.knowledgePointExercise = ret.data[0];
+                      //跳转到知识点练习页面
+                      api.openWin({
+                          name: new_win_name,
+                          url: new_win_url,
+                          delay: 200,
+                          slidBackEnabled: false,//iOS7.0及以上系统中，禁止通过左右滑动返回上一个页面
+                          pageParam: pageParams
+                      });
+                      
+                  } else {
+                      /*api.toast({
+                          msg: ret.msg,
+                          location: 'middle'
+                      });*/
+                  }
+              });
+              return false;
+          }
+
+          api.hideProgress();
+
+          api.setScreenOrientation({
+              orientation: 'landscape_right'
+          });
+
+          //跳转到播放页面
+          api.openWin({
+              name: new_win_name,
+              url: new_win_url,
+              delay: 200,
+              slidBackEnabled: false,//iOS7.0及以上系统中，禁止通过左右滑动返回上一个页面
+              pageParam: pageParams
+          });
+      }
+      /*获取课程里所有的任务*/
+function gets_tasks(courseDetail,taskId) {
+        var arr = {};
+        var data_arr;
+        if(courseDetail.chapters){
+            data_arr = courseDetail.chapters;
+        }        
+        var courseName = courseDetail.courseName;
+        var courseId = courseDetail.courseId;
+        for (var i in data_arr) {
+                if (data_arr[i].isLeaf == 'false') {
+                        var child = data_arr[i].children;
+                        for (var j in child) {
+                                if (child[j].isLeaf == 'false') {
+                                        var child2 = child[j].children;
+                                        for (var k in child2) {
+                                                var cId = child2[k].chapterId;
+                                                var cName = child2[k].chapterTitle;
+                                                for (var x in child2[k].tasks) {
+                                                        if (child2[k].isLeaf != 'false') {
+                                                                var taskid = child2[k].tasks[x].taskId;
+                                                                if(taskId == taskid){
+                                                                    if(child2[k].tasks[x].taskType == 'knowledgePointExercise'){
+                                                                      child2[k].tasks[x].knowledgePointId = child2[k].knowledgePointId
+                                                                    }
+                                                                    return child2[k].tasks[x];
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                } else {
+                                        var cId = child[j].chapterId;
+                                        var cName = child[j].chapterTitle;
+                                        for (var k in child[j].tasks) {
+                                                var taskid = child[j].tasks[k].taskId;
+                                                if(taskId == taskid){
+                                                    if(child[j].tasks[k].taskType == 'knowledgePointExercise'){
+                                                      child[j].tasks[k].knowledgePointId = child[j].knowledgePointId
+                                                    }
+                                                    return child[j].tasks[k];
+                                                }
+                                        }
+                                }
+                        }
+                } else {
+                        var cId = data_arr[i].chapterId;
+                        var cName = data_arr[i].chapterTitle;
+                        for (var k in data_arr[i].tasks) {
+                                var taskid = data_arr[i].tasks[k].taskId;
+                                if(taskId == taskid){
+                                    if(data_arr[i].tasks[k].taskType == 'knowledgePointExercise'){
+                                      data_arr[i].tasks[k].knowledgePointId = data_arr[i].knowledgePointId
+                                    }
+                                    return data_arr[i].tasks[k];
+                                }
+                        }
+                }
+        }
+}
+
+
+function openApp(url) {
+    if(isEmpty(url)){
+      return false;
+    }
+    if (api.systemType == 'android') {
+            api.openApp({
+              androidPkg : 'android.intent.action.VIEW',
+              mimeType : 'text/html',
+              uri : url
+          }, function(ret, err) {
+              
+          });
+        } else if(api.systemType == 'ios') {
+            api.openApp({
+              iosUrl :url 
+          }, function(ret, err) {
+              
+          });
+        }       
+}
+

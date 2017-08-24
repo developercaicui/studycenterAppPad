@@ -233,6 +233,8 @@ function get_study() {//顶部学习
 		                      }
 		                  }
 		              }
+
+		              	saveExpire(filterLastProgress);
 	        			var ret={
 			                data : {
 			                  total : learningcourseData.data.total,
@@ -245,7 +247,7 @@ function get_study() {//顶部学习
 						//ret.data['courselist']=bufferCourese(ret.data.courselist);
 						
 						$('#course_content').html(content(ret.data));
-						saveExpire(ret.data.courselist);
+						
 						api.parseTapmode();
 						circleProgress();
 					})
