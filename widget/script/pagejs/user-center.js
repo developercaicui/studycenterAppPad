@@ -1754,7 +1754,13 @@ var courseId,course_detail,tasks;
                     });
                     return false;
                 }
-
+                if(isEmpty(data.qrCodeTaskList[0])){
+                      api.toast({
+                          msg: "二维码定位信息有误，请核对后再试！",
+                          location: 'middle'
+                      });
+                      return false;
+                }
                 api.showProgress({
                   title:'加载中',
                   modal:false
