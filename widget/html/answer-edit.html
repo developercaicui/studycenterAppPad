@@ -38,9 +38,9 @@
       }
       var is_click = true;
       function new_notes() {
-          //api.sendEvent({
+          // api.sendEvent({
           //    name: 'new-question'
-          //});
+          // });
           if(is_click == true){
               var systype = api.systemType;
               var appType;
@@ -117,7 +117,7 @@
                       token: $api.getStorage('token'),
                       title: title, //提问标题
                       content: content, //提问内容
-                      imgPath: isEmpty(img) ? '' : img, //图片数组，图片路径（以’，’分隔）
+                      imgPath: isEmpty($api.getStorage('img')) ? '' : $api.getStorage('img'), //图片数组，图片路径（以’，’分隔）
                       courseId: isEmpty(course_info.courseId) || course_info.courseId == 'undefined' ? 'courseId' : course_info.courseId, // 课程id
                       clientType: appType, //客户端类型：iphone
                       id: '', //笔记id，如果为空，则为添加，否则为修改
@@ -162,12 +162,12 @@
                   }
                   if (ret && ret.state == 'success') {
                       is_click = true;
-                      var jsfun = "getData(1)";
-                      api.execScript({
-                          name:'root',
-                          frameName: 'my-answer',
-                          script: jsfun
-                      });
+                      // var jsfun = "getData(1)";
+                      // api.execScript({
+                      //     name:'root',
+                      //     frameName: 'my-answer',
+                      //     script: jsfun
+                      // });
                       api.sendEvent({
                           name: 'new-question-f'
                       });

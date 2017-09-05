@@ -377,7 +377,7 @@ apiready = function() {
 	api.addEventListener({
 		name : 'new-question'
 	}, function(ret) {
-		//new_question();
+		new_question();
 		var chang = '';
 		$('.checkimg').each(function(i) {
 			chang += $('.checkimg').eq(i).attr('data-id') + ',';
@@ -494,18 +494,18 @@ function cancel_answer() {
 	num = 0;
 	$('textarea').attr('placeholder', '评论...');
 }
-//function new_question(){
-//    var chang = '';
-//    $('.checkimg').each(function (i) {
-//        chang += $('.checkimg').eq(i).attr('data-id') + ',';
-//    });
-//    var aa = chang.substring(0, chang.length - 1);
-//    var isPublic = $('.switch').attr('num');
-//    api.sendEvent({
-//        name: 'new-question-hq',
-//        extra: {img:aa,lx_duration:lx_duration,soundPath:soundPath,isPublic:isPublic}
-//    });
-//}
+function new_question(){
+   var chang = '';
+   $('.checkimg').each(function (i) {
+       chang += $('.checkimg').eq(i).attr('data-id') + ',';
+   });
+   var aa = chang.substring(0, chang.length - 1);
+   var isPublic = $('.switch').attr('num');
+   api.sendEvent({
+       name: 'new-question-hq',
+       extra: {img:aa,lx_duration:lx_duration,soundPath:soundPath,isPublic:isPublic}
+   });
+}
 //function new_notes(){
 //    var chang = '';
 //    $('.checkimg').each(function (i) {
@@ -732,7 +732,7 @@ function sub() {
 	            }
 				param = {
 	                token : $api.getStorage('token'),
-	                id : pageParam.id, //讨论主题id
+	                id : param_data.id, //讨论主题id
 	                pageNo : 1, //(必)
 	                pageSize : 20, //(必)
 	                content : '<p>'+$('.textarea').val()+'</p><br>'+imges, //(必)
