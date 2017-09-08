@@ -13,16 +13,16 @@
   </head>
   <body>
     <div id="content"></div>
-    <script id="tpl" type="text/x-dot-template">{{~it.res1:value:k }}
+    <script id="tpl" type="text/x-dot-template">
       <div class="cache-course note-chapter">
         <div class="cache-list chaptertitle">
           <dl class="cache-list-title">
             <dt>
-              <p>{{=it.res1[k].title}}</p>
+              <p>{{=it.res1.title}}</p>
             </dt>
             <dd></dd>
           </dl>
-        </div>{{~it.res1[k].children:val:key}}
+        </div>{{~it.res1.children:val:key}}
         {{var c_id=val.id;}}
         {{ if(val.isLeaf=='false'){ }}
         <ul class="cache-list one_chapter">
@@ -41,7 +41,7 @@
               </dl>{{~val2.children:val3:key3}}
               <li class="list">
                 <dl class="haschild">
-                  <dt onclick="noteList(this)" data-key="{{=it.res1[k].id}}" data-id="{{=val3.id}}" title="{{=val3.title}}">
+                  <dt onclick="noteList(this)" data-key="{{=it.res1.id}}" data-id="{{=val3.id}}" title="{{=val3.title}}">
                     <p>{{=val3.title}}</p>
                   </dt>
                   <dd><i class="icon-edit"></i><span>{{=val3.nodeNum}}</span>{{var id3=val3.id;}}
@@ -53,7 +53,7 @@
             </ul>{{ }else{ }}
             <ul class="list">
               <dl>
-                <dt onclick="noteList(this)" data-key="{{=it.res1[k].id}}" data-id="{{=val2.id}}" title="{{=val2.title}}">
+                <dt onclick="noteList(this)" data-key="{{=it.res1.id}}" data-id="{{=val2.id}}" title="{{=val2.title}}">
                   <p>{{=val2.title}}</p>
                 </dt>
                 <dd><i class="icon-edit"></i><span>{{=val2.nodeNum}}</span>{{var id2=val2.id;}}
@@ -68,14 +68,14 @@
         <ul class="cache-list one_chapter">
           <li class="list">
             <dl>
-              <dt onclick="noteList(this)" data-key="{{=it.res1[k].id}}" data-id="{{=val.id}}" title="{{=val.title}}">
+              <dt onclick="noteList(this)" data-key="{{=it.res1.id}}" data-id="{{=val.id}}" title="{{=val.title}}">
                 <p> {{=val.title}}</p>
               </dt>
             </dl>
           </li>
         </ul>{{ } }}
         {{~}}
-      </div>{{~}}
+      </div>
     </script>
     <script type="text/javascript" src="../script/comm.js"></script>
     <script type="text/javascript" src="../script/doT.min.js"></script>
@@ -140,26 +140,30 @@
                   
                   var da = ret.data;
                   var chapter_ids = [];
+                  var tpl = $('#tpl').html();
+                      var content = doT.template(tpl);
+                      $('#content').html(content({'res1': da, 'res2': da}));
+                  return false; 
                   //                    chapter_ids.push("ff8080814dad5062014db32051bf01a3");
-                  if (!isEmpty(da)) {
-                      for (var p in da) {
-                          if (!isEmpty(da[p].children)) {
-                              for (var p1 in da[p].children) {
-                                  chapter_ids.push(da[p].children[p1].id);
-                                  if (!isEmpty(da[p].children[p1].children)) {
-                                      for (var p2 in da[p].children[p1].children) {
-                                          chapter_ids.push(da[p].children[p1].children[p2].id);
-                                          if (!isEmpty(da[p].children[p1].children[p2].children)) {
-                                              for (var p3 in da[p].children[p1].children[p2].children) {
-                                                  chapter_ids.push(da[p].children[p1].children[p2].children[p3].id);
-                                              }
-                                          }
-                                      }
-                                  }
-                              }
-                          }
-                      }
-                  }
+                  // if (!isEmpty(da)) {
+                  //     for (var p in da) {
+                  //         if (!isEmpty(da[p].children)) {
+                  //             for (var p1 in da[p].children) {
+                  //                 chapter_ids.push(da[p].children[p1].id);
+                  //                 if (!isEmpty(da[p].children[p1].children)) {
+                  //                     for (var p2 in da[p].children[p1].children) {
+                  //                         chapter_ids.push(da[p].children[p1].children[p2].id);
+                  //                         if (!isEmpty(da[p].children[p1].children[p2].children)) {
+                  //                             for (var p3 in da[p].children[p1].children[p2].children) {
+                  //                                 chapter_ids.push(da[p].children[p1].children[p2].children[p3].id);
+                  //                             }
+                  //                         }
+                  //                     }
+                  //                 }
+                  //             }
+                  //         }
+                  //     }
+                  // }
                   var param = {};
                   param.token = $api.getStorage('token');
                   param.charpterids = chapter_ids.join(",");
