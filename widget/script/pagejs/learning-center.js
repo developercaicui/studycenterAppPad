@@ -1,5 +1,5 @@
 var is_debug = false;
-function CourseDetail(co, ch, su, ca, cn,chapterName,subjectName,categoryName,obj,versionId,lock) {
+function CourseDetail(co, ch, su, ca, cn,chapterName,subjectName,categoryName,obj,versionId,lock,expirationTime) {
 	if(lock != 0){
         api.toast({msg:'当前的课程已锁定,续费后即可解锁！',location:'middle'})
         return false;
@@ -16,8 +16,10 @@ function CourseDetail(co, ch, su, ca, cn,chapterName,subjectName,categoryName,ob
     $api.setStorage('Course_info', course_detail);
     course_detail.examTime = $(obj).find(".exam_time").text();
     course_detail.courseDue = $(obj).find(".course_due").text();
-    
+
     course_detail.versionId = versionId;//用于切换课程版本
+
+    course_detail.expirationTime = expirationTime;
 
 	//var detail = {};
 	//detail.course_id = co;
