@@ -206,15 +206,6 @@
           api.closeWin();
       }
       function get_tasks() {
-
-        //保存过期时间
-          var list = [{
-            "courseId":api.pageParam.courseId,
-            "expirationTime":api.pageParam.expirationTime
-          }]
-          
-          saveExpire(list)
-          
           var param = {};
           param.courseId = courseId;
           param.token = $api.getStorage('token');

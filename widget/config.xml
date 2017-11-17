@@ -12,12 +12,12 @@
   <preference name="frameBackgroundColor" value="#f3f3f3"/>  
   <preference name="hScrollBarEnabled" value="false"/>  
   <preference name="vScrollBarEnabled" value="true"/>  
-  <preference name="softInputMode" value="pan"/>  
+  <preference name="softInputMode" value="resize"/>  
   <preference name="autoLaunch" value="false"/>  
   <preference name="fullScreen" value="false"/>  
   <preference name="autoUpdate" value="true"/>  
   <preference name="smartUpdate" value="true"/>  
-  <preference name="debug" value="true"/>  
+  <preference name="debug" value="false"/>  
   <preference name="iOS7StatusBarAppearance" value="true"/>  
   <preference name="allowKeyboardExtension" value="false"/>  
   <permission name="readPhoneState"/>  
