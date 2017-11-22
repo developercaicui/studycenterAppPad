@@ -192,6 +192,7 @@ ml
 /A6999359375355/image/live.png
 /A6999359375355/html/dashboard.html
 /A6999359375355/bui/A6999359375355/html/answer-edit-f.html
+/A6999359375355/html/notice.html
 /A6999359375355/build/jade/template/modify.jade
 /A6999359375355/html/course-live.html
 /A6999359375355/html/header-detail.html

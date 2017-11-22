@@ -1247,6 +1247,10 @@
 // var tpl = $('#tpl').html();
 // var content = doT.template(tpl);
 // $('#content').html(content(learningData));
+
+
+var learnList = [],noticeTotal = 0,noticeIndex = 0,currentNotice = {},isFinish = false;
+
       // 打开课程列表页面
       function openCourse(_this,co, ch, su, ca,subjectName,categoryName,versionId,lock,expirationTime) {
         if(lock != 0){
@@ -1327,7 +1331,21 @@
       var content = doT.template(tpl);
       if(ret && ret.state=='success'){
       var learningcourseData = ret;
+      var setListObj = {},setListArr = [];
+
+      for(var i=0;i<ret.data.courselist.length;i++){
+          if(!setListObj[ret.data.courselist[i].courseId]){
+              setListArr.push(ret.data.courselist[i]);
+              setListObj[ret.data.courselist[i].courseId] = "1"
+          }
+      }
+      ret.data.courselist = setListArr;
+
+      learnList = setListArr;
+      noticeTotal = setListArr.length-1;
+
       var learningcourse = ret.data.courselist;
+
       var courseArr = [];
       for(var i=0;i<learningcourse.length;i++){
       courseArr.push(learningcourse[i].courseId);
@@ -1438,26 +1456,28 @@ $.each(categoryIdArr, function(i, val) {
     
 });
 
-      no_loaded=false;
-      total=ret.data.total;
-      if (page == 1) {
-      if (isEmpty(ret.data)||total==0) {
-      $('body').addClass('null');
-      return false;
-      }
-      $('body').removeClass('null');
-      $('#content').html(content(learningData));
-      } else {
-      if (isEmpty(ret.data.courselist)) {
-      return false;
-      }
-      $('#content').append(content(learningData));
-      }
-      $(".learning-navL").find("p").eq(0).addClass("active");
-      $(".stydys").eq(0).show();
-      api.parseTapmode();
-      saveExpire(ret.data.courselist);
-      progressBar();
+        no_loaded=false;
+        total=ret.data.total;
+        if (page == 1) {
+          if (isEmpty(ret.data)||total==0) {
+              $('body').addClass('null');
+              return false;
+          }
+          $('body').removeClass('null');
+          $('#content').html(content(learningData));
+        } else {
+          if (isEmpty(ret.data.courselist)) {
+            return false;
+          }
+          $('#content').append(content(learningData));
+        }
+        $(".learning-navL").find("p").eq(0).addClass("active");
+        $(".stydys").eq(0).show();
+
+        api.parseTapmode();
+        saveExpire(ret.data.courselist);
+        progressBar();
+        if(!isFinish) getNotice();//课程变更
       })
       } else {
       //api.toast({
@@ -1467,6 +1487,46 @@ $.each(categoryIdArr, function(i, val) {
       }
       });
       }
+
+      function getNotice(){
+          console.log(noticeIndex)
+          var courseGroupId = learnList[noticeIndex].courseGroupId;
+          var orderItemId = learnList[noticeIndex].orderID_item_id;
+          if(isEmpty(courseGroupId) || isEmpty(orderItemId)){
+            noticeIndex++;
+            if(noticeIndex > noticeTotal){
+              isFinish = true;
+              getData(1);
+              return false;
+            }
+            getNotice();
+          }
+          var courseParams = {
+            courseGroupId : courseGroupId,
+            orderItemId : orderItemId,
+          }
+
+          ajaxRequest('api/business/coursegroup/getmembernotprocnoticelist', 'get', courseParams, function (res, err) {
+            if(res && res.state == 'success'){
+              console.log(JSON.stringify(courseParams))
+              if(res.data.length < 1){
+                noticeIndex++;
+                if(noticeIndex > noticeTotal){
+                  isFinish = true;
+                  getData(1);
+                  return false;
+                }
+                getNotice();
+              }else{
+                currentNotice = res.data[0];
+                myFrame('notice','full',false,this,'',res.data[0])
+
+              }
+            }
+          })
+
+      }
+
       var total=0;
       var no_loaded=true;
       
@@ -1520,6 +1580,48 @@ $.each(categoryIdArr, function(i, val) {
       }, function (ret, err) {
       getData(1);
       });
+
+      api.addEventListener({
+          name: 'closeNotice'
+      }, function (ret, err) {
+          noticeIndex++;
+          if(noticeIndex > noticeTotal){
+            isFinish = true;
+            getData(1);
+            return false;
+          }
+          // setTimeout(()=>{
+            getNotice();
+          // },600)
+      });
+
+      api.addEventListener({
+          name: 'updataNotice'
+      }, function (ret, err) {
+
+          var param = {
+            courseGroupId: currentNotice.courseGroupId,
+            itemId: currentNotice.orderItemId,
+            state: ret.value.state,
+          }
+
+          ajaxRequest('api/business/coursegroup/membercheck', 'get', param, function (res, err) {
+            if(res && res.state == 'success'){
+                noticeIndex++;
+                if(noticeIndex > noticeTotal){
+                  isFinish = true;
+                  getData(1);
+                  return false;
+                }
+                // setTimeout(()=>{
+                  getNotice();
+                // },600)
+            }
+          })
+          
+      });
+
+
       };
     </script>
   </body>

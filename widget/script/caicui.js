@@ -371,7 +371,7 @@ function myFrame(e,s,b,obj,f,p){
         }
 
     }
-    if(e=='set-info' || e=='course-chapter' || e=='correction-exam' || e=='correction-video'){
+    if(e=='set-info' ||e=='notice'|| e=='course-chapter' || e=='correction-exam' || e=='correction-video'){
         //param.courseId = 1231
         reload=true;
         if(e=='course-chapter'){
@@ -379,7 +379,7 @@ function myFrame(e,s,b,obj,f,p){
         }
     }
     var bgCor = '#f3f3f3';
-    if(e == 'set-info' || e == 'pop-msg' || e=='correction-exam' || e=='correction-video' || e=='course-version' || e=='course-msg'){
+    if(e == 'set-info' || e=='notice' || e == 'pop-msg' || e=='correction-exam' || e=='correction-video' || e=='course-version' || e=='course-msg'){
         bgCor = 'rgba(0,0,0,0)'
     }
     if(p){
